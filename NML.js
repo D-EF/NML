@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-10-07 16:55:27
+ * @LastEditTime: 2022-10-11 00:25:13
  * @FilePath: \site\js\import\NML\NML.js
  * @Description: Nittle Math Library
  * 
@@ -968,30 +968,39 @@
                     Matrix.create_NewSize([ c, s,-s, c,],2,2,2,2,axis,axis);
                 }
 
-                /** 创建正交投影矩阵
-                 * @param {List_Value} v 投影面的法线
+                /** 创建旋转矩阵 使用任意旋转轴
+                 * @param {Float} theta 旋转弧度
+                 * @param {List_Value} axis 一个3D向量表示的旋转轴
                  * @return {Matrix_3} 返回一个矩阵
                  */
-                static create_Projection__Orthographic(v){
-                    var v=Vector.is_Unit(_v)?_v:Vector.create_Normalization(_v);
-                    // todo
-                }
+                static create_Rotate__Axis(theta,axis){
+                    var k     = Vector.is_Unit(axis)?axis:Vector.create_Normalization(axis),
+                        sin_t = sin(theta),
+                        cos_t = cos(theta),
+                        rtn   = Matrix.create_TensorProduct(axis,axis,1,3,3,1),
+                        skx   = sin_t*k[0],
+                        sky   = sin_t*k[1],
+                        skz   = sin_t*k[2];
 
-                /** 创建旋转矩阵, 使用旋转向量
-                 * @param {List_Value} _v  3d向量
-                 * @return {Matrix_3} 返回一个矩阵
-                 */
-                static create_Rotate__v(_v){
-                    var v=Vector.is_Unit(_v)?_v:Vector.create_Normalization(_v);
-                    // todo
+                    Matrix.np_b(rtn,1-cos_t);
+
+                    rtn[0] += cos_t;      rtn[1] -= skz;        rtn[2] += sky;
+                    rtn[3] += skz;        rtn[4] += cos_t;      rtn[5] -= skx;
+                    rtn[6] -= sky;        rtn[7] += skx;        rtn[8] += cos_t;
+
+                    return rtn;
                 }
 
                 /** 创建旋转矩阵, 使用欧拉角
-                 * @param {List_Value} value 欧拉角参数
+                 * @param {List_Value} euler_values 欧拉角参数 各旋转角角的弧度
                  * @param {List_Value} axis 欧拉角的轴向顺序 [x,y,z]
                  */
-                static create_Rotate__EulerAngles(value,axis){
-                    // todo
+                static create_Rotate__EulerAngles(euler_values,axis){
+                    var rtn = Matrix_3.create_Rotate(euler_values[0],axis[0]);
+                    for(i=1;i<3;++i){
+                        rtn=Matrix.multiplication(rtn,Matrix_3.create_Rotate(euler_values[i],axis[i]),3,3);
+                    }
+                    return rtn;
                 }
             }
 
