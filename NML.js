@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-10-11 00:25:13
+ * @LastEditTime: 2022-10-11 23:17:16
  * @FilePath: \site\js\import\NML\NML.js
  * @Description: Nittle Math Library
  * 
@@ -424,8 +424,8 @@
             /** 校验矩阵是否为方阵
              * @param {List_Value} m    矩阵
              * @param {int} [_n]    n阶矩阵
-             * @return {int} 返回n
-             * @throws {Error} 当 _n 和 m的长度 无法形成方阵时 将会报错
+             * @return {int} 返回 n
+             * @throws {Error} 当 n 和 m 的长度 无法形成方阵时 将会抛出异常
              */
             static check_Square(m,_n){
                 var n=parseInt(_n||sqrt(m.length));
@@ -734,24 +734,49 @@
             }
             
             /** 计算矩阵行列式
-             * @param {List_Value} temp_m 矩阵
+             * @param {List_Value} m 矩阵
              * @param {int} [_n] 矩阵为n阶矩阵
              * @return {Number} 返回矩阵的行列式
              */
             static calc_Det(m,_n){
-                if(m.length===1)return  m[0];
+                switch(m.length){
 
-                if(m.length===4)return  m[0]*m[3]-m[1]*m[2];
+                    case 1: return  m[0];
+                    break;
 
-                if(m.length===9)return  m[0] * (m[4]*m[8] - m[5]*m[7])+
-                                        m[1] * (m[5]*m[6] - m[3]*m[8])+
-                                        m[2] * (m[3]*m[7] - m[5]*m[6]);
-                // if(m.length===16)return m[0];
-                return Matrix.calc_Det__Transform(m,_n);
+                    case 4: return  m[0]*m[3]-m[1]*m[2];
+                    break;
+
+                    case 9: return  m[0] * (m[4]*m[8] - m[5]*m[7])+
+                                    m[1] * (m[5]*m[6] - m[3]*m[8])+
+                                    m[2] * (m[3]*m[7] - m[5]*m[6]);
+                    break;
+
+                    case 16:
+                        var t0  = m[0]  * m[5]  - m[1]  * m[4],
+                            t1  = m[0]  * m[6]  - m[2]  * m[4],
+                            t2  = m[0]  * m[7]  - m[3]  * m[4],
+                            t3  = m[1]  * m[6]  - m[2]  * m[5],
+                            t4  = m[1]  * m[7]  - m[3]  * m[5],
+                            t5  = m[2]  * m[7]  - m[3]  * m[6],
+                            t6  = m[8]  * m[13] - m[9]  * m[12],
+                            t7  = m[8]  * m[14] - m[10] * m[12],
+                            t8  = m[8]  * m[15] - m[11] * m[12],
+                            t9  = m[9]  * m[14] - m[10] * m[13],
+                            t10 = m[9]  * m[15] - m[11] * m[13],
+                            t11 = m[10] * m[15] - m[11] * m[14];
+                        
+                        return t0 * t11 - t1 * t10 + t2 * t9 + t3 * t8 - t4 * t7 + t5 * t6;
+                    break;
+
+                    default:
+                        return Matrix.calc_Det__Transform(m,_n);
+                    break;
+                }
             }
 
             /** 计算矩阵行列式 --使用初等变换
-             * @param {List_Value} temp_m 矩阵
+             * @param {List_Value} m 矩阵
              * @param {int} [_n] 矩阵为n阶矩阵
              * @return {Number} 返回矩阵的行列式
              */
@@ -794,11 +819,11 @@
             }
 
             /** 变换得到矩阵逆
-             * @param {List_Value} m       矩阵
-             * @param {int} [_n]    矩阵为n阶矩阵
-             * @return {Matrix}     修改 m 并返回
+             * @param {List_Value} m 传入矩阵, 计算完后将会变成单位矩阵
+             * @param {int} [_n]     矩阵为n阶矩阵
+             * @return {Matrix}      返回一个新的矩阵
              */
-            static inverse(m,_n){
+            static inverse__Transform(m,_n){
                 var n,uv,uv_i,i,j,v,temp;
                 var k,sp;
                 var _m=[];
@@ -843,10 +868,68 @@
             /** 求矩阵的逆 (创建逆矩阵)
              * @param {List_Value} m       矩阵
              * @param {int} [_n]    矩阵为n阶矩阵
-             * @return {Matrix}     返回一个新的矩阵
+             * @return {Matrix|null}     返回一个新的矩阵
              */
             static create_Inverse(m,_n){
-                return Matrix.inverse(new Matrix(m),_n);
+                // 公式法 m^-1=adj(m)/|m|
+                switch (m.length) {
+                    case 1:
+                        return new Matrix([1/m[0]]);
+                    break;
+                    
+                    case 4:
+                        var d = Matrix.calc_Det(m);
+                        if(approximately(d,0))return null;
+                        d=1/d;
+                        return new Matrix([
+                             m[3]*d, -m[1]*d,
+                            -m[2]*d,  m[0]*d,
+                        ]);
+                    break;
+                    
+                    case 9:
+                        var d = Matrix.calc_Det(m);
+                        if(approximately(d,0))return null;
+                        d=1/d;
+                        return new Matrix([
+                            (m[4]*m[8]-m[7]*m[5])*d,    (m[3]*m[8]-m[6]*m[5])*d,    (m[3]*m[7]-m[6]*m[4])*d,
+                            (m[1]*m[8]-m[7]*m[2])*d,    (m[0]*m[8]-m[6]*m[2])*d,    (m[0]*m[7]-m[6]*m[1])*d,
+                            (m[1]*m[5]-m[4]*m[2])*d,    (m[0]*m[5]-m[3]*m[2])*d,    (m[0]*m[4]-m[3]*m[1])*d,
+                        ]);
+                    break;
+                    
+                    case 16:
+                        var t00 = m[0]  * m[5]  - m[1]  * m[4],
+                            t01 = m[0]  * m[6]  - m[2]  * m[4],
+                            t02 = m[0]  * m[7]  - m[3]  * m[4],
+                            t03 = m[1]  * m[6]  - m[2]  * m[5],
+                            t04 = m[1]  * m[7]  - m[3]  * m[5],
+                            t05 = m[2]  * m[7]  - m[3]  * m[6],
+                            t06 = m[8]  * m[13] - m[9]  * m[12],
+                            t07 = m[8]  * m[14] - m[10] * m[12],
+                            t08 = m[8]  * m[15] - m[11] * m[12],
+                            t09 = m[9]  * m[14] - m[10] * m[13],
+                            t10 = m[9]  * m[15] - m[11] * m[13],
+                            t11 = m[10] * m[15] - m[11] * m[14];
+                        
+                        var d=t00*t11-t01*t10+t02*t09+t03*t08-t04*t07+t05*t06;
+                        if(approximately(d,0))return null;
+                        d=1/d;
+
+                        return new Matrix([
+                            (m[5]*t11-m[6]*t10+m[7]*t09)*d,    (m[2]*t10-m[1]*t11-m[3]*t09)*d,    (m[13]*t05-m[14]*t04+m[15]*t03)*d,    (m[10]*t04-m[9] *t05-m[11]*t03)*d,
+                            (m[6]*t08-m[4]*t11-m[7]*t07)*d,    (m[0]*t11-m[2]*t08+m[3]*t07)*d,    (m[14]*t02-m[12]*t05-m[15]*t01)*d,    (m[8] *t05-m[10]*t02+m[11]*t01)*d,
+                            (m[4]*t10-m[5]*t08+m[7]*t06)*d,    (m[1]*t08-m[0]*t10-m[3]*t06)*d,    (m[12]*t04-m[13]*t02+m[15]*t00)*d,    (m[9] *t02-m[8] *t04-m[11]*t00)*d,
+                            (m[5]*t07-m[4]*t09-m[6]*t06)*d,    (m[0]*t09-m[1]*t07+m[2]*t06)*d,    (m[13]*t01-m[12]*t03-m[14]*t00)*d,    (m[8] *t03-m[9] *t01+m[10]*t00)*d
+                        ]);
+                    break;
+                    
+                    default:
+                        // 高斯乔丹消元法(初等变换法)
+                        return Matrix.inverse__Transform(new Matrix(m),_n);
+                    break;
+                }
+                
             }
         }
 
@@ -994,6 +1077,7 @@
                 /** 创建旋转矩阵, 使用欧拉角
                  * @param {List_Value} euler_values 欧拉角参数 各旋转角角的弧度
                  * @param {List_Value} axis 欧拉角的轴向顺序 [x,y,z]
+                 * @return {Matrix_3} 返回一个矩阵
                  */
                 static create_Rotate__EulerAngles(euler_values,axis){
                     var rtn = Matrix_3.create_Rotate(euler_values[0],axis[0]);
@@ -1001,6 +1085,25 @@
                         rtn=Matrix.multiplication(rtn,Matrix_3.create_Rotate(euler_values[i],axis[i]),3,3);
                     }
                     return rtn;
+                }
+
+                /** 创建正交投影(平行投影)矩阵
+                 * @param {List_Value} normal 使用3d向量表示 投影面的法向
+                 * @return {Matrix_3} 返回一个矩阵
+                 */
+                static create_Projection__Orthographic(normal){
+                    var n= Vector.is_Unit(normal)?normal:Vector.create_Normalization(normal);
+                    var xx=n[0]*n[0],
+                        xy=n[0]*n[1],
+                        xz=n[0]*n[2],
+                        yy=n[1]*n[1],
+                        yz=n[1]*n[2],
+                        zz=n[2]*n[2];
+                    return new Matrix_3([
+                        1-xx,   -xy,    -xz,
+                        -xy,    1-yy,   -yz,
+                        -xz,    -yz,    1-zz
+                    ])
                 }
             }
 
