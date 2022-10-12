@@ -433,32 +433,52 @@
                 return n;
             }
 
-            /** 矩阵升级
+            /** 根据原矩阵创建新的矩阵, 可以改变矩阵的宽高, 在空的地方会写入单位矩阵的数据 
+             ```
+                create_NewSize([1,2,3,4],2,3);    create_NewSize([1,2,3,4],2,3,2,3,2,1);
+                // [1,2]    [1,2,0]               // [1,2]    [1,0,0]
+                // [3,4] >> [3,4,0]               // [3,4] >> [0,1,0] 
+                //          [0,0,1]               //          [0,1,1]
+             ```
              * @param {Matrix} m    原矩阵
              * @param {int} low_w           原矩阵宽度
              * @param {int} new_w           新矩阵宽度
              * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
              * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
-             * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为
-             * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认使用 _shift_top
+             * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
+             * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
              * @return {Matrix} 返回一个新矩阵
              */
-            static create_NewSize(m,low_w,new_w,_low_h,_new_h,_shift_top,_shift_left){
+            static create_NewSize(m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top){
+                var rtn=Matrix.create_Identity(new_w,_new_h);
+                return Matrix.setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top);
+            }
+
+
+            /** 矩阵数据转移
+             * @param {Matrix} rtn  要写入的矩阵
+             * @param {Matrix} m    数据来源矩阵
+             * @param {int} low_w           原矩阵宽度
+             * @param {int} new_w           新矩阵宽度
+             * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
+             * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
+             * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
+             * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
+             * @return {Matrix} 修改 rtn 并返回
+             */
+            static setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top){
                 var low_h=_low_h||low_w,new_h=_new_h||new_w,
                     shift_top  = (_shift_top&&((new_w+_shift_top)%new_w))||0,
                     shift_left = _shift_left===undefined?shift_top:((new_h+_shift_left)%new_h),
                     l=new_w*new_h,
                     temp_u,temp_v,
                     i,u,v;
-                var rtn=new Matrix(l);
                 u=new_w-1;
                 v=new_h-1;
                 temp_u=u-shift_left;
                 temp_v=v-shift_top;
                 for(i=l-1;i>=0;--i){
-                    if(temp_u>=low_w||temp_v>=low_h){
-                        rtn[i]=(u===v)?1:0;
-                    }else{
+                    if(!(temp_u>=low_w||temp_v>=low_h)){
                         rtn[i]=m[temp_v*low_w+temp_u];
                     }
                     --u;
@@ -569,16 +589,19 @@
             }
 
             /** 创建单位矩阵
-             * @param {int}  n   n阶矩阵
+             * @param {int}  w   矩阵宽度
+             * @param {int} [h]  矩阵高度 默认和 w 相等
              * @return {Matrix} 
              */
-            static create_Identity(n){
-                var l=n*n, sp=n+1, i=l-1;
+            static create_Identity(w,_h){
+                var h=_h||w;
+                var l=w*h, sp=w+1, i=0,j=w>h?h:w;
                 var rtn=new Matrix(l);
                 do{
                     rtn[i]=1.0;
-                    i-=sp;
-                }while(i>=0);
+                    i+=sp;
+                    --j
+                }while(j>0);
                 return rtn;
             }
             
@@ -978,19 +1001,12 @@
                 }
 
                 /** 创建切变矩阵
-                 * @param {Number} axis 方向轴 0:x 非零:y
-                 * @param {Number} k 切变系数
+                 * @param {Number} kx x方向的切变系数
+                 * @param {Number} ky y方向的切变系数
                  * @return {Matrix_2}
                  */
-                static create_Shear(axis,k){
-                    if(axis){
-                        // y轴
-                        return new Matrix_2([1,0,k,1]);
-                    }
-                    else{
-                        // x轴
-                        return new Matrix_2([1,k,0,1]);
-                    }
+                static create_Shear(kx,ky){
+                        return new Matrix_2([1,ky,kx,1]);
                 }
 
                 /** 创建单位矩阵
@@ -1042,13 +1058,13 @@
                 }
                 /** 创建旋转矩阵
                  * @param {Number} theta 旋转弧度
-                 * @param {int} axis 旋转中心轴  [z,y,x] 默认为 0
+                 * @param {int} axis 旋转中心轴  [z,x,y] 默认为 0 (z)
                  * @return {Matrix_3} 返回一个矩阵
                  */
                 static create_Rotate(theta,axis){
                     var s=sin(theta),
                         c=cos(theta);
-                    Matrix.create_NewSize([ c, s,-s, c,],2,2,2,2,axis,axis);
+                    return Matrix.create_NewSize([ c, s,-s, c,],2,3,2,3,axis,axis);
                 }
 
                 /** 创建旋转矩阵 使用任意旋转轴
@@ -1075,16 +1091,25 @@
                 }
 
                 /** 创建旋转矩阵, 使用欧拉角
-                 * @param {List_Value} euler_values 欧拉角参数 各旋转角角的弧度
-                 * @param {List_Value} axis 欧拉角的轴向顺序 [x,y,z]
+                 * @param {List_Value} euler_angles 欧拉角参数 各旋转角角的弧度
+                 * @param {List_Value} _axis 欧拉角的轴向顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
                  * @return {Matrix_3} 返回一个矩阵
                  */
-                static create_Rotate__EulerAngles(euler_values,axis){
-                    var rtn = Matrix_3.create_Rotate(euler_values[0],axis[0]);
-                    for(i=1;i<3;++i){
-                        rtn=Matrix.multiplication(rtn,Matrix_3.create_Rotate(euler_values[i],axis[i]),3,3);
+                static create_Rotate__EulerAngles(euler_angles,_axis){
+                    var axis=_axis||[0,1,2]
+                    var rtn = Matrix_3.create_Rotate(euler_angles[0],axis[0]);
+                    for(var i=1;i<3;++i){
+                        rtn=Matrix.multiplication(rtn,Matrix_3.create_Rotate(euler_angles[i],axis[i]),3,3);
                     }
                     return rtn;
+                }
+
+                /** 创建旋转矩阵, 使用四元数
+                 * @param {List_Value} quat 欧拉角参数 各旋转角角的弧度
+                 * @return {Matrix_3} 返回一个矩阵
+                 */
+                static create_Rotate__EulerAngles(quat){
+                    // todo
                 }
 
                 /** 创建正交投影(平行投影)矩阵
@@ -1105,6 +1130,23 @@
                         -xz,    -yz,    1-zz
                     ])
                 }
+                
+                /** 创建切变矩阵
+                 * @param {Number} k 切变系数
+                 * @param {Number} axis 方向轴 [x,y,z]
+                 * @return {Matrix_3}
+                 */
+                 static create_Shear(k,axis){
+                    // todo
+                }
+                
+                /** 创建镜像矩阵
+                 * @param {List_Value} n 镜面的法向 3D向量
+                 * @return {Matrix_3}
+                 */
+                 static create_Horizontal(n){
+                    // todo
+                }
             }
 
             Matrix_3.ROTATE_X_CCW_90DEG = new Matrix_3([1, 0, 0, 0, 0, 1, 0, -1, 0 ]);
@@ -1121,6 +1163,112 @@
     // end  * 矩阵 * end 
 
 // open * 线性代数 * open
+
+// open * 基础图形学 * open
+
+    // open * 旋转 * open
+        /** 欧拉角 */
+        class Euler_Angles extends CONFIG.VALUE_TYPE{
+            constructor(data){
+                super([data[0],data[1],data[2]]);
+            }
+
+            /** 使用矩阵计算出欧拉角
+             * @param {Matrix_3} m 仅做过旋转变换的矩阵
+             * @return {Euler_Angles}
+             */
+            static create_FromMatrix(m){
+                // todo
+            }
+
+            /** 使用四元数
+             * @param {QUAT} m 仅做过旋转变换的矩阵
+             * @return {Euler_Angles}
+             */
+            static create_FromQUAT(m){
+                // todo
+            }
+        }
+
+        /** 四元数 */
+        class QUAT extends CONFIG.VALUE_TYPE{
+            
+            /** 使用矩阵计算出欧拉角
+             * @param {Matrix_3} m 仅做过旋转变换的矩阵
+             * @return {Euler_Angles}
+             */
+             static create_FromMatrix(m){
+                // todo
+            }
+
+            /** 使用四元数
+             * @param {QUAT} m 仅做过旋转变换的矩阵
+             * @return {Euler_Angles}
+             */
+            static create_FromEulerAngles(m){
+                // todo
+            }
+        }
+    // end  * 旋转 * end 
+
+    // open  * 变换矩阵控制器 * open
+        // open * 3d 变换矩阵控制器 * open
+            
+            /** 3d 变换矩阵控制器 */
+            // todo
+            
+            class Transform_3D_Matrix_Ctrl{
+                /** 
+                 * @param {Hand__Transform_3D_Matrix_Ctrl[]} process 
+                 */
+                constructor(process){
+                    this.process=Object.assign({},process);
+                    this._mat=new Matrix(16);
+                }
+                get_Matrix(){
+                    return new Matrix(this._mat);
+                }
+                get_Matrix__life(){
+                    return this._mat;
+                }
+            }
+
+            class Hand__Transform_3D_Matrix_Ctrl{
+                /** 
+                 * @param {Number|String} type 
+                 * @param {*} params 
+                 */
+                constructor(type,params){
+                    /** @type {Number} */
+                    this._type=type;
+                    if(type.constructor!==Number){
+                        this._type=Hand__Transform_3D_Matrix_Ctrl.MAPPING__HAND_NO_TO_TYPE_NAME.indexOf(type);
+                    }
+                    this.params=params;
+                }
+
+                /**
+                 * @param {Hand__Transform_3D_Matrix_Ctrl} tgt 拷贝对象
+                 * @return {Hand__Transform_3D_Matrix_Ctrl}
+                 */
+                copy(tgt){
+                    // todo
+                }
+
+                static MAPPING__HAND_NO_TO_TYPE_NAME=[
+                    // todo
+                    "translate",
+                    "size",
+                    "rotate",
+                    "pojection",
+                    "shear",
+                    "horizontal"
+                ]
+            }
+        // end  * 3d 变换矩阵控制器 * end 
+    // end  * 变换矩阵控制器 * end 
+
+// end  * 基础图形学 * end 
 
 // open * 贝塞尔曲线 * open
 
@@ -1320,17 +1468,18 @@
 
 
 /** 向数组写入数据
- * @param {List_Value} out 输出对象
+ * @param {List_Value} rtn 输出对象
  * @param {List_Value} org 数据来源
  * @param {int} l   写入长度
  * @return {List_Value} 修改并返回 out
  */
-function copy_Array(out,org,l){
-    var i=l||out.length;
-    while(i){
-        out[i]=org[i];
-    }
-    return out;
+function copy_Array(rtn,org,l){
+    var i=l||(rtn.length>org.length?org.length:rtn.length);
+    do{
+        --i;
+        rtn[i]=org[i];
+    }while(i);
+    return rtn;
 }
 
 export{
@@ -1352,6 +1501,5 @@ export{
     Matrix,
     Matrix_2,
     Matrix_3,
-    Polygon,
     copy_Array
 }
