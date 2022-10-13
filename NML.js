@@ -11,6 +11,7 @@
 // open * 配置/基础 * open
     /** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */
     globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
+    /** 配置 */
     const CONFIG={
         /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */
         VALUE_TYPE:globalThis.NML_VALUE_TYPE,
@@ -23,7 +24,6 @@
         DEG_90  = 90*DEG,
         DEG_180 = 180*DEG,
         CYCLES  = globalThis.CYCLES = Math.PI*2;
-    //
 
     /** 近似相等, 用于浮点误差计算后判断结果是否相近; 
      * @param {Number} num1 数字
@@ -393,778 +393,777 @@
         }
     }
 
-    /* 矩阵的数据类型为1维线性表:
-    * [1, 2, 3]
-    * [4, 5, 6]  >>  [1,2,3,4,5,6,7,8,9]
-    * [7, 8, 9]
-    */
+    /* 矩阵
+     * 矩阵的数据类型为1维线性表:
+     ```
+     [1, 2, 3]
+     [4, 5, 6]  >>  [1,2,3,4,5,6,7,8,9]
+     [7, 8, 9]
+     ```
+     */
+    class Matrix extends CONFIG.VALUE_TYPE{
+        // 继承使用 CONFIG.VALUE_TYPE 的构造函数
 
-    // open * 矩阵 * open
-    
-        /** 矩阵  */
-        class Matrix extends CONFIG.VALUE_TYPE{
-            // 继承使用 CONFIG.VALUE_TYPE 的构造函数
+        /** 创建打印用的二维数组
+         * @param {List_Value} m 矩阵
+         * @param {int} w 矩阵有多少列(宽度)
+         * @return {Number[][]} 
+         */
+        static create_Print(m,w){
+            var l=m.length,i,
+                n=parseInt(w||parseInt(sqrt(l)));
+            var rtn=[];
+            i=0;
+            do{
+                rtn.push(m.slice(i,i+=n));
+            }while(i<l);
+            return rtn;
+        }
 
-            /** 创建打印用的二维数组
-             * @param {List_Value} m 矩阵
-             * @param {int} w 矩阵有多少列(宽度)
-             * @return {Number[][]} 
-             */
-            static create_Print(m,w){
-                var l=m.length,i,
-                    n=parseInt(w||parseInt(sqrt(l)));
-                var rtn=[];
-                i=0;
-                do{
-                    rtn.push(m.slice(i,i+=n));
-                }while(i<l);
-                return rtn;
-            }
+        /** 校验矩阵是否为方阵
+         * @param {List_Value} m    矩阵
+         * @param {int} [_n]    n阶矩阵
+         * @return {int} 返回 n
+         * @throws {Error} 当 n 和 m 的长度 无法形成方阵时 将会抛出异常
+         */
+        static check_Square(m,_n){
+            var n=parseInt(_n||sqrt(m.length));
+            if(n*n!==m.length) throw new Error("This is not a square matrix! It should be a (n*n)!");
+            return n;
+        }
 
-            /** 校验矩阵是否为方阵
-             * @param {List_Value} m    矩阵
-             * @param {int} [_n]    n阶矩阵
-             * @return {int} 返回 n
-             * @throws {Error} 当 n 和 m 的长度 无法形成方阵时 将会抛出异常
-             */
-            static check_Square(m,_n){
-                var n=parseInt(_n||sqrt(m.length));
-                if(n*n!==m.length) throw new Error("This is not a square matrix! It should be a (n*n)!");
-                return n;
-            }
-
-            /** 根据原矩阵创建新的矩阵, 可以改变矩阵的宽高, 在空的地方会写入单位矩阵的数据 
-             ```
-                create_NewSize([1,2,3,4],2,3);    create_NewSize([1,2,3,4],2,3,2,3,2,1);
-                // [1,2]    [1,2,0]               // [1,2]    [1,0,0]
-                // [3,4] >> [3,4,0]               // [3,4] >> [0,1,0] 
-                //          [0,0,1]               //          [0,1,1]
-             ```
-             * @param {Matrix} m    原矩阵
-             * @param {int} low_w           原矩阵宽度
-             * @param {int} new_w           新矩阵宽度
-             * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
-             * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
-             * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
-             * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
-             * @return {Matrix} 返回一个新矩阵
-             */
-            static create_NewSize(m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top){
-                var rtn=Matrix.create_Identity(new_w,_new_h);
-                return Matrix.setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top);
-            }
-
-
-            /** 矩阵数据转移
-             * @param {Matrix} rtn  要写入的矩阵
-             * @param {Matrix} m    数据来源矩阵
-             * @param {int} low_w           原矩阵宽度
-             * @param {int} new_w           新矩阵宽度
-             * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
-             * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
-             * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
-             * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
-             * @return {Matrix} 修改 rtn 并返回
-             */
-            static setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top){
-                var low_h=_low_h||low_w,new_h=_new_h||new_w,
-                    shift_top  = (_shift_top&&((new_w+_shift_top)%new_w))||0,
-                    shift_left = _shift_left===undefined?shift_top:((new_h+_shift_left)%new_h),
-                    l=new_w*new_h,
-                    temp_u,temp_v,
-                    i,u,v;
-                u=new_w-1;
-                v=new_h-1;
-                temp_u=u-shift_left;
-                temp_v=v-shift_top;
-                for(i=l-1;i>=0;--i){
-                    if(!(temp_u>=low_w||temp_v>=low_h)){
-                        rtn[i]=m[temp_v*low_w+temp_u];
-                    }
-                    --u;
-                    --temp_u;
-                    if(temp_u<0)temp_u=new_w-1;
-                    if(u<0){
-                        u=new_w-1;
-                        --v;
-                        --temp_v;
-                        if(temp_v<0)temp_v=new_h-1;
-                    }
-                }
-                return rtn;
-            }
-
-            /** 计算张量积
-             * @param {List_Value} m1 矩阵1
-             * @param {List_Value} m2 矩阵2
-             * @param {int} [_w1] 矩阵1的宽度 默认认为 m1 是列向量(w1=1)
-             * @param {int} [_h1] 矩阵1的高度 默认认为 m1 是列向量(h1=m1.length)
-             * @param {int} [_w2] 矩阵2的宽度 默认认为 m2 是行向量(w2=m2.length)
-             * @param {int} [_h2] 矩阵2的高度 默认认为 m2 是行向量(h2=1)
-             * @return {Matrix} 返回一个新的矩阵
-             */
-            static create_TensorProduct(m1,m2,_w1,_h1,_w2,_h2){
-                var w1=_w1||1,
-                    h1=_h1||m1.length,
-                    w2=_w2||m2.length,
-                    h2=_h2||1,
-                    i=w1*h1;
-                var rtn=new Array(i);
-                for(--i;i>=0;--i){
-                    rtn[i]=Matrix.np(m2,m1[i]||0);
-                }
-                return Matrix.concat(rtn,w1,w2,h1,h2);
-            }
-
-            /** 合并矩阵
-             * @param  {List_Value[]} m_list 传入多个矩阵,矩阵应该拥有相同大小
-             * @param  {int} w_l      m_list中一行放几个矩阵
-             * @param  {int} w_m      m_list[i]的宽度
-             * @param  {int} [_h_l]   m_list中一列放几个矩阵
-             * @param  {int} [_h_m]   m_list[i]的高度
-             * @return {Matrix} 返回一个新的矩阵
-             ```javascript
-                Matrix.create_Concat([[1,2,3,4], [5,6,7,8]], 2, 2);
-                // [1,2]   [5,6] >> [1,2,5,6] >> [1,2,5,6,3,4,7,8]
-                // [3,4] , [7,8]    [3,4,7,8]
+        /** 根据原矩阵创建新的矩阵, 可以改变矩阵的宽高, 在空的地方会写入单位矩阵的数据 
+         ```
+            create_NewSize([1,2,3,4],2,3);    create_NewSize([1,2,3,4],2,3,2,3,2,1);
+            // [1,2]    [1,2,0]               // [1,2]    [1,0,0]
+            // [3,4] >> [3,4,0]               // [3,4] >> [0,1,0] 
+            //          [0,0,1]               //          [0,1,1]
             ```
+            * @param {Matrix} m    原矩阵
+            * @param {int} low_w           原矩阵宽度
+            * @param {int} new_w           新矩阵宽度
+            * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
+            * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
+            * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
+            * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
+            * @return {Matrix} 返回一个新矩阵
             */
-            static concat(m_list,w_l,w_m,_h_l,_h_m){
-                var h_l=_h_l||Math.ceil(m_list.length/w_l),
-                    h_m=_h_m||Math.ceil(m_list[0].length/w_m),
-                    l_l=w_l*h_l,
-                    l_m=w_m*h_m,
-                    l=l_l*l_m,
-                    w=w_l*w_m,
-                    u_l,v_l,u,v,i,j,k;
-                var rtn=new Matrix(l);
-                k=l_l;
-                for(v_l=h_l-1;v_l>=0;--v_l){
-                    for(u_l=w_l-1;u_l>=0;--u_l){
-                        --k;
-                        j=l_m;
-                        for(v=h_m-1;v>=0;--v){
-                            i=(v_l*h_m+v)*w+w_m*(u_l+1);
-                            if(m_list[k])
-                            for(u=w_m-1;u>=0;--u){
-                                --i;
-                                --j;
-                                rtn[i]=m_list[k][j];
-                            }
-                        }        
-                    }
+        static create_NewSize(m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top){
+            var rtn=Matrix.create_Identity(new_w,_new_h);
+            return Matrix.setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top);
+        }
+
+
+        /** 矩阵数据转移
+         * @param {Matrix} rtn  要写入的矩阵
+         * @param {Matrix} m    数据来源矩阵
+         * @param {int} low_w           原矩阵宽度
+         * @param {int} new_w           新矩阵宽度
+         * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
+         * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
+         * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
+         * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
+         * @return {Matrix} 修改 rtn 并返回
+         */
+        static setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top){
+            var low_h=_low_h||low_w,new_h=_new_h||new_w,
+                shift_top  = (_shift_top&&((new_w+_shift_top)%new_w))||0,
+                shift_left = _shift_left===undefined?shift_top:((new_h+_shift_left)%new_h),
+                l=new_w*new_h,
+                temp_u,temp_v,
+                i,u,v;
+            u=new_w-1;
+            v=new_h-1;
+            temp_u=u-shift_left;
+            temp_v=v-shift_top;
+            for(i=l-1;i>=0;--i){
+                if(!(temp_u>=low_w||temp_v>=low_h)){
+                    rtn[i]=m[temp_v*low_w+temp_u];
                 }
-                return rtn;
-            }
-
-            /** 矩阵乘标量
-             * @param {List_Value}     m   矩阵
-             * @param {Number}  k   标量
-             * @return {Matrix} 返回一个新的矩阵
-             */
-            static np(m,k){
-                return Matrix.np_b(new Matrix(m),k);
-            }
-
-            /** 矩阵乘标量
-             * @param {List_Value}     m   矩阵
-             * @param {Number}  k   标量
-             * @return {List_Value} 修改m并返回
-             */
-            static np_b(m,k){
-                var i;
-                for(i=m.length-1;i>=0;--i){
-                    m[i]*=k;
+                --u;
+                --temp_u;
+                if(temp_u<0)temp_u=new_w-1;
+                if(u<0){
+                    u=new_w-1;
+                    --v;
+                    --temp_v;
+                    if(temp_v<0)temp_v=new_h-1;
                 }
-                return m;
             }
+            return rtn;
+        }
 
-            /** 使用 uv 获取 index 
-             * @param {int} n 矩阵宽度 (列数)
-             * @param {int} u 元素的 u 坐标 (第u列)
-             * @param {int} v 元素的 v 坐标 (第v行)
-             */
-            static get_Index(n,u,v){
-                return v*n+u;
+        /** 计算张量积
+         * @param {List_Value} m1 矩阵1
+         * @param {List_Value} m2 矩阵2
+         * @param {int} [_w1] 矩阵1的宽度 默认认为 m1 是列向量(w1=1)
+         * @param {int} [_h1] 矩阵1的高度 默认认为 m1 是列向量(h1=m1.length)
+         * @param {int} [_w2] 矩阵2的宽度 默认认为 m2 是行向量(w2=m2.length)
+         * @param {int} [_h2] 矩阵2的高度 默认认为 m2 是行向量(h2=1)
+         * @return {Matrix} 返回一个新的矩阵
+         */
+        static create_TensorProduct(m1,m2,_w1,_h1,_w2,_h2){
+            var w1=_w1||1,
+                h1=_h1||m1.length,
+                w2=_w2||m2.length,
+                h2=_h2||1,
+                i=w1*h1;
+            var rtn=new Array(i);
+            for(--i;i>=0;--i){
+                rtn[i]=Matrix.np(m2,m1[i]||0);
             }
+            return Matrix.concat(rtn,w1,w2,h1,h2);
+        }
 
-            /** 创建单位矩阵
-             * @param {int}  w   矩阵宽度
-             * @param {int} [h]  矩阵高度 默认和 w 相等
-             * @return {Matrix} 
-             */
-            static create_Identity(w,_h){
-                var h=_h||w;
-                var l=w*h, sp=w+1, i=0,j=w>h?h:w;
-                var rtn=new Matrix(l);
-                do{
-                    rtn[i]=1.0;
-                    i+=sp;
-                    --j
-                }while(j>0);
-                return rtn;
-            }
-            
-            /** 初等变换 换行操作
-             * @param {List_Value|List_Value[]} m 一个或多个矩阵
-             * @param {int} n       n阶矩阵 用来表示一行的长度
-             * @param {int} v1      矩阵v坐标1 (要对调的行下标1)
-             * @param {int} v2      矩阵v坐标2 (要对调的行下标2)
-             * @return {m} 修改并返回m
-             */
-            static transform_Exchange(m,n,v1,v2){
-                var i,j,k,l,t;
-                var f=ArrayBuffer.isView(m[0])||Array.isArray(m[0]);
-                // 换行
-                for(i=v1*n,j=v2*n,k=n; k>0; --k,++i,++j){
-                    if(f){
-                        for(l=m.length-1;l>=0;--l){
-                            t=m[l][i];
-                            m[l][i]=m[l][j];
-                            m[l][j]=t;  
+        /** 合并矩阵
+         * @param  {List_Value[]} m_list 传入多个矩阵,矩阵应该拥有相同大小
+         * @param  {int} w_l      m_list中一行放几个矩阵
+         * @param  {int} w_m      m_list[i]的宽度
+         * @param  {int} [_h_l]   m_list中一列放几个矩阵
+         * @param  {int} [_h_m]   m_list[i]的高度
+         * @return {Matrix} 返回一个新的矩阵
+         ```javascript
+            Matrix.create_Concat([[1,2,3,4], [5,6,7,8]], 2, 2);
+            // [1,2]   [5,6] >> [1,2,5,6] >> [1,2,5,6,3,4,7,8]
+            // [3,4] , [7,8]    [3,4,7,8]
+        ```
+        */
+        static concat(m_list,w_l,w_m,_h_l,_h_m){
+            var h_l=_h_l||Math.ceil(m_list.length/w_l),
+                h_m=_h_m||Math.ceil(m_list[0].length/w_m),
+                l_l=w_l*h_l,
+                l_m=w_m*h_m,
+                l=l_l*l_m,
+                w=w_l*w_m,
+                u_l,v_l,u,v,i,j,k;
+            var rtn=new Matrix(l);
+            k=l_l;
+            for(v_l=h_l-1;v_l>=0;--v_l){
+                for(u_l=w_l-1;u_l>=0;--u_l){
+                    --k;
+                    j=l_m;
+                    for(v=h_m-1;v>=0;--v){
+                        i=(v_l*h_m+v)*w+w_m*(u_l+1);
+                        if(m_list[k])
+                        for(u=w_m-1;u>=0;--u){
+                            --i;
+                            --j;
+                            rtn[i]=m_list[k][j];
                         }
-                    }else{
-                        t=m[i];
-                        m[i]=m[j];
-                        m[j]=t;
-                    }
+                    }        
                 }
-                return m;
             }
+            return rtn;
+        }
 
-            /** 初等变换 某行乘标量
-             * @param {List_Value|List_Value[]} m     矩阵
-             * @param {int} n           n阶矩阵
-             * @param {int} v           矩阵的v坐标(行下标)
-             * @param {Number} value    乘法中的标量部分
-             */
-            static transform_multiplication(m,n,v,value){
-                var i,j,l;
-                var f=ArrayBuffer.isView(m[0])||Array.isArray(m[0]);
-                // 换行
+        /** 矩阵乘标量
+         * @param {List_Value}     m   矩阵
+         * @param {Number}  k   标量
+         * @return {Matrix} 返回一个新的矩阵
+         */
+        static np(m,k){
+            return Matrix.np_b(new Matrix(m),k);
+        }
+
+        /** 矩阵乘标量
+         * @param {List_Value}     m   矩阵
+         * @param {Number}  k   标量
+         * @return {List_Value} 修改m并返回
+         */
+        static np_b(m,k){
+            var i;
+            for(i=m.length-1;i>=0;--i){
+                m[i]*=k;
+            }
+            return m;
+        }
+
+        /** 使用 uv 获取 index 
+         * @param {int} n 矩阵宽度 (列数)
+         * @param {int} u 元素的 u 坐标 (第u列)
+         * @param {int} v 元素的 v 坐标 (第v行)
+         */
+        static get_Index(n,u,v){
+            return v*n+u;
+        }
+
+        /** 创建单位矩阵
+         * @param {int}  w   矩阵宽度
+         * @param {int} [h]  矩阵高度 默认和 w 相等
+         * @return {Matrix} 
+         */
+        static create_Identity(w,_h){
+            var h=_h||w;
+            var l=w*h, sp=w+1, i=0,j=w>h?h:w;
+            var rtn=new Matrix(l);
+            do{
+                rtn[i]=1.0;
+                i+=sp;
+                --j
+            }while(j>0);
+            return rtn;
+        }
+        
+        /** 初等变换 换行操作
+         * @param {List_Value|List_Value[]} m 一个或多个矩阵
+         * @param {int} n       n阶矩阵 用来表示一行的长度
+         * @param {int} v1      矩阵v坐标1 (要对调的行下标1)
+         * @param {int} v2      矩阵v坐标2 (要对调的行下标2)
+         * @return {m} 修改并返回m
+         */
+        static transform_Exchange(m,n,v1,v2){
+            var i,j,k,l,t;
+            var f=ArrayBuffer.isView(m[0])||Array.isArray(m[0]);
+            // 换行
+            for(i=v1*n,j=v2*n,k=n; k>0; --k,++i,++j){
                 if(f){
-                    for(i=v*n,k=n; k>0; --k,++i){
-                        for(l=m.length-1;l>=0;--l) m[l][j]*=value;  
+                    for(l=m.length-1;l>=0;--l){
+                        t=m[l][i];
+                        m[l][i]=m[l][j];
+                        m[l][j]=t;  
                     }
                 }else{
-                    for(i=v*n,k=n; k>0; --k,++i) m[j]*=value;
+                    t=m[i];
+                    m[i]=m[j];
+                    m[j]=t;
                 }
-                return m;
             }
+            return m;
+        }
+
+        /** 初等变换 某行乘标量
+         * @param {List_Value|List_Value[]} m     矩阵
+         * @param {int} n           n阶矩阵
+         * @param {int} v           矩阵的v坐标(行下标)
+         * @param {Number} value    乘法中的标量部分
+         */
+        static transform_multiplication(m,n,v,value){
+            var i,j,l;
+            var f=ArrayBuffer.isView(m[0])||Array.isArray(m[0]);
+            // 换行
+            if(f){
+                for(i=v*n,k=n; k>0; --k,++i){
+                    for(l=m.length-1;l>=0;--l) m[l][j]*=value;  
+                }
+            }else{
+                for(i=v*n,k=n; k>0; --k,++i) m[j]*=value;
+            }
+            return m;
+        }
+        
+        /** 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
+         * @param {List_Value|List_Value[]} m     一个或多个矩阵
+         * @param {int} index       当前下标
+         * @param {int} v           当前v坐标(行下标)
+         * @param {int} spl         寻址步长,应为 ±n
+         * @param {int} [_index_m]   传入多个矩阵时使用哪个矩阵的值 默认0
+         * @return {m} 
+         */
+        static exchange_zero(m,index,v,spl,_index_m){
+            if(!spl) return m;
+            var _v=v,i;
+            var f=spl>0?1:-1;
+            var tm=(ArrayBuffer.isView(m[0])||Array.isArray(m[0]))?m[_index_m||0]:m;
+            for(i=index;tm[i]!==undefined;i+=spl,_v+=f){
+                if(tm[i]){
+                    if(_v===v)  return m;
+                    else        return Matrix.transform_Exchange(m,Math.abs(spl),_v,v);
+                }
+            }
+            // 找不到可以替换的
+            return m;
+        }
+
+        /** 矩阵乘法    如果不传入矩阵宽高信息将视为方阵
+         * @param {List_Value} m1 矩阵1
+         * @param {List_Value} m2 矩阵2
+         * @param {int} [_h1]   左矩阵的行数(高度)
+         * @param {int} [_w1h2] 左矩阵的列数(宽度) 与 右矩阵的行数(高度)
+         * @param {int} [_w2]   右矩阵的列数(宽度)
+         * @return {Matrix} 返回一个新的矩阵
+         */
+        static multiplication(m1,m2,_h1,_w1h2,_w2){
+            var n=_h1||_w1h2||_w2;
+            if(!n){
+                n=Matrix.check_Square(m1);
+                Matrix.check_Square(m2,n);
+            }
+            var h1=_h1||n,
+                w1h2=_w1h2||n,
+                w2=_w2||n;
+            if(h1<=0&&w1h2<=0&&w2<=0) throw new Error ("This is a null matrix!");
+            var l=w2*h1, _u, _v, u, v, index, i;
+            var rtn=new Matrix(l);
             
-            /** 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
-             * @param {List_Value|List_Value[]} m     一个或多个矩阵
-             * @param {int} index       当前下标
-             * @param {int} v           当前v坐标(行下标)
-             * @param {int} spl         寻址步长,应为 ±n
-             * @param {int} [_index_m]   传入多个矩阵时使用哪个矩阵的值 默认0
-             * @return {m} 
-             */
-            static exchange_zero(m,index,v,spl,_index_m){
-                if(!spl) return m;
-                var _v=v,i;
-                var f=spl>0?1:-1;
-                var tm=(ArrayBuffer.isView(m[0])||Array.isArray(m[0]))?m[_index_m||0]:m;
-                for(i=index;tm[i]!==undefined;i+=spl,_v+=f){
-                    if(tm[i]){
-                        if(_v===v)  return m;
-                        else        return Matrix.transform_Exchange(m,Math.abs(spl),_v,v);
+            for(v=h1-1;v>=0;--v){
+                for(u=w2-1;u>=0;--u){
+                    _u=v*w1h2;
+                    _v=u;
+                    index=v*w2+u;
+                    for(i=w1h2;i>0;--i,++_u,_v+=w2){
+                        rtn[index]+=m1[_u]*m2[_v]
                     }
-                }
-                // 找不到可以替换的
-                return m;
-            }
-
-            /** 矩阵乘法    如果不传入矩阵宽高信息将视为方阵
-             * @param {List_Value} m1 矩阵1
-             * @param {List_Value} m2 矩阵2
-             * @param {int} [_h1]   左矩阵的行数(高度)
-             * @param {int} [_w1h2] 左矩阵的列数(宽度) 与 右矩阵的行数(高度)
-             * @param {int} [_w2]   右矩阵的列数(宽度)
-             * @return {Matrix} 返回一个新的矩阵
-             */
-            static multiplication(m1,m2,_h1,_w1h2,_w2){
-                var n=_h1||_w1h2||_w2;
-                if(!n){
-                    n=Matrix.check_Square(m1);
-                    Matrix.check_Square(m2,n);
-                }
-                var h1=_h1||n,
-                    w1h2=_w1h2||n,
-                    w2=_w2||n;
-                if(h1<=0&&w1h2<=0&&w2<=0) throw new Error ("This is a null matrix!");
-                var l=w2*h1, _u, _v, u, v, index, i;
-                var rtn=new Matrix(l);
-                
-                for(v=h1-1;v>=0;--v){
-                    for(u=w2-1;u>=0;--u){
-                        _u=v*w1h2;
-                        _v=u;
-                        index=v*w2+u;
-                        for(i=w1h2;i>0;--i,++_u,_v+=w2){
-                            rtn[index]+=m1[_u]*m2[_v]
-                        }
-                    }
-                }
-                return rtn;
-            }
-            
-            /** 矩阵转置
-             * @param {List_Value} m 矩阵
-             * @param {int} [_w] 矩阵宽度(列数)
-             * @param {int} [_h] 矩阵高度(行数)
-             * @return {m} 修改m并返回
-             */
-            static transpose(m,_w,_h){
-                var u, v, tu, tv, temp;
-                var n=_w||Matrix.check_Square(m,_n);
-                if(n===(_h||n)){  //方阵
-                    for(v=n-1; v>0; --v){
-                        for(u=v-1; u>=0; --u){
-                            tu=v*n+u;
-                            tv=u*n+v;
-                            temp=m[tv];
-                            m[tv]=m[tu];
-                            m[tu]=temp;
-                        }
-                    }
-                }else{
-                    tu=m.length
-                    temp=new Array(m.length);
-                    for(--tu,v=_w-1,u=_h-1;tu>=0;--tu,--u){
-                        if(u===-1){
-                            u=_h-1;
-                            --v;
-                        }
-                        temp[tu]=m[u*_w+v]
-                    }
-                    u=m.length-1;
-                    do{
-                        m[u]=temp[u];
-                        --u;
-                    }while(u>=0)
-                }
-                return m;
-            }
-
-            /** 创建矩阵的转置
-             * @param {List_Value} m 矩阵
-             * @param {int} [_n] 矩阵为n阶矩阵
-             * @return {m} 返回一个新的矩阵
-             */
-            static create_Transposed(m,_n){
-                return Matrix.transpose(new Matrix(m),_n);
-            }
-            
-            /** 计算矩阵行列式
-             * @param {List_Value} m 矩阵
-             * @param {int} [_n] 矩阵为n阶矩阵
-             * @return {Number} 返回矩阵的行列式
-             */
-            static calc_Det(m,_n){
-                switch(m.length){
-
-                    case 1: return  m[0];
-                    break;
-
-                    case 4: return  m[0]*m[3]-m[1]*m[2];
-                    break;
-
-                    case 9: return  m[0] * (m[4]*m[8] - m[5]*m[7])+
-                                    m[1] * (m[5]*m[6] - m[3]*m[8])+
-                                    m[2] * (m[3]*m[7] - m[5]*m[6]);
-                    break;
-
-                    case 16:
-                        var t0  = m[0]  * m[5]  - m[1]  * m[4],
-                            t1  = m[0]  * m[6]  - m[2]  * m[4],
-                            t2  = m[0]  * m[7]  - m[3]  * m[4],
-                            t3  = m[1]  * m[6]  - m[2]  * m[5],
-                            t4  = m[1]  * m[7]  - m[3]  * m[5],
-                            t5  = m[2]  * m[7]  - m[3]  * m[6],
-                            t6  = m[8]  * m[13] - m[9]  * m[12],
-                            t7  = m[8]  * m[14] - m[10] * m[12],
-                            t8  = m[8]  * m[15] - m[11] * m[12],
-                            t9  = m[9]  * m[14] - m[10] * m[13],
-                            t10 = m[9]  * m[15] - m[11] * m[13],
-                            t11 = m[10] * m[15] - m[11] * m[14];
-                        
-                        return t0 * t11 - t1 * t10 + t2 * t9 + t3 * t8 - t4 * t7 + t5 * t6;
-                    break;
-
-                    default:
-                        return Matrix.calc_Det__Transform(m,_n);
-                    break;
                 }
             }
-
-            /** 计算矩阵行列式 --使用初等变换
-             * @param {List_Value} m 矩阵
-             * @param {int} [_n] 矩阵为n阶矩阵
-             * @return {Number} 返回矩阵的行列式
-             */
-            static calc_Det__Transform(m,_n){
-                var n, uv, uv_i, i, j, flag=1;
-                var k, sp;
-                var m__transform, temp_row;
-                n=Matrix.check_Square(m,_n);
-                m__transform=new Matrix(m)
-                for(uv=n-1; uv>0; --uv){
-                    uv_i=uv*n+uv;
-                    if(!m__transform[uv_i]){
-                        // 换行
-                        Matrix.exchange_zero(m__transform,uv_i,uv,-n);
-                        if(!m__transform[uv_i])return 0;
-                        else flag*=-1;
-                    }
-                    temp_row=m__transform.slice(uv_i-uv,uv_i);
-                    // 单位化
-                    if(!(m__transform[uv_i]===1)){
-                        sp=1/(m__transform[uv_i]);
-                        i = uv;
-                        for(--i; i>=0; --i){
-                            temp_row[i]*=sp;
-                        }
-                    }
-                    // 消元
-                    for(uv_i-=n;uv_i>=0;uv_i-=n){
-                        k=m__transform[uv_i];
-                        if(k===0)continue;
-                        for(i=uv,j=uv_i; i>=0; --i,--j){
-                            m__transform[j]-=k*[temp_row[i]];
-                        }
+            return rtn;
+        }
+        
+        /** 矩阵转置
+         * @param {List_Value} m 矩阵
+         * @param {int} [_w] 矩阵宽度(列数)
+         * @param {int} [_h] 矩阵高度(行数)
+         * @return {m} 修改m并返回
+         */
+        static transpose(m,_w,_h){
+            var u, v, tu, tv, temp;
+            var n=_w||Matrix.check_Square(m,_n);
+            if(n===(_h||n)){  //方阵
+                for(v=n-1; v>0; --v){
+                    for(u=v-1; u>=0; --u){
+                        tu=v*n+u;
+                        tv=u*n+v;
+                        temp=m[tv];
+                        m[tv]=m[tu];
+                        m[tu]=temp;
                     }
                 }
-                for(sp=1,j=m__transform.length-1; j>=0; j-=n+1){
-                    sp*=m__transform[j];
+            }else{
+                tu=m.length
+                temp=new Array(m.length);
+                for(--tu,v=_w-1,u=_h-1;tu>=0;--tu,--u){
+                    if(u===-1){
+                        u=_h-1;
+                        --v;
+                    }
+                    temp[tu]=m[u*_w+v]
                 }
-                return sp*flag;
+                u=m.length-1;
+                do{
+                    m[u]=temp[u];
+                    --u;
+                }while(u>=0)
             }
+            return m;
+        }
 
-            /** 变换得到矩阵逆
-             * @param {List_Value} m 传入矩阵, 计算完后将会变成单位矩阵
-             * @param {int} [_n]     矩阵为n阶矩阵
-             * @return {Matrix}      返回一个新的矩阵
-             */
-            static inverse__Transform(m,_n){
-                var n,uv,uv_i,i,j,v,temp;
-                var k,sp;
-                var _m=[];
+        /** 创建矩阵的转置
+         * @param {List_Value} m 矩阵
+         * @param {int} [_n] 矩阵为n阶矩阵
+         * @return {m} 返回一个新的矩阵
+         */
+        static create_Transposed(m,_n){
+            return Matrix.transpose(new Matrix(m),_n);
+        }
+        
+        /** 计算矩阵行列式
+         * @param {List_Value} m 矩阵
+         * @param {int} [_n] 矩阵为n阶矩阵
+         * @return {Number} 返回矩阵的行列式
+         */
+        static calc_Det(m,_n){
+            switch(m.length){
 
-                n=Matrix.check_Square(m,_n);
-                _m[0]=m;
-                _m[1]=Matrix.create_Identity(n);
-                
-                for(uv=n-1; uv>=0; --uv){
-                    uv_i=uv*n+uv;
-                    if(!_m[0][uv_i]){
-                        // 换行
-                        Matrix.exchange_zero(_m,uv_i,uv,-n);
-                        if(!_m[0][uv_i]){
-                            console.warn("This is a singular matrix!");
-                            return m;
-                        }
-                    }
-                    k=uv_i-uv;
-                    // 单位化
-                    if(!(_m[0][uv_i]===1)){
-                        sp=1/(_m[0][uv_i]);
-                        for(i = n-1; i>=0; --i){
-                            _m[0][k+i]*=sp;
-                            _m[1][k+i]*=sp;
-                        }
-                    }
-                    // 消元
-                    for(v=n-1,uv_i=v*n+uv;uv_i>=0;--v,uv_i=v*n+uv){
-                        k=_m[0][uv_i];
-                        if((k===0)||(uv===v))continue;
-                        temp=n*uv;
-                        for(i=n-1,j=(v+1)*n-1; i>=0; --i,--j){
-                            if(i<=uv)_m[0][j]-=k*_m[0][temp+i];
-                            _m[1][j]-=k*_m[1][temp+i];
-                        }
-                    }
-                }
-                return _m[1];
-            }
+                case 1: return  m[0];
+                break;
 
-            /** 求矩阵的逆 (创建逆矩阵)
-             * @param {List_Value} m       矩阵
-             * @param {int} [_n]    矩阵为n阶矩阵
-             * @return {Matrix|null}     返回一个新的矩阵
-             */
-            static create_Inverse(m,_n){
-                // 公式法 m^-1=adj(m)/|m|
-                switch (m.length) {
-                    case 1:
-                        return new Matrix([1/m[0]]);
-                    break;
+                case 4: return  m[0]*m[3]-m[1]*m[2];
+                break;
+
+                case 9: return  m[0] * (m[4]*m[8] - m[5]*m[7])+
+                                m[1] * (m[5]*m[6] - m[3]*m[8])+
+                                m[2] * (m[3]*m[7] - m[5]*m[6]);
+                break;
+
+                case 16:
+                    var t0  = m[0]  * m[5]  - m[1]  * m[4],
+                        t1  = m[0]  * m[6]  - m[2]  * m[4],
+                        t2  = m[0]  * m[7]  - m[3]  * m[4],
+                        t3  = m[1]  * m[6]  - m[2]  * m[5],
+                        t4  = m[1]  * m[7]  - m[3]  * m[5],
+                        t5  = m[2]  * m[7]  - m[3]  * m[6],
+                        t6  = m[8]  * m[13] - m[9]  * m[12],
+                        t7  = m[8]  * m[14] - m[10] * m[12],
+                        t8  = m[8]  * m[15] - m[11] * m[12],
+                        t9  = m[9]  * m[14] - m[10] * m[13],
+                        t10 = m[9]  * m[15] - m[11] * m[13],
+                        t11 = m[10] * m[15] - m[11] * m[14];
                     
-                    case 4:
-                        var d = Matrix.calc_Det(m);
-                        if(approximately(d,0))return null;
-                        d=1/d;
-                        return new Matrix([
-                             m[3]*d, -m[1]*d,
-                            -m[2]*d,  m[0]*d,
-                        ]);
-                    break;
-                    
-                    case 9:
-                        var d = Matrix.calc_Det(m);
-                        if(approximately(d,0))return null;
-                        d=1/d;
-                        return new Matrix([
-                            (m[4]*m[8]-m[7]*m[5])*d,    (m[3]*m[8]-m[6]*m[5])*d,    (m[3]*m[7]-m[6]*m[4])*d,
-                            (m[1]*m[8]-m[7]*m[2])*d,    (m[0]*m[8]-m[6]*m[2])*d,    (m[0]*m[7]-m[6]*m[1])*d,
-                            (m[1]*m[5]-m[4]*m[2])*d,    (m[0]*m[5]-m[3]*m[2])*d,    (m[0]*m[4]-m[3]*m[1])*d,
-                        ]);
-                    break;
-                    
-                    case 16:
-                        var t00 = m[0]  * m[5]  - m[1]  * m[4],
-                            t01 = m[0]  * m[6]  - m[2]  * m[4],
-                            t02 = m[0]  * m[7]  - m[3]  * m[4],
-                            t03 = m[1]  * m[6]  - m[2]  * m[5],
-                            t04 = m[1]  * m[7]  - m[3]  * m[5],
-                            t05 = m[2]  * m[7]  - m[3]  * m[6],
-                            t06 = m[8]  * m[13] - m[9]  * m[12],
-                            t07 = m[8]  * m[14] - m[10] * m[12],
-                            t08 = m[8]  * m[15] - m[11] * m[12],
-                            t09 = m[9]  * m[14] - m[10] * m[13],
-                            t10 = m[9]  * m[15] - m[11] * m[13],
-                            t11 = m[10] * m[15] - m[11] * m[14];
-                        
-                        var d=t00*t11-t01*t10+t02*t09+t03*t08-t04*t07+t05*t06;
-                        if(approximately(d,0))return null;
-                        d=1/d;
+                    return t0 * t11 - t1 * t10 + t2 * t9 + t3 * t8 - t4 * t7 + t5 * t6;
+                break;
 
-                        return new Matrix([
-                            (m[5]*t11-m[6]*t10+m[7]*t09)*d,    (m[2]*t10-m[1]*t11-m[3]*t09)*d,    (m[13]*t05-m[14]*t04+m[15]*t03)*d,    (m[10]*t04-m[9] *t05-m[11]*t03)*d,
-                            (m[6]*t08-m[4]*t11-m[7]*t07)*d,    (m[0]*t11-m[2]*t08+m[3]*t07)*d,    (m[14]*t02-m[12]*t05-m[15]*t01)*d,    (m[8] *t05-m[10]*t02+m[11]*t01)*d,
-                            (m[4]*t10-m[5]*t08+m[7]*t06)*d,    (m[1]*t08-m[0]*t10-m[3]*t06)*d,    (m[12]*t04-m[13]*t02+m[15]*t00)*d,    (m[9] *t02-m[8] *t04-m[11]*t00)*d,
-                            (m[5]*t07-m[4]*t09-m[6]*t06)*d,    (m[0]*t09-m[1]*t07+m[2]*t06)*d,    (m[13]*t01-m[12]*t03-m[14]*t00)*d,    (m[8] *t03-m[9] *t01+m[10]*t00)*d
-                        ]);
-                    break;
-                    
-                    default:
-                        // 高斯乔丹消元法(初等变换法)
-                        return Matrix.inverse__Transform(new Matrix(m),_n);
-                    break;
-                }
-                
+                default:
+                    return Matrix.calc_Det__Transform(m,_n);
+                break;
             }
         }
 
-        // open * 2d 变换矩阵 * open
-
-            /** 用于创建2d变换矩阵的静态类 */
-            class Matrix_2 extends Matrix{
-                /** 创建旋转矩阵
-                 * @param {Number} theta 顺时针 旋转角弧度
-                 * @return {Matrix_2}
-                 */
-                static create_Rotate(theta){
-                    var s=Math.sin(theta),
-                        c=Math.cos(theta);
-                    return new Matrix_2([c,s,-s,c]);
+        /** 计算矩阵行列式 --使用初等变换
+         * @param {List_Value} m 矩阵
+         * @param {int} [_n] 矩阵为n阶矩阵
+         * @return {Number} 返回矩阵的行列式
+         */
+        static calc_Det__Transform(m,_n){
+            var n, uv, uv_i, i, j, flag=1;
+            var k, sp;
+            var m__transform, temp_row;
+            n=Matrix.check_Square(m,_n);
+            m__transform=new Matrix(m)
+            for(uv=n-1; uv>0; --uv){
+                uv_i=uv*n+uv;
+                if(!m__transform[uv_i]){
+                    // 换行
+                    Matrix.exchange_zero(m__transform,uv_i,uv,-n);
+                    if(!m__transform[uv_i])return 0;
+                    else flag*=-1;
                 }
-
-                /** 创建旋转矩阵 使用向量
-                 * @param {Vector} _v 2d向量
-                 * @return {Matrix_2}
-                 */
-                static create_Rotate__v(_v){
-                    var v=Vector.is_Unit(_v)?_v:Vector.create_Normalization(_v);
-                    return new Matrix_2([v[0],v[1],-v[1],v[0]]);
-                }
-
-                /** 创建缩放矩阵
-                 * @param {Number} x x 轴方向上的缩放系数
-                 * @param {Number} y y 轴方向上的缩放系数
-                 * @return {Matrix_2}
-                 */
-                static create_Scale(x,y){
-                    return new Matrix_2([x,0,0,y]);
-                }
-
-                /** 创建镜像矩阵(对称)
-                 * @param {Number} x 对称轴的法向 x 坐标
-                 * @param {Number} y 对称轴的法向 y 坐标
-                 * @return {Matrix_2}
-                 */
-                static create_Horizontal (x,y){
-                    return new Matrix_2(
-                        1-2*x*x ,   -2*x*y,
-                        -2*x*y  ,   1-2*y*y
-                    )
-                }
-
-                /** 创建切变矩阵
-                 * @param {Number} kx x方向的切变系数
-                 * @param {Number} ky y方向的切变系数
-                 * @return {Matrix_2}
-                 */
-                static create_Shear(kx,ky){
-                        return new Matrix_2([1,ky,kx,1]);
-                }
-
-                /** 创建单位矩阵
-                 * @return {Matrix_2}
-                 */
-                static create_Identity(){
-                    return new Matrix_2([1,0,0,1]);
-                }
-
-                /** 创建等比缩放&旋转矩阵 根据向量生成矩阵
-                 * @param {List_Value} v2 2d向量
-                 * @return {Matrix_2} 返回一个矩阵
-                 */
-                static create_ByVector(v2){
-                    return new Matrix_2([v2[0],v2[1],-1*v2[1],v2[0]]);
-                }
-            }
-
-            Matrix_2.ROTATE_90=new Matrix_2([0,1,-1,0]);
-            Matrix_2.ROTATE_90_I=new Matrix_2([0,-1,1,0]);
-            Matrix_2.FLIP_HORIZONTAL=new Matrix_2([-1,0,0,1]);
-            
-        // end  * 2d 变换矩阵 * end 
-
-        // open * 3d 变换矩阵 * open
-            /** 用于创建3D变换矩阵的静态类
-             *  规定统一使用左手坐标系
-             *            ^  +y
-             *            |     7 +z
-             *            |  /  
-             * -----------+-----------> +x
-             *         /  |   
-             *      /     |   
-             *            |   
-             */
-            class Matrix_3 extends Matrix{
-                /** 创建缩放矩阵
-                 * @param {flot} x x坐标中的缩放系数
-                 * @param {flot} y y坐标中的缩放系数
-                 * @param {flot} z z坐标中的缩放系数
-                 * @returns {Matrix_3} 返回一个矩阵
-                 */
-                static create_Scale(x,y,z){
-                    return new Matrix_3([
-                        x,0,0,
-                        0,y,0,
-                        0,0,z
-                    ]);
-                }
-                /** 创建旋转矩阵
-                 * @param {Number} theta 旋转弧度
-                 * @param {int} axis 旋转中心轴  [z,x,y] 默认为 0 (z)
-                 * @return {Matrix_3} 返回一个矩阵
-                 */
-                static create_Rotate(theta,axis){
-                    var s=sin(theta),
-                        c=cos(theta);
-                    return Matrix.create_NewSize([ c, s,-s, c,],2,3,2,3,axis,axis);
-                }
-
-                /** 创建旋转矩阵 使用任意旋转轴
-                 * @param {Float} theta 旋转弧度
-                 * @param {List_Value} axis 一个3D向量表示的旋转轴
-                 * @return {Matrix_3} 返回一个矩阵
-                 */
-                static create_Rotate__Axis(theta,axis){
-                    var k     = Vector.is_Unit(axis)?axis:Vector.create_Normalization(axis),
-                        sin_t = sin(theta),
-                        cos_t = cos(theta),
-                        rtn   = Matrix.create_TensorProduct(axis,axis,1,3,3,1),
-                        skx   = sin_t*k[0],
-                        sky   = sin_t*k[1],
-                        skz   = sin_t*k[2];
-
-                    Matrix.np_b(rtn,1-cos_t);
-
-                    rtn[0] += cos_t;      rtn[1] -= skz;        rtn[2] += sky;
-                    rtn[3] += skz;        rtn[4] += cos_t;      rtn[5] -= skx;
-                    rtn[6] -= sky;        rtn[7] += skx;        rtn[8] += cos_t;
-
-                    return rtn;
-                }
-
-                /** 创建旋转矩阵, 使用欧拉角
-                 * @param {List_Value} euler_angles 欧拉角参数 各旋转角角的弧度
-                 * @param {List_Value} _axis 欧拉角的轴向顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
-                 * @return {Matrix_3} 返回一个矩阵
-                 */
-                static create_Rotate__EulerAngles(euler_angles,_axis){
-                    var axis=_axis||[0,1,2]
-                    var rtn = Matrix_3.create_Rotate(euler_angles[0],axis[0]);
-                    for(var i=1;i<3;++i){
-                        rtn=Matrix.multiplication(rtn,Matrix_3.create_Rotate(euler_angles[i],axis[i]),3,3);
+                temp_row=m__transform.slice(uv_i-uv,uv_i);
+                // 单位化
+                if(!(m__transform[uv_i]===1)){
+                    sp=1/(m__transform[uv_i]);
+                    i = uv;
+                    for(--i; i>=0; --i){
+                        temp_row[i]*=sp;
                     }
-                    return rtn;
                 }
-
-                /** 创建旋转矩阵, 使用四元数
-                 * @param {List_Value} quat 欧拉角参数 各旋转角角的弧度
-                 * @return {Matrix_3} 返回一个矩阵
-                 */
-                static create_Rotate__EulerAngles(quat){
-                    // todo
-                }
-
-                /** 创建正交投影(平行投影)矩阵
-                 * @param {List_Value} normal 使用3d向量表示 投影面的法向
-                 * @return {Matrix_3} 返回一个矩阵
-                 */
-                static create_Projection__Orthographic(normal){
-                    var n= Vector.is_Unit(normal)?normal:Vector.create_Normalization(normal);
-                    var xx=n[0]*n[0],
-                        xy=n[0]*n[1],
-                        xz=n[0]*n[2],
-                        yy=n[1]*n[1],
-                        yz=n[1]*n[2],
-                        zz=n[2]*n[2];
-                    return new Matrix_3([
-                        1-xx,   -xy,    -xz,
-                        -xy,    1-yy,   -yz,
-                        -xz,    -yz,    1-zz
-                    ])
-                }
-                
-                /** 创建切变矩阵
-                 * @param {Number} k 切变系数
-                 * @param {Number} axis 方向轴 [x,y,z]
-                 * @return {Matrix_3}
-                 */
-                 static create_Shear(k,axis){
-                    // todo
-                }
-                
-                /** 创建镜像矩阵
-                 * @param {List_Value} n 镜面的法向 3D向量
-                 * @return {Matrix_3}
-                 */
-                 static create_Horizontal(n){
-                    // todo
+                // 消元
+                for(uv_i-=n;uv_i>=0;uv_i-=n){
+                    k=m__transform[uv_i];
+                    if(k===0)continue;
+                    for(i=uv,j=uv_i; i>=0; --i,--j){
+                        m__transform[j]-=k*[temp_row[i]];
+                    }
                 }
             }
+            for(sp=1,j=m__transform.length-1; j>=0; j-=n+1){
+                sp*=m__transform[j];
+            }
+            return sp*flag;
+        }
 
-            Matrix_3.ROTATE_X_CCW_90DEG = new Matrix_3([1, 0, 0, 0, 0, 1, 0, -1, 0 ]);
-            Matrix_3.ROTATE_X_CW_90DEG  = new Matrix_3([1, 0, 0, 0, 0, 1, 0, -1, 0 ]);
-            Matrix_3.ROTATE_X_180DEG    = new Matrix_3([1, 0, 0, 0, -1, 0, 0, -0, -1 ]);
-            Matrix_3.ROTATE_Y_CCW_90DEG = new Matrix_3([0, 0, -1, 0, 1, 0, 1, 0, 0 ]);
-            Matrix_3.ROTATE_Y_CW_90DEG  = new Matrix_3([0, 0, -1, 0, 1, 0, 1, 0, 0 ]);
-            Matrix_3.ROTATE_Y_180DEG    = new Matrix_3([-1, 0, -0, 0, 1, 0, 0, 0, -1 ]);
-            Matrix_3.ROTATE_Z_CCW_90DEG = new Matrix_3([0, 1, 0, -1, 0, 0, 0, 0, 1 ]);
-            Matrix_3.ROTATE_Z_CW_90DEG  = new Matrix_3([0, 1, 0, -1, 0, 0, 0, 0, 1 ]);
-            Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
-        // end  * 3d 变换矩阵 * end 
+        /** 变换得到矩阵逆
+         * @param {List_Value} m 传入矩阵, 计算完后将会变成单位矩阵
+         * @param {int} [_n]     矩阵为n阶矩阵
+         * @return {Matrix}      返回一个新的矩阵
+         */
+        static inverse__Transform(m,_n){
+            var n,uv,uv_i,i,j,v,temp;
+            var k,sp;
+            var _m=[];
 
-    // end  * 矩阵 * end 
+            n=Matrix.check_Square(m,_n);
+            _m[0]=m;
+            _m[1]=Matrix.create_Identity(n);
+            
+            for(uv=n-1; uv>=0; --uv){
+                uv_i=uv*n+uv;
+                if(!_m[0][uv_i]){
+                    // 换行
+                    Matrix.exchange_zero(_m,uv_i,uv,-n);
+                    if(!_m[0][uv_i]){
+                        console.warn("This is a singular matrix!");
+                        return m;
+                    }
+                }
+                k=uv_i-uv;
+                // 单位化
+                if(!(_m[0][uv_i]===1)){
+                    sp=1/(_m[0][uv_i]);
+                    for(i = n-1; i>=0; --i){
+                        _m[0][k+i]*=sp;
+                        _m[1][k+i]*=sp;
+                    }
+                }
+                // 消元
+                for(v=n-1,uv_i=v*n+uv;uv_i>=0;--v,uv_i=v*n+uv){
+                    k=_m[0][uv_i];
+                    if((k===0)||(uv===v))continue;
+                    temp=n*uv;
+                    for(i=n-1,j=(v+1)*n-1; i>=0; --i,--j){
+                        if(i<=uv)_m[0][j]-=k*_m[0][temp+i];
+                        _m[1][j]-=k*_m[1][temp+i];
+                    }
+                }
+            }
+            return _m[1];
+        }
+
+        /** 求矩阵的逆 (创建逆矩阵)
+         * @param {List_Value} m       矩阵
+         * @param {int} [_n]    矩阵为n阶矩阵
+         * @return {Matrix|null}     返回一个新的矩阵
+         */
+        static create_Inverse(m,_n){
+            // 公式法 m^-1=adj(m)/|m|
+            switch (m.length) {
+                case 1:
+                    return new Matrix([1/m[0]]);
+                break;
+                
+                case 4:
+                    var d = Matrix.calc_Det(m);
+                    if(approximately(d,0))return null;
+                    d=1/d;
+                    return new Matrix([
+                            m[3]*d, -m[1]*d,
+                        -m[2]*d,  m[0]*d,
+                    ]);
+                break;
+                
+                case 9:
+                    var d = Matrix.calc_Det(m);
+                    if(approximately(d,0))return null;
+                    d=1/d;
+                    return new Matrix([
+                        (m[4]*m[8]-m[7]*m[5])*d,    (m[3]*m[8]-m[6]*m[5])*d,    (m[3]*m[7]-m[6]*m[4])*d,
+                        (m[1]*m[8]-m[7]*m[2])*d,    (m[0]*m[8]-m[6]*m[2])*d,    (m[0]*m[7]-m[6]*m[1])*d,
+                        (m[1]*m[5]-m[4]*m[2])*d,    (m[0]*m[5]-m[3]*m[2])*d,    (m[0]*m[4]-m[3]*m[1])*d,
+                    ]);
+                break;
+                
+                case 16:
+                    var t00 = m[0]  * m[5]  - m[1]  * m[4],
+                        t01 = m[0]  * m[6]  - m[2]  * m[4],
+                        t02 = m[0]  * m[7]  - m[3]  * m[4],
+                        t03 = m[1]  * m[6]  - m[2]  * m[5],
+                        t04 = m[1]  * m[7]  - m[3]  * m[5],
+                        t05 = m[2]  * m[7]  - m[3]  * m[6],
+                        t06 = m[8]  * m[13] - m[9]  * m[12],
+                        t07 = m[8]  * m[14] - m[10] * m[12],
+                        t08 = m[8]  * m[15] - m[11] * m[12],
+                        t09 = m[9]  * m[14] - m[10] * m[13],
+                        t10 = m[9]  * m[15] - m[11] * m[13],
+                        t11 = m[10] * m[15] - m[11] * m[14];
+                    
+                    var d=t00*t11-t01*t10+t02*t09+t03*t08-t04*t07+t05*t06;
+                    if(approximately(d,0))return null;
+                    d=1/d;
+
+                    return new Matrix([
+                        (m[5]*t11-m[6]*t10+m[7]*t09)*d,    (m[2]*t10-m[1]*t11-m[3]*t09)*d,    (m[13]*t05-m[14]*t04+m[15]*t03)*d,    (m[10]*t04-m[9] *t05-m[11]*t03)*d,
+                        (m[6]*t08-m[4]*t11-m[7]*t07)*d,    (m[0]*t11-m[2]*t08+m[3]*t07)*d,    (m[14]*t02-m[12]*t05-m[15]*t01)*d,    (m[8] *t05-m[10]*t02+m[11]*t01)*d,
+                        (m[4]*t10-m[5]*t08+m[7]*t06)*d,    (m[1]*t08-m[0]*t10-m[3]*t06)*d,    (m[12]*t04-m[13]*t02+m[15]*t00)*d,    (m[9] *t02-m[8] *t04-m[11]*t00)*d,
+                        (m[5]*t07-m[4]*t09-m[6]*t06)*d,    (m[0]*t09-m[1]*t07+m[2]*t06)*d,    (m[13]*t01-m[12]*t03-m[14]*t00)*d,    (m[8] *t03-m[9] *t01+m[10]*t00)*d
+                    ]);
+                break;
+                
+                default:
+                    // 高斯乔丹消元法(初等变换法)
+                    return Matrix.inverse__Transform(new Matrix(m),_n);
+                break;
+            }
+            
+        }
+    }
 
 // open * 线性代数 * open
 
 // open * 基础图形学 * open
+
+    // open * 2d 变换矩阵 * open
+
+        /** 用于创建2d变换矩阵的静态类 */
+        class Matrix_2 extends Matrix{
+            /** 创建旋转矩阵
+             * @param {Number} theta 顺时针 旋转角弧度
+             * @return {Matrix_2}
+             */
+            static create_Rotate(theta){
+                var s=Math.sin(theta),
+                    c=Math.cos(theta);
+                return new Matrix_2([c,s,-s,c]);
+            }
+
+            /** 创建旋转矩阵 使用向量
+             * @param {Vector} _v 2d向量
+             * @return {Matrix_2}
+             */
+            static create_Rotate__v(_v){
+                var v=Vector.is_Unit(_v)?_v:Vector.create_Normalization(_v);
+                return new Matrix_2([v[0],v[1],-v[1],v[0]]);
+            }
+
+            /** 创建缩放矩阵
+             * @param {Number} x x 轴方向上的缩放系数
+             * @param {Number} y y 轴方向上的缩放系数
+             * @return {Matrix_2}
+             */
+            static create_Scale(x,y){
+                return new Matrix_2([x,0,0,y]);
+            }
+
+            /** 创建镜像矩阵(对称)
+             * @param {Number} x 对称轴的法向 x 坐标
+             * @param {Number} y 对称轴的法向 y 坐标
+             * @return {Matrix_2}
+             */
+            static create_Horizontal (x,y){
+                return new Matrix_2(
+                    1-2*x*x ,   -2*x*y,
+                    -2*x*y  ,   1-2*y*y
+                )
+            }
+
+            /** 创建切变矩阵
+             * @param {Number} kx x方向的切变系数
+             * @param {Number} ky y方向的切变系数
+             * @return {Matrix_2}
+             */
+            static create_Shear(kx,ky){
+                    return new Matrix_2([1,ky,kx,1]);
+            }
+
+            /** 创建单位矩阵
+             * @return {Matrix_2}
+             */
+            static create_Identity(){
+                return new Matrix_2([1,0,0,1]);
+            }
+
+            /** 创建等比缩放&旋转矩阵 根据向量生成矩阵
+             * @param {List_Value} v2 2d向量
+             * @return {Matrix_2} 返回一个矩阵
+             */
+            static create_ByVector(v2){
+                return new Matrix_2([v2[0],v2[1],-1*v2[1],v2[0]]);
+            }
+        }
+
+        Matrix_2.ROTATE_90=new Matrix_2([0,1,-1,0]);
+        Matrix_2.ROTATE_90_I=new Matrix_2([0,-1,1,0]);
+        Matrix_2.FLIP_HORIZONTAL=new Matrix_2([-1,0,0,1]);
+        
+    // end  * 2d 变换矩阵 * end 
+
+    // open * 3d 变换矩阵 * open
+        /** 用于创建3D变换矩阵的静态类
+         *  规定统一使用左手坐标系
+         ```
+            *            ^  +y
+            *            |     7 +z
+            *            |  /  
+            * -----------+-----------> +x
+            *         /  |   
+            *      /     |   
+            *            |   
+            ```
+            */
+        class Matrix_3 extends Matrix{
+            /** 创建缩放矩阵
+             * @param {flot} x x坐标中的缩放系数
+             * @param {flot} y y坐标中的缩放系数
+             * @param {flot} z z坐标中的缩放系数
+             * @returns {Matrix_3} 返回一个矩阵
+             */
+            static create_Scale(x,y,z){
+                return new Matrix_3([
+                    x,0,0,
+                    0,y,0,
+                    0,0,z
+                ]);
+            }
+            /** 创建旋转矩阵
+             * @param {Number} theta 旋转弧度
+             * @param {int} axis 旋转中心轴  [z,x,y] 默认为 0 (z)
+             * @return {Matrix_3} 返回一个矩阵
+             */
+            static create_Rotate(theta,axis){
+                var s=sin(theta),
+                    c=cos(theta);
+                return Matrix.create_NewSize([ c, s,-s, c,],2,3,2,3,axis,axis);
+            }
+
+            /** 创建旋转矩阵 使用任意旋转轴
+             * @param {Float} theta 旋转弧度
+             * @param {List_Value} axis 一个3D向量表示的旋转轴
+             * @return {Matrix_3} 返回一个矩阵
+             */
+            static create_Rotate__Axis(theta,axis){
+                var k     = Vector.is_Unit(axis)?axis:Vector.create_Normalization(axis),
+                    sin_t = sin(theta),
+                    cos_t = cos(theta),
+                    rtn   = Matrix.create_TensorProduct(axis,axis,1,3,3,1),
+                    skx   = sin_t*k[0],
+                    sky   = sin_t*k[1],
+                    skz   = sin_t*k[2];
+
+                Matrix.np_b(rtn,1-cos_t);
+
+                rtn[0] += cos_t;      rtn[1] -= skz;        rtn[2] += sky;
+                rtn[3] += skz;        rtn[4] += cos_t;      rtn[5] -= skx;
+                rtn[6] -= sky;        rtn[7] += skx;        rtn[8] += cos_t;
+
+                return rtn;
+            }
+
+            /** 创建旋转矩阵, 使用欧拉角
+             * @param {List_Value} euler_angles 欧拉角参数 各旋转角角的弧度
+             * @param {List_Value} _axis 欧拉角的轴向顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
+             * @return {Matrix_3} 返回一个矩阵
+             */
+            static create_Rotate__EulerAngles(euler_angles,_axis){
+                var axis=_axis||[0,1,2]
+                var rtn = Matrix_3.create_Rotate(euler_angles[0],axis[0]);
+                for(var i=1;i<3;++i){
+                    rtn=Matrix.multiplication(rtn,Matrix_3.create_Rotate(euler_angles[i],axis[i]),3,3);
+                }
+                return rtn;
+            }
+
+            /** 创建旋转矩阵, 使用四元数
+             * @param {List_Value} quat 欧拉角参数 各旋转角角的弧度
+             * @return {Matrix_3} 返回一个矩阵
+             */
+            static create_Rotate__EulerAngles(quat){
+                // todo
+            }
+
+            /** 创建正交投影(平行投影)矩阵
+             * @param {List_Value} normal 使用3d向量表示 投影面的法向
+             * @return {Matrix_3} 返回一个矩阵
+             */
+            static create_Projection__Orthographic(normal){
+                var n= Vector.is_Unit(normal)?normal:Vector.create_Normalization(normal);
+                var xx=n[0]*n[0],
+                    xy=n[0]*n[1],
+                    xz=n[0]*n[2],
+                    yy=n[1]*n[1],
+                    yz=n[1]*n[2],
+                    zz=n[2]*n[2];
+                return new Matrix_3([
+                    1-xx,   -xy,    -xz,
+                    -xy,    1-yy,   -yz,
+                    -xz,    -yz,    1-zz
+                ])
+            }
+            
+            /** 创建切变矩阵
+             * @param {Number} k 切变系数
+             * @param {Number} axis 方向轴 [x,y,z]
+             * @return {Matrix_3}
+             */
+                static create_Shear(k,axis){
+                // todo
+            }
+            
+            /** 创建镜像矩阵
+             * @param {List_Value} n 镜面的法向 3D向量
+             * @return {Matrix_3}
+             */
+                static create_Horizontal(n){
+                // todo
+            }
+        }
+
+        Matrix_3.ROTATE_X_CCW_90DEG = new Matrix_3([1, 0, 0, 0, 0, 1, 0, -1, 0 ]);
+        Matrix_3.ROTATE_X_CW_90DEG  = new Matrix_3([1, 0, 0, 0, 0, 1, 0, -1, 0 ]);
+        Matrix_3.ROTATE_X_180DEG    = new Matrix_3([1, 0, 0, 0, -1, 0, 0, -0, -1 ]);
+        Matrix_3.ROTATE_Y_CCW_90DEG = new Matrix_3([0, 0, -1, 0, 1, 0, 1, 0, 0 ]);
+        Matrix_3.ROTATE_Y_CW_90DEG  = new Matrix_3([0, 0, -1, 0, 1, 0, 1, 0, 0 ]);
+        Matrix_3.ROTATE_Y_180DEG    = new Matrix_3([-1, 0, -0, 0, 1, 0, 0, 0, -1 ]);
+        Matrix_3.ROTATE_Z_CCW_90DEG = new Matrix_3([0, 1, 0, -1, 0, 0, 0, 0, 1 ]);
+        Matrix_3.ROTATE_Z_CW_90DEG  = new Matrix_3([0, 1, 0, -1, 0, 0, 0, 0, 1 ]);
+        Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
+    // end  * 3d 变换矩阵 * end 
 
     // open * 旋转 * open
         /** 欧拉角 */
@@ -1215,8 +1214,6 @@
         // open * 3d 变换矩阵控制器 * open
             
             /** 3d 变换矩阵控制器 */
-            // todo
-            
             class Transform_3D_Matrix_Ctrl{
                 /** 
                  * @param {Hand__Transform_3D_Matrix_Ctrl[]} process 
@@ -1225,14 +1222,23 @@
                     this.process=Object.assign({},process);
                     this._mat=new Matrix(16);
                 }
+
+                /** 获取变换矩阵
+                 * @return {Matrix} 返回一个新的矩阵
+                 */
                 get_Matrix(){
                     return new Matrix(this._mat);
                 }
+                
+                /** 获取当前控制器的 变换矩阵的引用
+                 * @return {Matrix} 返回 this._mat
+                 */
                 get_Matrix__life(){
                     return this._mat;
                 }
             }
-
+            
+            /** 3d 变换矩阵控制器 单个变换操作 */
             class Hand__Transform_3D_Matrix_Ctrl{
                 /** 
                  * @param {Number|String} type 
@@ -1255,6 +1261,7 @@
                     // todo
                 }
 
+                /** @type {String[]} 操作类型映射表 */
                 static MAPPING__HAND_NO_TO_TYPE_NAME=[
                     // todo
                     "translate",
@@ -1453,6 +1460,7 @@
     /**@type {Number} 贝塞尔曲线拟合四分之一圆 的 k 值 */
     const BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
 
+    /** 暴露的贝塞尔曲线操作 */
     var out_bezier={
         get_BezierCurvePoint__DeCasteljau:get_BezierCurvePoint__DeCasteljau,
         getBezierMatrix:getBezierMatrix,
