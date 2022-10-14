@@ -9,21 +9,23 @@
  */
 
 // open * 配置/基础 * open
-    /** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */
-    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
-    /** 配置 */
-    const CONFIG={
-        /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */
-        VALUE_TYPE:globalThis.NML_VALUE_TYPE,
-        /** @type {float} 计算容差 */
-        APPROXIMATELY_TOLERANCE:1e-6
-    };
+    //```javascript
+    /**//** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */
+    /**/globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
+    /**//** 配置 */
+    /**/const CONFIG={
+    /**/    /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */
+    /**/    VALUE_TYPE:globalThis.NML_VALUE_TYPE,
+    /**/    /** @type {float} 计算容差 */
+    /**/    APPROXIMATELY_TOLERANCE:1e-6
+    /**/};
 
-    const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
-        DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
-        DEG_90  = 90*DEG,
-        DEG_180 = 180*DEG,
-        CYCLES  = globalThis.CYCLES = Math.PI*2;
+    /**/const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
+    /**/    DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
+    /**/    DEG_90  = 90*DEG,
+    /**/    DEG_180 = 180*DEG,
+    /**/    CYCLES  = globalThis.CYCLES = Math.PI*2;
+    //```
 
     /** 近似相等, 用于浮点误差计算后判断结果是否相近; 
      * @param {Number} num1 数字
@@ -47,15 +49,15 @@
 
     // open * 帕斯卡三角 * open
         /** @type {Number[][]} 缓存的帕斯卡三角数据 */
-        var g_Pascals_Triangle=[[1]];
+        var G_PASCALS_TRIANGLE=[[1]];
         calc_PascalsTriangle(3);
         /** 演算帕斯卡三角
          * @param {Number} n 到多少阶停止
-         * @returns 返回帕斯卡三角 的 不规则二维数组, 别修改内容返回值的内容!
+         * @returns 演算并返回缓存的帕斯卡三角数据 不规则二维数组, **别修改内容返回值的内容**!
          */
         function calc_PascalsTriangle(n){
             var i,j;
-            var rtn=g_Pascals_Triangle;
+            var rtn=G_PASCALS_TRIANGLE;
             for(i=rtn.length;i<=n;++i){
                 rtn.push([]);
                 for(j=0;j<i+1;++j){
@@ -68,15 +70,17 @@
          * @param {Number} n 第n层 从 0 开始数数
          */
         function get_PascalsTriangle(n){
-            if(g_Pascals_Triangle.length<=n)calc_PascalsTriangle(n);
-            return g_Pascals_Triangle[n];
+            if(G_PASCALS_TRIANGLE.length<=n)calc_PascalsTriangle(n);
+            return G_PASCALS_TRIANGLE[n];
         }
     // end  * 帕斯卡三角 * end 
 
     /** 多次函数的导数 d(f);
-     *        coefficients.length
-     * F(t) = ∑ t^i*c[i]
-     *        i=0
+     * ```
+     *         coefficients.length
+     *  F(t) = ∑ t^i*c[i]
+     *         i=0
+     * ```
      * @param {Number[]} coefficients 各次幂的系数 [1, t^1, t^2, t^3, ...]
      * @returns {Number[]}  导数的各次幂的系数 [1, t^1, t^2, t^3, ...] 长度会比形参少 1
      */
@@ -183,7 +187,7 @@
         }
     // end  * 解方程 * end 
 
-// open * 数与代数 * open
+// end  * 数与代数 * end 
 
 // open * 线性代数 * open
 
@@ -393,13 +397,13 @@
         }
     }
 
-    /* 矩阵
+    /** 矩阵
      * 矩阵的数据类型为1维线性表:
-     ```
-     [1, 2, 3]
-     [4, 5, 6]  >>  [1,2,3,4,5,6,7,8,9]
-     [7, 8, 9]
-     ```
+     * ```
+     * [1, 2, 3]
+     * [4, 5, 6]  >>  [1,2,3,4,5,6,7,8,9]
+     * [7, 8, 9]
+     * ```
      */
     class Matrix extends CONFIG.VALUE_TYPE{
         // 继承使用 CONFIG.VALUE_TYPE 的构造函数
@@ -433,21 +437,21 @@
         }
 
         /** 根据原矩阵创建新的矩阵, 可以改变矩阵的宽高, 在空的地方会写入单位矩阵的数据 
-         ```
-            create_NewSize([1,2,3,4],2,3);    create_NewSize([1,2,3,4],2,3,2,3,2,1);
-            // [1,2]    [1,2,0]               // [1,2]    [1,0,0]
-            // [3,4] >> [3,4,0]               // [3,4] >> [0,1,0] 
-            //          [0,0,1]               //          [0,1,1]
-            ```
-            * @param {Matrix} m    原矩阵
-            * @param {int} low_w           原矩阵宽度
-            * @param {int} new_w           新矩阵宽度
-            * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
-            * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
-            * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
-            * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
-            * @return {Matrix} 返回一个新矩阵
-            */
+         * ```
+         * create_NewSize([1,2,3,4],2,3);    create_NewSize([1,2,3,4],2,3,2,3,2,1);
+         * // [1,2]    [1,2,0]               // [1,2]    [1,0,0]
+         * // [3,4] >> [3,4,0]               // [3,4] >> [0,1,0] 
+         * //          [0,0,1]               //          [0,1,1]
+         * ```
+         * @param {Matrix} m    原矩阵
+         * @param {int} low_w           原矩阵宽度
+         * @param {int} new_w           新矩阵宽度
+         * @param {int} [_low_h]        原矩阵高度 无输入时将使用 low_w
+         * @param {int} [_new_h]        新矩阵高度 无输入时将使用 new_w
+         * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
+         * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
+         * @return {Matrix} 返回一个新矩阵
+         */
         static create_NewSize(m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top){
             var rtn=Matrix.create_Identity(new_w,_new_h);
             return Matrix.setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top);
@@ -522,12 +526,12 @@
          * @param  {int} [_h_l]   m_list中一列放几个矩阵
          * @param  {int} [_h_m]   m_list[i]的高度
          * @return {Matrix} 返回一个新的矩阵
-         ```javascript
-            Matrix.create_Concat([[1,2,3,4], [5,6,7,8]], 2, 2);
-            // [1,2]   [5,6] >> [1,2,5,6] >> [1,2,5,6,3,4,7,8]
-            // [3,4] , [7,8]    [3,4,7,8]
-        ```
-        */
+         * ```javascript
+         *    Matrix.create_Concat([[1,2,3,4], [5,6,7,8]], 2, 2);
+         *    // [1,2]   [5,6] >> [1,2,5,6] >> [1,2,5,6,3,4,7,8]
+         *    // [3,4] , [7,8]    [3,4,7,8]
+         * ```
+         */
         static concat(m_list,w_l,w_m,_h_l,_h_m){
             var h_l=_h_l||Math.ceil(m_list.length/w_l),
                 h_m=_h_m||Math.ceil(m_list[0].length/w_m),
@@ -955,7 +959,7 @@
         }
     }
 
-// open * 线性代数 * open
+// end  * 线性代数 * end 
 
 // open * 基础图形学 * open
 
@@ -1037,16 +1041,16 @@
     // open * 3d 变换矩阵 * open
         /** 用于创建3D变换矩阵的静态类
          *  规定统一使用左手坐标系
-         ```
-            *            ^  +y
-            *            |     7 +z
-            *            |  /  
-            * -----------+-----------> +x
-            *         /  |   
-            *      /     |   
-            *            |   
-            ```
-            */
+         * ```
+         *           ^  +y
+         *           |     7 +z
+         *           |  /  
+         *  ---------+---------> +x
+         *        /  |   
+         *     /     |   
+         *           |   
+         * ```
+         */
         class Matrix_3 extends Matrix{
             /** 创建缩放矩阵
              * @param {flot} x x坐标中的缩放系数
@@ -1210,7 +1214,7 @@
         }
     // end  * 旋转 * end 
 
-    // open  * 变换矩阵控制器 * open
+    // open * 变换矩阵控制器 * open
         // open * 3d 变换矩阵控制器 * open
             
             /** 3d 变换矩阵控制器 */
@@ -1260,17 +1264,19 @@
                 copy(tgt){
                     // todo
                 }
-
-                /** @type {String[]} 操作类型映射表 */
-                static MAPPING__HAND_NO_TO_TYPE_NAME=[
-                    // todo
-                    "translate",
-                    "size",
-                    "rotate",
-                    "pojection",
-                    "shear",
-                    "horizontal"
-                ]
+                //# MAPPING__HAND_NO_TO_TYPE_NAME
+                //```javascript
+                /**//** @type {String[]} 操作类型映射表 */
+                /**/static MAPPING__HAND_NO_TO_TYPE_NAME=[
+                /**/    // todo
+                /**/    "translate",
+                /**/    "size",
+                /**/    "rotate",
+                /**/    "pojection",
+                /**/    "shear",
+                /**/    "horizontal"
+                /**/]
+                //```
             }
         // end  * 3d 变换矩阵控制器 * end 
     // end  * 变换矩阵控制器 * end 
@@ -1308,13 +1314,13 @@
     function getBezierMatrix(n){
         if(Bezier_Matrixs[n])return Bezier_Matrixs[n];
 
-        if(g_Pascals_Triangle.length<=n)calc_PascalsTriangle(n);
+        if(G_PASCALS_TRIANGLE.length<=n)calc_PascalsTriangle(n);
         var i,j,f;
         var m=new Array(n+1);
         for(i=n;i>=0;--i){
             m[i]=new Array(i+1);
             for(j=i,f=1;j>=0;--j){
-                m[i][j]=g_Pascals_Triangle[i][j]*g_Pascals_Triangle[n][i]*f;
+                m[i][j]=G_PASCALS_TRIANGLE[i][j]*G_PASCALS_TRIANGLE[n][i]*f;
                 f*=-1;
             }
         }
@@ -1362,13 +1368,13 @@
      * @returns {Number[][]} 贝塞尔曲线的计算分割时使用的矩阵
      */
     function create_CutBezierMatrixQ(n,t){
-        if(g_Pascals_Triangle.length<=n){
+        if(G_PASCALS_TRIANGLE.length<=n){
             calc_PascalsTriangle(n);
         }
         var i,j,k;
         var rtn=new Array(n+1);
         for(i=n;i>=0;--i){
-            rtn[i]=g_Pascals_Triangle[i].concat();
+            rtn[i]=G_PASCALS_TRIANGLE[i].concat();
         }
         var temp=t,
             td=t-1;
@@ -1441,13 +1447,14 @@
         }
         return rtn;
     }
-
+    //```javascript
     // 二维平面贝塞尔曲线拟合圆弧公式
     // 单位圆且起点角度为0   示例
     // p1=(1,0)
     // p2=(1,k)     //p1 + (k*导向量)
     // p3=p4 + (-k*导向量)
     // p4=采样点
+    //```
 
     const DIVISION_4_3=4/3;
     /** 计算 贝塞尔曲线拟合圆弧 的 k 值
@@ -1457,21 +1464,22 @@
     function calc_k__BezierToCyles(angle){
         return DIVISION_4_3*tan(angle*0.25);
     }
+    //```javascript
     /**@type {Number} 贝塞尔曲线拟合四分之一圆 的 k 值 */
-    const BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
-
+    /**/const BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
     /** 暴露的贝塞尔曲线操作 */
-    var out_bezier={
-        get_BezierCurvePoint__DeCasteljau:get_BezierCurvePoint__DeCasteljau,
-        getBezierMatrix:getBezierMatrix,
-        get_BezierCoefficient:get_BezierCoefficient,
-        get_BezierDerivativesPoints:get_BezierDerivativesPoints,
-        create_CutBezierMatrixQ:create_CutBezierMatrixQ,
-        cut_Bezier__ByMatrix:cut_Bezier__ByMatrix,
-        clac_BezierCtrlPoints__ByCoefficientTo:clac_BezierCtrlPoints__ByCoefficientTo,
-        calc_k__BezierToCyles:calc_k__BezierToCyles,
-        BEZIER_TO_CYCLES_K__1D4:BEZIER_TO_CYCLES_K__1D4
-    }
+    /**/var out_bezier={
+    /**/    get_BezierCurvePoint__DeCasteljau:get_BezierCurvePoint__DeCasteljau,
+    /**/    getBezierMatrix:getBezierMatrix,
+    /**/    get_BezierCoefficient:get_BezierCoefficient,
+    /**/    get_BezierDerivativesPoints:get_BezierDerivativesPoints,
+    /**/    create_CutBezierMatrixQ:create_CutBezierMatrixQ,
+    /**/    cut_Bezier__ByMatrix:cut_Bezier__ByMatrix,
+    /**/    clac_BezierCtrlPoints__ByCoefficientTo:clac_BezierCtrlPoints__ByCoefficientTo,
+    /**/    calc_k__BezierToCyles:calc_k__BezierToCyles,
+    /**/    BEZIER_TO_CYCLES_K__1D4:BEZIER_TO_CYCLES_K__1D4
+    /**/}
+    //```
 // end  * 贝塞尔曲线 * end 
 
 
@@ -1489,25 +1497,28 @@ function copy_Array(rtn,org,l){
     }while(i);
     return rtn;
 }
+// open * 导出 * open
+    //```
+    /**/export{
+    /**/    CONFIG as NML_CONFIG,
+    /**/    DEG,
+    /**/    DEG_90,
+    /**/    DEG_180,
+    /**/    CYCLES,
 
-export{
-    CONFIG as NML_CONFIG,
-    DEG,
-    DEG_90,
-    DEG_180,
-    CYCLES,
+    /**/    calc_PascalsTriangle,
+    /**/    get_PascalsTriangle,
+    /**/    derivative,
+    /**/    binaryLinearEquation,
+    /**/    rootsOfCubic,
 
-    calc_PascalsTriangle,
-    get_PascalsTriangle,
-    derivative,
-    binaryLinearEquation,
-    rootsOfCubic,
+    /**/    out_bezier as Bezier,
 
-    out_bezier as Bezier,
-
-    Vector,
-    Matrix,
-    Matrix_2,
-    Matrix_3,
-    copy_Array
-}
+    /**/    Vector,
+    /**/    Matrix,
+    /**/    Matrix_2,
+    /**/    Matrix_3,
+    /**/    copy_Array
+    /**/}
+    /**///```
+// end  * 导出 * end 
