@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-10-11 23:17:16
+ * @LastEditTime: 2022-10-19 00:35:48
  * @FilePath: \site\js\import\NML\NML.js
  * @Description: Nittle Math Library
  * 
@@ -10,21 +10,21 @@
 
 // open * 配置/基础 * open
     //```javascript
-    /**//** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */
-    /**/globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
-    /**//** 配置 */
-    /**/const CONFIG={
-    /**/    /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */
-    /**/    VALUE_TYPE:globalThis.NML_VALUE_TYPE,
-    /**/    /** @type {float} 计算容差 */
-    /**/    APPROXIMATELY_TOLERANCE:1e-6
-    /**/};
+        /**/    /** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */
+        /**/    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
+        /**/    /** 配置 */
+        /**/    const CONFIG={
+        /**/        /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */
+        /**/        VALUE_TYPE:globalThis.NML_VALUE_TYPE,
+        /**/        /** @type {float} 计算容差 */
+        /**/        APPROXIMATELY_TOLERANCE:1e-6
+        /**/    };
 
-    /**/const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
-    /**/    DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
-    /**/    DEG_90  = 90*DEG,
-    /**/    DEG_180 = 180*DEG,
-    /**/    CYCLES  = globalThis.CYCLES = Math.PI*2;
+        /**/    const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
+        /**/        DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
+        /**/        DEG_90  = 90*DEG,
+        /**/        DEG_180 = 180*DEG,
+        /**/        CYCLES  = globalThis.CYCLES = Math.PI*2;
     //```
 
     /** 近似相等, 用于浮点误差计算后判断结果是否相近; 
@@ -1001,9 +1001,10 @@
              * @return {Matrix_2}
              */
             static create_Horizontal (x,y){
+                var i2xy=-2*x*y;
                 return new Matrix_2(
-                    1-2*x*x ,   -2*x*y,
-                    -2*x*y  ,   1-2*y*y
+                    1-2*x*x ,   i2xy,
+                    i2xy    ,   1-2*y*y
                 )
             }
 
@@ -1117,7 +1118,7 @@
              * @param {List_Value} quat 欧拉角参数 各旋转角角的弧度
              * @return {Matrix_3} 返回一个矩阵
              */
-            static create_Rotate__EulerAngles(quat){
+            static create_Rotate__QUAT(quat){
                 // todo
             }
 
@@ -1141,20 +1142,32 @@
             }
             
             /** 创建切变矩阵
-             * @param {Number} k 切变系数
-             * @param {Number} axis 方向轴 [x,y,z]
+             * @param {Number[]} k  切变系数, 使用二维向量表示
+             * @param {Number} axis 在哪个面上进行切变 [xy,xz,yz]
              * @return {Matrix_3}
              */
-                static create_Shear(k,axis){
-                // todo
+            static create_Shear(k,axis){
+                var rtn=new Matrix_3([1,0,0,0,1,0,0,0,1]);
+                var i=Matrix_3._MAPPING_SHEAR_AXIS_TO_INDEX[axis]
+                rtn[i]=k[0];
+                rtn[i+1]=rtn[i+1]||k[1];
+                return rtn;
             }
+            static _MAPPING_SHEAR_AXIS_TO_INDEX=[6,3,1];
             
             /** 创建镜像矩阵
              * @param {List_Value} n 镜面的法向 3D向量
              * @return {Matrix_3}
              */
-                static create_Horizontal(n){
-                // todo
+            static create_Horizontal(n){
+                var i2xy=-2*n[0]*n[1],
+                    i2xz=-2*n[0]*n[2],
+                    i2yz=-2*n[1]*n[2];
+                return new Matrix_3([
+                    1-2*n[0]*n[0],  i2xy,           i2xz,
+                    i2xy,           1-2*n[1]*n[1],  i2yz,
+                    i2xz,           i2yz,           1-2*n[2]*n[2]
+                ]);
             }
         }
 
