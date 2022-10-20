@@ -13,4 +13,6 @@
 
 *文档最后更新于 2022-10-14 , 可能会与代码有偏差，请以代码及其注释为准*
 
-## [NML](./NML.md)
+**文档使用工具生成，编辑时需要按照规范[js_to_md](https://github.com/D-EF/Basics/tree/master/tool/js_to_md)**
+
+## [NML](./doc/NML.md)

@@ -99,17 +99,17 @@
          * z3 + o3 \* x = z4 + o4 \* y;
          * @returns {{x:Number,y:Number}} 
          */
-        function binaryLinearEquation(z1,o1,z2,o2,z3,o3,z4,o4){
+        function solve_BinaryLinearEquation(z1,o1,z2,o2,z3,o3,z4,o4){
             var x=(z2*o4+o2*z3-z4*o2-z1*o4)/(o1*o4-o2*o3),
                 y=(z3+o3*x-z4)/o4;
             return {x:x,y:y};
         }
 
         /** 解一元三次方程, ax^3+bx^2+cx+d=0
-         * @param {Number[]} coefficient 系数集合从低次幂到高次幂 [ 1, x, x^2, x^3 ]
+         * @param {Number[]} coefficient 系数集合 从低次幂到高次幂 [ x^0, x^1, x^2, x^3 ]
          * @returns {Number[]} 返回根的集合
          */
-        function rootsOfCubic(coefficient){
+        function calc_rootsOfCubic(coefficient){
             var a=coefficient[2]||0,
                 b=coefficient[1]||0,
                 c=coefficient[0]||0,
@@ -159,7 +159,7 @@
                     t = -q / (2 * r),
                     cosphi = t < -1 ? -1 : t > 1 ? 1 : t,
                     phi = Math.acos(cosphi),
-                    crtr = rootsOfCubic.cuberoot(r),
+                    crtr = calc_rootsOfCubic.cuberoot(r),
                     t1 = 2 * crtr;
                 root1 = t1 * Math.cos(phi / 3) - a / 3;
                 root2 = t1 * Math.cos((phi + 2 * Math.PI) / 3) - a / 3;
@@ -169,7 +169,7 @@
 
             // three real roots, but two of them are equal:
             if (discriminant === 0) {
-                u1 = q2 < 0 ? rootsOfCubic.cuberoot(-q2) : -rootsOfCubic.cuberoot(q2);
+                u1 = q2 < 0 ? calc_rootsOfCubic.cuberoot(-q2) : -calc_rootsOfCubic.cuberoot(q2);
                 root1 = 2 * u1 - a / 3;
                 root2 = -u1 - a / 3;
                 return [root1, root2];
@@ -177,12 +177,12 @@
 
             // one real root, two complex roots
             var sd = Math.sqrt(discriminant);
-            u1 = rootsOfCubic.cuberoot(sd - q2);
-            v1 = rootsOfCubic.cuberoot(sd + q2);
+            u1 = calc_rootsOfCubic.cuberoot(sd - q2);
+            v1 = calc_rootsOfCubic.cuberoot(sd + q2);
             root1 = u1 - v1 - a / 3;
             return [root1];
         }
-        rootsOfCubic.cuberoot=function(v){
+        calc_rootsOfCubic.cuberoot=function(v){
             return v < 0?-Math.pow(-v, 1 / 3) : Math.pow(v, 1 / 3);
         }
     // end  * 解方程 * end 
@@ -1102,7 +1102,7 @@
 
             /** 创建旋转矩阵, 使用欧拉角
              * @param {List_Value} euler_angles 欧拉角参数 各旋转角角的弧度
-             * @param {List_Value} _axis 欧拉角的轴向顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
+             * @param {List_Value} _axis 欧拉角的旋转轴顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
              * @return {Matrix_3} 返回一个矩阵
              */
             static create_Rotate__EulerAngles(euler_angles,_axis){
@@ -1150,10 +1150,12 @@
                 var rtn=new Matrix_3([1,0,0,0,1,0,0,0,1]);
                 var i=Matrix_3._MAPPING_SHEAR_AXIS_TO_INDEX[axis]
                 rtn[i]=k[0];
-                rtn[i+1]=rtn[i+1]||k[1];
+                ++i;
+                rtn[i]?++i:0;
+                rtn[i]=k[1];
                 return rtn;
             }
-            static _MAPPING_SHEAR_AXIS_TO_INDEX=[6,3,1];
+            /*h*/static _MAPPING_SHEAR_AXIS_TO_INDEX=[6,3,1];
             
             /** 创建镜像矩阵
              * @param {List_Value} n 镜面的法向 3D向量
@@ -1191,6 +1193,7 @@
 
             /** 使用矩阵计算出欧拉角
              * @param {Matrix_3} m 仅做过旋转变换的矩阵
+             * @param {int}  [_axis]    旋转轴顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
              * @return {Euler_Angles}
              */
             static create_FromMatrix(m){
@@ -1198,7 +1201,8 @@
             }
 
             /** 使用四元数
-             * @param {QUAT} m 仅做过旋转变换的矩阵
+             * @param {QUAT} quat       四元数
+             * @param {int}  [_axis]    旋转轴顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
              * @return {Euler_Angles}
              */
             static create_FromQUAT(m){
@@ -1250,7 +1254,7 @@
                 /** 获取当前控制器的 变换矩阵的引用
                  * @return {Matrix} 返回 this._mat
                  */
-                get_Matrix__life(){
+                get_Matrix__Life(){
                     return this._mat;
                 }
             }
@@ -1298,7 +1302,8 @@
 
 // open * 贝塞尔曲线 * open
 
-    /** DeCasteljau算法 求 贝塞尔曲线 pt 点 算法代码来自 https://pomax.github.io/bezierinfo/zh-CN/index.html
+    /** 求贝塞尔曲线 pt 点 (DeCasteljau算法)  
+     * 算法代码来自 https://pomax.github.io/bezierinfo/zh-CN/index.html
      * @param {{x:Number,y:Number}[]} points 控制点集合
      * @param {Number} t t参数
      * @returns {{x:Number,y:Number}} 返回对应点
@@ -1318,14 +1323,14 @@
             return points[0];
         }
     }
-    /** @type {Number[][]} 缓存的贝塞尔曲线计算矩阵 */
-    const Bezier_Matrixs=[[1]];
+    /*h*/ /** @type {Number[][]} 缓存的贝塞尔曲线计算矩阵 */
+    /*h*/ const _BEZIER_MATRIXS=[[1]];
     /** 获取贝塞尔曲线的计算矩阵 
      * @param {Number} n n阶贝塞尔曲线
      * @returns {Number[][]} 贝塞尔曲线的计算矩阵
      */
     function getBezierMatrix(n){
-        if(Bezier_Matrixs[n])return Bezier_Matrixs[n];
+        if(_BEZIER_MATRIXS[n])return _BEZIER_MATRIXS[n];
 
         if(G_PASCALS_TRIANGLE.length<=n)calc_PascalsTriangle(n);
         var i,j,f;
@@ -1337,8 +1342,8 @@
                 f*=-1;
             }
         }
-        Bezier_Matrixs.length=n+1;
-        Bezier_Matrixs[n]=m;
+        _BEZIER_MATRIXS.length=n+1;
+        _BEZIER_MATRIXS[n]=m;
         return m;
     }
 
@@ -1445,7 +1450,7 @@
      * @param {Number[]}    coefficient 采样点计算系数
      * @returns {Number[]}  返回控制点
      */
-    function clac_BezierCtrlPoints__ByCoefficientTo(coefficient){
+    function calc_BezierCtrlPoints__ByCoefficientTo(coefficient){
         var n=coefficient.length,
             rtn=new Array(n),
             m=getBezierMatrix(--n),
@@ -1488,7 +1493,7 @@
     /**/    get_BezierDerivativesPoints:get_BezierDerivativesPoints,
     /**/    create_CutBezierMatrixQ:create_CutBezierMatrixQ,
     /**/    cut_Bezier__ByMatrix:cut_Bezier__ByMatrix,
-    /**/    clac_BezierCtrlPoints__ByCoefficientTo:clac_BezierCtrlPoints__ByCoefficientTo,
+    /**/    calc_BezierCtrlPoints__ByCoefficientTo:calc_BezierCtrlPoints__ByCoefficientTo,
     /**/    calc_k__BezierToCyles:calc_k__BezierToCyles,
     /**/    BEZIER_TO_CYCLES_K__1D4:BEZIER_TO_CYCLES_K__1D4
     /**/}
@@ -1522,8 +1527,8 @@ function copy_Array(rtn,org,l){
     /**/    calc_PascalsTriangle,
     /**/    get_PascalsTriangle,
     /**/    derivative,
-    /**/    binaryLinearEquation,
-    /**/    rootsOfCubic,
+    /**/    solve_BinaryLinearEquation,
+    /**/    calc_rootsOfCubic,
 
     /**/    out_bezier as Bezier,
 
