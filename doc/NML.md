@@ -9,28 +9,34 @@
  */   
    
 # 配置/基础   
+/** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */   
+globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;   
+## const CONFIG  @type {Object} 配置    
 ```javascript   
-    /** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */   
-    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;   
-    /** 配置 */   
-    const CONFIG={   
-        /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */   
-        VALUE_TYPE:globalThis.NML_VALUE_TYPE,   
-        /** @type {float} 计算容差 */   
-        APPROXIMATELY_TOLERANCE:1e-6   
-    };   
-   
-    const {sin,cos,asin,acos,abs,sqrt,tan}=Math,   
-        DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,   
-        DEG_90  = 90*DEG,   
-        DEG_180 = 180*DEG,   
-        CYCLES  = globalThis.CYCLES = Math.PI*2;   
+const CONFIG={   
+    /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */   
+    VALUE_TYPE:globalThis.NML_VALUE_TYPE,   
+    /** @type {float} 计算容差 */   
+    APPROXIMATELY_TOLERANCE:1e-6   
+};   
+```    ```   
+const {sin,cos,asin,acos,abs,sqrt,tan}=Math,   
+    DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,   
+    DEG_90  = 90*DEG,   
+    DEG_180 = 180*DEG,   
+    CYCLES  = globalThis.CYCLES = Math.PI*2;   
 ```   
    
 ## function approximately(num1,num2,tolerance)  近似相等, 用于浮点误差计算后判断结果是否相近;    
  * @param {Number} num1 数字   
  * @param {Number} num2 数字   
  * @param {Number} tolerance 容差， 默认为 1e-12   
+   
+## function copy_Array(rtn,org,_l)  向数组写入数据   
+ * @param {List_Value} rtn 输出对象   
+ * @param {List_Value} org 数据来源   
+ * @param {int} [_l]   写入长度   
+ * @return {List_Value} 修改并返回 out   
    
    
 # 类型注释   
@@ -43,7 +49,8 @@
 # 数与代数    
    
 ## 帕斯卡三角   
-/** @type {Number[][]} 缓存的帕斯卡三角数据 */   
+### var G_PASCALS_TRIANGLE  @type {Number[][]} 缓存的帕斯卡三角数据    
+```javascript   
 var G_PASCALS_TRIANGLE=[[1]];   
 calc_PascalsTriangle(3);   
 ### function calc_PascalsTriangle(n)  演算帕斯卡三角   
@@ -411,10 +418,12 @@ Matrix_3.ROTATE_Z_CW_90DEG  = new Matrix_3([0, 1, 0, -1, 0, 0, 0, 0, 1 ]);
 Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);   
    
 ## 旋转   
-### class Euler_Angles extends CONFIG.VALUE_TYPE            constructor(data){  欧拉角    
+### class Euler_Angles extends CONFIG.VALUE_TYPE  欧拉角    
    
-super([data[0],data[1],data[2]]);   
-}   
+#### 构造函数 new Euler_Angles(data)    
+ * @param {List_Value} data 欧拉角旋转数据    
+   
+##### 属性(成员变量)   
    
 #### static create_FromMatrix(m)  使用矩阵计算出欧拉角   
  * @param {Matrix_3} m 仅做过旋转变换的矩阵   
@@ -443,6 +452,10 @@ super([data[0],data[1],data[2]]);
  * @param {Hand__Transform_3D_Matrix_Ctrl[]} process    
    
 ###### 属性(成员变量)   
+* Transform_3D_Matrix_Ctrl.prototype.process   
+    {Hand__Transform_3D_Matrix_Ctrl[]} 变换过程    
+* Transform_3D_Matrix_Ctrl.prototype._mat   
+    {Matrix} 4x4 矩阵,缓存的变换矩阵    
    
 ##### get_Matrix()  获取变换矩阵   
  * @return {Matrix} 返回一个新的矩阵   
@@ -452,23 +465,21 @@ super([data[0],data[1],data[2]]);
  * @return {Matrix} 返回 this._mat   
    
    
-#### class Hand__Transform_3D_Matrix_Ctrl##### constructor(type,params){    3d 变换矩阵控制器 单个变换操作    
+#### class Hand__Transform_3D_Matrix_Ctrl##### 构造函数 new Hand__Transform_3D_Matrix_Ctrl(type,params)    3d 变换矩阵控制器 单个变换操作    
  * @param {Number|String} type    
  * @param {*} params    
    
-/** @type {Number} */   
-this._type=type;   
-if(type.constructor!==Number)   
-this.params=params;   
-}   
+###### 属性(成员变量)   
+* Hand__Transform_3D_Matrix_Ctrl.prototype._type   
+    {Number}    
    
 ##### copy(tgt)    
  * @param {Hand__Transform_3D_Matrix_Ctrl} tgt 拷贝对象   
  * @return {Hand__Transform_3D_Matrix_Ctrl}   
    
-##### MAPPING__HAND_NO_TO_TYPE_NAME   
+   
+##### static MAPPING__HAND_NO_TO_TYPE_NAME  @type {String[]} 操作类型映射表    
 ```javascript   
-/** @type {String[]} 操作类型映射表 */   
 static MAPPING__HAND_NO_TO_TYPE_NAME=[   
     // todo   
     "translate",   
@@ -478,8 +489,7 @@ static MAPPING__HAND_NO_TO_TYPE_NAME=[
     "shear",   
     "horizontal"   
 ]   
-```   
-   
+```               
    
 # 贝塞尔曲线   
    
@@ -491,7 +501,7 @@ static MAPPING__HAND_NO_TO_TYPE_NAME=[
    
 
 
-## function getBezierMatrix(n)  获取贝塞尔曲线的计算矩阵    
+## function get_BezierMatrix(n)  获取贝塞尔曲线的计算矩阵    
  * @param {Number} n n阶贝塞尔曲线   
  * @returns {Number[][]} 贝塞尔曲线的计算矩阵   
    
@@ -532,31 +542,43 @@ static MAPPING__HAND_NO_TO_TYPE_NAME=[
 // p4=采样点   
 ```   
    
-const DIVISION_4_3=4/3;   
+
 ## function calc_k__BezierToCyles(angle)  计算 贝塞尔曲线拟合圆弧 的 k 值   
  * @param   {Number} angle 夹角   
  * @returns {Number} 返回 k 值   
    
+   
+## const BEZIER_TO_CYCLES_K__1D4 @type {Number} 贝塞尔曲线拟合四分之一圆 的 k 值    
+   
+   
+# 导出   
 ```javascript   
-/**@type {Number} 贝塞尔曲线拟合四分之一圆 的 k 值 */   
-const BEZIER_TO_CYCLES_K__1D4=0.551784777779014;   
-/** 暴露的贝塞尔曲线操作 */   
-var out_bezier={   
-    get_BezierCurvePoint__DeCasteljau:get_BezierCurvePoint__DeCasteljau,   
-    getBezierMatrix:getBezierMatrix,   
-    get_BezierCoefficient:get_BezierCoefficient,   
-    get_BezierDerivativesPoints:get_BezierDerivativesPoints,   
-    create_CutBezierMatrixQ:create_CutBezierMatrixQ,   
-    cut_Bezier__ByMatrix:cut_Bezier__ByMatrix,   
-    calc_BezierCtrlPoints__ByCoefficientTo:calc_BezierCtrlPoints__ByCoefficientTo,   
-    calc_k__BezierToCyles:calc_k__BezierToCyles,   
-    BEZIER_TO_CYCLES_K__1D4:BEZIER_TO_CYCLES_K__1D4   
+export{   
+   CONFIG as NML_CONFIG,   
+   DEG,   
+   DEG_90,   
+   DEG_180,   
+   CYCLES,   
+   
+   calc_PascalsTriangle,   
+   get_PascalsTriangle,   
+   derivative,   
+   solve_BinaryLinearEquation,   
+   calc_rootsOfCubic,   
+   
+   get_BezierCurvePoint__DeCasteljau,   
+   get_BezierMatrix,   
+   get_BezierCoefficient,   
+   get_BezierDerivativesPoints,   
+   create_CutBezierMatrixQ,   
+   cut_Bezier__ByMatrix,   
+   calc_BezierCtrlPoints__ByCoefficientTo,   
+   calc_k__BezierToCyles,   
+   BEZIER_TO_CYCLES_K__1D4,   
+   
+   Vector,   
+   Matrix,   
+   Matrix_2,   
+   Matrix_3,   
+   copy_Array   
 }   
-```   
-   
-   
-# function copy_Array(rtn,org,l)  向数组写入数据   
- * @param {List_Value} rtn 输出对象   
- * @param {List_Value} org 数据来源   
- * @param {int} l   写入长度   
- * @return {List_Value} 修改并返回 out   

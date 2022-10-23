@@ -9,22 +9,21 @@
  */
 
 // open * 配置/基础 * open
-    //```javascript
-        /**/    /** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */
-        /**/    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
-        /**/    /** 配置 */
-        /**/    const CONFIG={
-        /**/        /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */
-        /**/        VALUE_TYPE:globalThis.NML_VALUE_TYPE,
-        /**/        /** @type {float} 计算容差 */
-        /**/        APPROXIMATELY_TOLERANCE:1e-6
-        /**/    };
-
-        /**/    const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
-        /**/        DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
-        /**/        DEG_90  = 90*DEG,
-        /**/        DEG_180 = 180*DEG,
-        /**/        CYCLES  = globalThis.CYCLES = Math.PI*2;
+    /** @typedef {Float32Array} globalThis.NML_VALUE_TYPE */
+    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
+    /** @type {Object} 配置 */
+    const CONFIG={
+        /** 向量使用的数据类型; 可选值为 Float32Array, Float64Array */
+        VALUE_TYPE:globalThis.NML_VALUE_TYPE,
+        /** @type {float} 计算容差 */
+        APPROXIMATELY_TOLERANCE:1e-6
+    };
+    //```
+    const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
+        /**/    DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
+        /**/    DEG_90  = 90*DEG,
+        /**/    DEG_180 = 180*DEG,
+        /**/    CYCLES  = globalThis.CYCLES = Math.PI*2;
     //```
 
     /** 近似相等, 用于浮点误差计算后判断结果是否相近; 
@@ -34,6 +33,20 @@
      */
     function approximately(num1,num2,tolerance){
         return Math.abs(num1-num2)<(tolerance||1e-12);
+    }
+    /** 向数组写入数据
+     * @param {List_Value} rtn 输出对象
+     * @param {List_Value} org 数据来源
+     * @param {int} [_l]   写入长度
+     * @return {List_Value} 修改并返回 out
+     */
+    function copy_Array(rtn,org,_l){
+        var i=_l||(rtn.length>org.length?org.length:rtn.length);
+        do{
+            --i;
+            rtn[i]=org[i];
+        }while(i);
+        return rtn;
     }
 // end  * 配置/基础 * end 
 
@@ -1187,6 +1200,10 @@
     // open * 旋转 * open
         /** 欧拉角 */
         class Euler_Angles extends CONFIG.VALUE_TYPE{
+
+            /**
+             * @param {List_Value} data 欧拉角旋转数据 
+             */
             constructor(data){
                 super([data[0],data[1],data[2]]);
             }
@@ -1240,7 +1257,9 @@
                  * @param {Hand__Transform_3D_Matrix_Ctrl[]} process 
                  */
                 constructor(process){
+                    /** @type {Hand__Transform_3D_Matrix_Ctrl[]} 变换过程 */
                     this.process=Object.assign({},process);
+                    /** @type {Matrix} 4x4 矩阵,缓存的变换矩阵 */
                     this._mat=new Matrix(16);
                 }
 
@@ -1281,19 +1300,17 @@
                 copy(tgt){
                     // todo
                 }
-                //# MAPPING__HAND_NO_TO_TYPE_NAME
-                //```javascript
-                /**//** @type {String[]} 操作类型映射表 */
-                /**/static MAPPING__HAND_NO_TO_TYPE_NAME=[
-                /**/    // todo
-                /**/    "translate",
-                /**/    "size",
-                /**/    "rotate",
-                /**/    "pojection",
-                /**/    "shear",
-                /**/    "horizontal"
-                /**/]
-                //```
+
+                /** @type {String[]} 操作类型映射表 */
+                static MAPPING__HAND_NO_TO_TYPE_NAME=[
+                    // todo
+                    "translate",
+                    "size",
+                    "rotate",
+                    "pojection",
+                    "shear",
+                    "horizontal"
+                ]
             }
         // end  * 3d 变换矩阵控制器 * end 
     // end  * 变换矩阵控制器 * end 
@@ -1329,7 +1346,7 @@
      * @param {Number} n n阶贝塞尔曲线
      * @returns {Number[][]} 贝塞尔曲线的计算矩阵
      */
-    function getBezierMatrix(n){
+    function get_BezierMatrix(n){
         if(_BEZIER_MATRIXS[n])return _BEZIER_MATRIXS[n];
 
         if(G_PASCALS_TRIANGLE.length<=n)calc_PascalsTriangle(n);
@@ -1353,7 +1370,7 @@
      */
     function get_BezierCoefficient(points){
         var n=points.length-1;
-        var m=getBezierMatrix(n);
+        var m=get_BezierMatrix(n);
         var rtn=new Array(points.length);
         var i,j,temp;
         for(i=n;i>=0;--i){
@@ -1453,7 +1470,7 @@
     function calc_BezierCtrlPoints__ByCoefficientTo(coefficient){
         var n=coefficient.length,
             rtn=new Array(n),
-            m=getBezierMatrix(--n),
+            m=get_BezierMatrix(--n),
             temp;
         
         for(var i=0;i<=n;++i){
@@ -1474,69 +1491,47 @@
     // p4=采样点
     //```
 
-    const DIVISION_4_3=4/3;
+    /*h*/const _DIVISION_4_3=4/3;
     /** 计算 贝塞尔曲线拟合圆弧 的 k 值
      * @param   {Number} angle 夹角
      * @returns {Number} 返回 k 值
      */
     function calc_k__BezierToCyles(angle){
-        return DIVISION_4_3*tan(angle*0.25);
+        return _DIVISION_4_3*tan(angle*0.25);
     }
-    //```javascript
+
     /**@type {Number} 贝塞尔曲线拟合四分之一圆 的 k 值 */
-    /**/const BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
-    /** 暴露的贝塞尔曲线操作 */
-    /**/var out_bezier={
-    /**/    get_BezierCurvePoint__DeCasteljau:get_BezierCurvePoint__DeCasteljau,
-    /**/    getBezierMatrix:getBezierMatrix,
-    /**/    get_BezierCoefficient:get_BezierCoefficient,
-    /**/    get_BezierDerivativesPoints:get_BezierDerivativesPoints,
-    /**/    create_CutBezierMatrixQ:create_CutBezierMatrixQ,
-    /**/    cut_Bezier__ByMatrix:cut_Bezier__ByMatrix,
-    /**/    calc_BezierCtrlPoints__ByCoefficientTo:calc_BezierCtrlPoints__ByCoefficientTo,
-    /**/    calc_k__BezierToCyles:calc_k__BezierToCyles,
-    /**/    BEZIER_TO_CYCLES_K__1D4:BEZIER_TO_CYCLES_K__1D4
-    /**/}
-    //```
+    const BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
+
 // end  * 贝塞尔曲线 * end 
 
+//# 导出
+export{
+    CONFIG as NML_CONFIG,
+    DEG,
+    DEG_90,
+    DEG_180,
+    CYCLES,
 
-/** 向数组写入数据
- * @param {List_Value} rtn 输出对象
- * @param {List_Value} org 数据来源
- * @param {int} l   写入长度
- * @return {List_Value} 修改并返回 out
- */
-function copy_Array(rtn,org,l){
-    var i=l||(rtn.length>org.length?org.length:rtn.length);
-    do{
-        --i;
-        rtn[i]=org[i];
-    }while(i);
-    return rtn;
+    calc_PascalsTriangle,
+    get_PascalsTriangle,
+    derivative,
+    solve_BinaryLinearEquation,
+    calc_rootsOfCubic,
+
+    get_BezierCurvePoint__DeCasteljau,
+    get_BezierMatrix,
+    get_BezierCoefficient,
+    get_BezierDerivativesPoints,
+    create_CutBezierMatrixQ,
+    cut_Bezier__ByMatrix,
+    calc_BezierCtrlPoints__ByCoefficientTo,
+    calc_k__BezierToCyles,
+    BEZIER_TO_CYCLES_K__1D4,
+
+    Vector,
+    Matrix,
+    Matrix_2,
+    Matrix_3,
+    copy_Array
 }
-// open * 导出 * open
-    //```
-    /**/export{
-    /**/    CONFIG as NML_CONFIG,
-    /**/    DEG,
-    /**/    DEG_90,
-    /**/    DEG_180,
-    /**/    CYCLES,
-
-    /**/    calc_PascalsTriangle,
-    /**/    get_PascalsTriangle,
-    /**/    derivative,
-    /**/    solve_BinaryLinearEquation,
-    /**/    calc_rootsOfCubic,
-
-    /**/    out_bezier as Bezier,
-
-    /**/    Vector,
-    /**/    Matrix,
-    /**/    Matrix_2,
-    /**/    Matrix_3,
-    /**/    copy_Array
-    /**/}
-    /**///```
-// end  * 导出 * end 
