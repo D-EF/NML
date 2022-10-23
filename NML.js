@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-10-19 00:35:48
+ * @LastEditTime: 2022-10-24 00:07:09
  * @FilePath: \site\js\import\NML\NML.js
  * @Description: Nittle Math Library
  * 
@@ -63,7 +63,7 @@
     // open * 帕斯卡三角 * open
         /** @type {Number[][]} 缓存的帕斯卡三角数据 */
         var G_PASCALS_TRIANGLE=[[1]];
-        calc_PascalsTriangle(3);
+        /*h*/calc_PascalsTriangle(3);
         /** 演算帕斯卡三角
          * @param {Number} n 到多少阶停止
          * @returns 演算并返回缓存的帕斯卡三角数据 不规则二维数组, **别修改内容返回值的内容**!

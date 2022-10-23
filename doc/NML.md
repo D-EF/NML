@@ -1,7 +1,7 @@
 /*   
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com   
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com   
- * @LastEditTime: 2022-10-19 00:35:48   
+ * @LastEditTime: 2022-10-24 00:07:09   
  * @FilePath: \site\js\import\NML\NML.js   
  * @Description: Nittle Math Library   
  *    
@@ -38,7 +38,6 @@ const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
  * @param {int} [_l]   写入长度   
  * @return {List_Value} 修改并返回 out   
    
-   
 # 类型注释   
 /** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */   
 /** @typedef {Number} int      整形数字 */   
@@ -52,14 +51,14 @@ const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
 ### var G_PASCALS_TRIANGLE  @type {Number[][]} 缓存的帕斯卡三角数据    
 ```javascript   
 var G_PASCALS_TRIANGLE=[[1]];   
-calc_PascalsTriangle(3);   
+```   
+
 ### function calc_PascalsTriangle(n)  演算帕斯卡三角   
  * @param {Number} n 到多少阶停止   
  * @returns 演算并返回缓存的帕斯卡三角数据 不规则二维数组, **别修改内容返回值的内容**!   
    
 ### function get_PascalsTriangle(n)  获取帕斯卡三角的某一层   
  * @param {Number} n 第n层 从 0 开始数数   
-   
    
 ## function derivative(coefficients)  多次函数的导数 d(f);   
  ```   
@@ -70,13 +69,11 @@ calc_PascalsTriangle(3);
  * @param {Number[]} coefficients 各次幂的系数 [1, t^1, t^2, t^3, ...]   
  * @returns {Number[]}  导数的各次幂的系数 [1, t^1, t^2, t^3, ...] 长度会比形参少 1   
    
-   
 ## 解方程   
 ### function solve_BinaryLinearEquation(z1,o1,z2,o2,z3,o3,z4,o4)  解二元一次方程   
  * z1 + o1 \* x = z2 + o2 \* y;   
  * z3 + o3 \* x = z4 + o4 \* y;   
  * @returns {{x:Number,y:Number}}    
-   
    
 ### function calc_rootsOfCubic(coefficient)  解一元三次方程, ax^3+bx^2+cx+d=0   
  * @param {Number[]} coefficient 系数集合 从低次幂到高次幂 [ x^0, x^1, x^2, x^3 ]   
@@ -84,11 +81,11 @@ calc_PascalsTriangle(3);
    
 calc_rootsOfCubic.cuberoot=function(v)   
    
-   
 # 线性代数   
    
-## class Vector extends CONFIG.VALUE_TYPE        // 继承使用 CONFIG.VALUE_TYPE 的构造函数  向量    
+## class Vector extends CONFIG.VALUE_TYPE  向量    
    
+// 继承使用 CONFIG.VALUE_TYPE 的构造函数   
    
 ### static v2__get_Quadrant(v)  判断2d向量在哪个象限上, 规定 0 视作正   
  * @param  {List_Value} v 向量   
@@ -167,7 +164,7 @@ calc_rootsOfCubic.cuberoot=function(v)
  * @param {List_Value} v2 表示角的一边的射线上 的 向量B   
  * @return {Number} 返回夹角的cos值   
    
-## class Matrix extends CONFIG.VALUE_TYPE        // 继承使用 CONFIG.VALUE_TYPE 的构造函数  矩阵   
+## class Matrix extends CONFIG.VALUE_TYPE  矩阵   
  * 矩阵的数据类型为1维线性表:   
  ```   
  * [1, 2, 3]   
@@ -175,6 +172,7 @@ calc_rootsOfCubic.cuberoot=function(v)
  * [7, 8, 9]   
  ```   
    
+// 继承使用 CONFIG.VALUE_TYPE 的构造函数   
    
 ### static create_Print(m,w)  创建打印用的二维数组   
  * @param {List_Value} m 矩阵   
@@ -202,7 +200,6 @@ calc_rootsOfCubic.cuberoot=function(v)
  * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0   
  * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left   
  * @return {Matrix} 返回一个新矩阵   
-   
    
 ### static setup(rtn,m,low_w,new_w,_low_h,_new_h,_shift_left,_shift_top)  矩阵数据转移   
  * @param {Matrix} rtn  要写入的矩阵   
@@ -317,12 +314,13 @@ calc_rootsOfCubic.cuberoot=function(v)
  * @param {int} [_n]    矩阵为n阶矩阵   
  * @return {Matrix|null}     返回一个新的矩阵   
    
-   
 # 基础图形学   
    
 ## 2d 变换矩阵   
    
-### class Matrix_2 extends Matrix#### static create_Rotate(theta)  创建旋转矩阵  用于创建2d变换矩阵的静态类    
+### class Matrix_2 extends Matrix  用于创建2d变换矩阵的静态类    
+   
+#### static create_Rotate(theta)  创建旋转矩阵   
  * @param {Number} theta 顺时针 旋转角弧度   
  * @return {Matrix_2}   
    
@@ -356,9 +354,8 @@ Matrix_2.ROTATE_90=new Matrix_2([0,1,-1,0]);
 Matrix_2.ROTATE_90_I=new Matrix_2([0,-1,1,0]);   
 Matrix_2.FLIP_HORIZONTAL=new Matrix_2([-1,0,0,1]);   
    
-   
 ## 3d 变换矩阵   
-### class Matrix_3 extends Matrix#### static create_Scale(x,y,z)  创建缩放矩阵  用于创建3D变换矩阵的静态类   
+### class Matrix_3 extends Matrix  用于创建3D变换矩阵的静态类   
  *  规定统一使用左手坐标系   
  ```   
  *           ^  +y   
@@ -370,6 +367,7 @@ Matrix_2.FLIP_HORIZONTAL=new Matrix_2([-1,0,0,1]);
  *           |      
  ```   
    
+#### static create_Scale(x,y,z)  创建缩放矩阵   
  * @param {flot} x x坐标中的缩放系数   
  * @param {flot} y y坐标中的缩放系数   
  * @param {flot} z z坐标中的缩放系数   
@@ -401,7 +399,6 @@ Matrix_2.FLIP_HORIZONTAL=new Matrix_2([-1,0,0,1]);
  * @param {Number[]} k  切变系数, 使用二维向量表示   
  * @param {Number} axis 在哪个面上进行切变 [xy,xz,yz]   
  * @return {Matrix_3}   
-
    
 #### static create_Horizontal(n)  创建镜像矩阵   
  * @param {List_Value} n 镜面的法向 3D向量   
@@ -435,7 +432,7 @@ Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
  * @param {int}  [_axis]    旋转轴顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)   
  * @return {Euler_Angles}   
    
-### class QUAT extends CONFIG.VALUE_TYPE              四元数    
+### class QUAT extends CONFIG.VALUE_TYPE  四元数    
    
 #### static create_FromMatrix(m)  使用矩阵计算出欧拉角   
  * @param {Matrix_3} m 仅做过旋转变换的矩阵   
@@ -448,7 +445,9 @@ Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
 ## 变换矩阵控制器   
 ### 3d 变换矩阵控制器   
    
-#### class Transform_3D_Matrix_Ctrl##### 构造函数 new Transform_3D_Matrix_Ctrl(process)    3d 变换矩阵控制器    
+#### class Transform_3D_Matrix_Ctrl  3d 变换矩阵控制器    
+   
+##### 构造函数 new Transform_3D_Matrix_Ctrl(process)     
  * @param {Hand__Transform_3D_Matrix_Ctrl[]} process    
    
 ###### 属性(成员变量)   
@@ -460,12 +459,12 @@ Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
 ##### get_Matrix()  获取变换矩阵   
  * @return {Matrix} 返回一个新的矩阵   
    
-   
 ##### get_Matrix__Life()  获取当前控制器的 变换矩阵的引用   
  * @return {Matrix} 返回 this._mat   
    
+#### class Hand__Transform_3D_Matrix_Ctrl  3d 变换矩阵控制器 单个变换操作    
    
-#### class Hand__Transform_3D_Matrix_Ctrl##### 构造函数 new Hand__Transform_3D_Matrix_Ctrl(type,params)    3d 变换矩阵控制器 单个变换操作    
+##### 构造函数 new Hand__Transform_3D_Matrix_Ctrl(type,params)     
  * @param {Number|String} type    
  * @param {*} params    
    
@@ -476,7 +475,6 @@ Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
 ##### copy(tgt)    
  * @param {Hand__Transform_3D_Matrix_Ctrl} tgt 拷贝对象   
  * @return {Hand__Transform_3D_Matrix_Ctrl}   
-   
    
 ##### static MAPPING__HAND_NO_TO_TYPE_NAME  @type {String[]} 操作类型映射表    
 ```javascript   
@@ -499,35 +497,28 @@ static MAPPING__HAND_NO_TO_TYPE_NAME=[
  * @param {Number} t t参数   
  * @returns {{x:Number,y:Number}} 返回对应点   
    
-
-
 ## function get_BezierMatrix(n)  获取贝塞尔曲线的计算矩阵    
  * @param {Number} n n阶贝塞尔曲线   
  * @returns {Number[][]} 贝塞尔曲线的计算矩阵   
-   
    
 ## function get_BezierCoefficient(points)  贝塞尔曲线控制点求各次幂的系数   
  * @param {Number[]} points 控制点集合   
  * @returns {Number[]} 贝塞尔曲线采样计算系数   
    
-   
 ## function get_BezierDerivativesPoints(points)  求贝塞尔曲线的导函数的控制点 (一维)   
  * @param {Number[]} points 原曲线的控制点集合    
  * @returns {Number[]} 导函数的控制点   
-   
    
 ## function create_CutBezierMatrixQ(n,t)  计算贝塞尔曲线分割时使用的 Q 矩阵 (不补零)   
  * @param {Number} n  n阶贝塞尔曲线   
  * @param {Number} t  t参数 0~1   
  * @returns {Number[][]} 贝塞尔曲线的计算分割时使用的矩阵   
    
-   
 ## function cut_Bezier__ByMatrix(points,matrix,flag)  用矩阵分割贝塞尔曲线   
  * @param {Number[]} points        控制点集合   
  * @param {Number[][]} matrix 分割时使用的矩阵, 用 create_CutBezierMatrixQ 函数生成   
  * @param {Boolean} flag 前后两边 false(0)为p1起点, true(!0)为p4终点   
  * @return {Number[]} 返回两组控制点   
-   
    
 ## function calc_BezierCtrlPoints__ByCoefficientTo(coefficient)  通过系数创建贝塞尔曲线控制点   
  * @param {Number[]}    coefficient 采样点计算系数   
@@ -542,14 +533,11 @@ static MAPPING__HAND_NO_TO_TYPE_NAME=[
 // p4=采样点   
 ```   
    
-
 ## function calc_k__BezierToCyles(angle)  计算 贝塞尔曲线拟合圆弧 的 k 值   
  * @param   {Number} angle 夹角   
  * @returns {Number} 返回 k 值   
    
-   
 ## const BEZIER_TO_CYCLES_K__1D4 @type {Number} 贝塞尔曲线拟合四分之一圆 的 k 值    
-   
    
 # 导出   
 ```javascript   
