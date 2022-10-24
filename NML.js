@@ -724,7 +724,33 @@
             }
             return rtn;
         }
-        
+
+        /** 检查矩阵正交
+         * @param {Matrix} m    矩阵
+         * @param {Matrix} [_n] n阶矩阵
+         * @return {Boolean}
+         */
+        static check_Orthogonal(m,_n){
+
+            var n=Matrix.check_Square(m,_n);
+            var r=new Array(n);
+            var i,j;
+            for(i=n-1;i>=0;--i){
+                r[i]=new Vector(n);
+                for(j=n-1;j>=0;--j){
+                    r[i][j]=m[3*i+j];
+                }
+            }
+            var f=true;
+            for(i=n-1;f&&(i>=0);--i){
+                for(j=n-1;f&&(j>=0);--j){
+                    f=approximately(Vector.dot(r[i],r[j]),i===j?1:0);
+                }
+            }
+            return f;
+            
+        }
+
         /** 矩阵转置
          * @param {List_Value} m 矩阵
          * @param {int} [_w] 矩阵宽度(列数)
@@ -1198,8 +1224,113 @@
     // end  * 3d 变换矩阵 * end 
 
     // open * 旋转 * open
+        /** 3d旋转控制 */
+        class Rotate_3D{
+            /**
+             * @param {List_Value} data 参数数据 根据长度判断使用什么构造过程
+             * @param {Boolean} [_calc_flag] 是否在构造时计算(默认否) (9)矩阵/(3)欧拉角/(4)四元数
+             * @param {int[]} [_euler_angles_axis] 欧拉角的顺序 (默认[0,1,2](BPH)(zxy))
+             */
+            constructor(data,_calc_flag,_euler_angles_axis){
+                /** @type {EulerAngles} 欧拉角数据 */
+                this._euler_angles=new EulerAngles(3);
+                /** @type {Int8Array[]} 欧拉角的顺序 (默认[0,1,2](BPH)(zxy)) */
+                this._euler_angles_axis=new Int8Array([0,1,2]);
+                if(_euler_angles_axis)copy_Array(this._euler_angles_axis,_euler_angles_axis,3);
+                /** @type {Quat} 四元数数据 */
+                this._quat=new Quat(4);
+                /** @type {Matrix_3} 矩阵数据 */
+                this._matrix=new Matrix.create_Identity(3,3);
+                switch(data.length){
+                    case 3:
+                        copy_Array(this._euler_angles,data,3);
+                        if(_calc_flag)this.reset__EulerAngles();
+                    break;
+                        
+                    case 4:
+                        copy_Array(this._quat,data,4);
+                        if(_calc_flag)this.reset__QUAT();
+                    break;
+                            
+                    case 9:
+                        copy_Array(this._matrix,data,9);
+                        if(_calc_flag)this.reset__Matrix();
+                    break;
+
+                    default:
+                        console.warn("Have not data, please set it");
+                }
+            }
+
+            /** 写入 欧拉角 数据
+             * @param {EulerAngles} data 欧拉角数据
+             * @param {int[]} [_euler_angles_axis] 欧拉角的顺序 (默认[0,1,2](BPH)(zxy))
+             * @return {Rotate_3D} 返回this
+             */
+            set__EulerAngles(data,_euler_angles_axis){
+                copy_Array(this._euler_angles,data,3);
+                if(_euler_angles_axis)copy_Array(this._euler_angles_axis,_euler_angles_axis,3);
+            }
+
+            /** 写入 四元数 数据
+             * @param {Quat} data 四元数数据
+             * @return {Rotate_3D} 返回this
+             */
+            set__Quat(data){
+                copy_Array(this._quat,data,4);
+            }
+
+            /** 写入 矩阵   数据
+             * @param {Matrix_3} data 矩阵数据
+             * @return {Rotate_3D} 返回this
+             */
+            set__Matrix(data){
+                copy_Array(this._matrix,data,9);
+            }
+
+            /** 使用 欧拉角 刷新数据 */
+            reset__EulerAngles(){
+                // todo
+            }
+
+            /** 使用 四元数 刷新数据 */
+            reset__QUAT(){
+                // todo 
+            }
+
+            /** 使用 矩阵   刷新数据 */
+            reset__Matrix(){
+                // todo
+            }
+
+            /** 创建逆旋转 矩阵
+             * @return {Matrix_3} 返回旋转矩阵的逆矩阵(转置)
+             */
+            create_Inverse__Matrix(){
+                return Matrix.create_Transposed(this._matrix);
+            }
+
+            /** 创建逆旋转 欧拉角
+             * @return {[EulerAngles,Int8Array]} 返回逆旋转的欧拉角
+             */
+            create_Inverse__EulerAngles(){
+                var v=this._euler_angles,
+                    a=this._euler_angles_axis;
+                return [
+                    new EulerAngles([-v[2],-v[1],-v[0]]),
+                    new Int8Array([a[2],a[1],a[0]])
+                ];
+            }
+            
+            /** 创建逆旋转 四元数
+             * @return {Quat} 返回逆旋转的四元数
+             */
+            create_Inverse__EulerAngles(){
+                // todo
+            }
+        }
         /** 欧拉角 */
-        class Euler_Angles extends CONFIG.VALUE_TYPE{
+        class EulerAngles extends CONFIG.VALUE_TYPE{
 
             /**
              * @param {List_Value} data 欧拉角旋转数据 
@@ -1211,16 +1342,16 @@
             /** 使用矩阵计算出欧拉角
              * @param {Matrix_3} m 仅做过旋转变换的矩阵
              * @param {int}  [_axis]    旋转轴顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
-             * @return {Euler_Angles}
+             * @return {EulerAngles}
              */
             static create_FromMatrix(m){
                 // todo
             }
 
             /** 使用四元数
-             * @param {QUAT} quat       四元数
+             * @param {Quat} quat       四元数
              * @param {int}  [_axis]    旋转轴顺序 [z,x,y] 默认为 [0,1,2](BPH)(zxy)
-             * @return {Euler_Angles}
+             * @return {EulerAngles}
              */
             static create_FromQUAT(m){
                 // todo
@@ -1228,23 +1359,24 @@
         }
 
         /** 四元数 */
-        class QUAT extends CONFIG.VALUE_TYPE{
+        class Quat extends CONFIG.VALUE_TYPE{
             
             /** 使用矩阵计算出欧拉角
              * @param {Matrix_3} m 仅做过旋转变换的矩阵
-             * @return {Euler_Angles}
+             * @return {EulerAngles}
              */
              static create_FromMatrix(m){
                 // todo
             }
 
             /** 使用四元数
-             * @param {QUAT} m 仅做过旋转变换的矩阵
-             * @return {Euler_Angles}
+             * @param {Quat} m 仅做过旋转变换的矩阵
+             * @return {EulerAngles}
              */
             static create_FromEulerAngles(m){
                 // todo
             }
+
         }
     // end  * 旋转 * end 
 
