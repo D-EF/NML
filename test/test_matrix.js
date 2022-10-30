@@ -8,7 +8,8 @@
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
-import { Matrix, Matrix_2, Matrix_3, Vector } from "../NML.js";
+import NML from "../index.js";
+var { Matrix, Matrix_2, Matrix_3, Vector }=NML;
 
 // console.log("create_Print [1,2,3,4,5,6,7,8,9] ",Matrix.create_Print([1,2,3,4,5,6,7,8,9]));
 // console.log("create_Identity",Matrix.create_Print(Matrix.create_Identity(3)));
