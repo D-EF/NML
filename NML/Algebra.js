@@ -1,9 +1,9 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-10-24 00:07:09
- * @FilePath: \site\js\import\NML\NML.js
- * @Description: Nittle Math Library
+ * @LastEditTime: 2022-11-01 01:37:31
+ * @FilePath: \site\js\import\NML\NML\Algebra.js
+ * @Description: 数字运算相关
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */

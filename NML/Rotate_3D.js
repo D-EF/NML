@@ -1,12 +1,12 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
-* @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
-* @LastEditTime: 2022-10-24 00:07:09
-* @FilePath: \site\js\import\NML\NML.js
-* @Description: Nittle Math Library
-* 
-* Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
-*/
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2022-11-01 01:36:50
+ * @FilePath: \site\js\import\NML\NML\Rotate_3D.js
+ * @Description: 3D旋转 
+ * 
+ * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
+ */
 
 /*h*/// open * 类型注释 * open
 /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
@@ -16,9 +16,9 @@
 /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG} from "./Config.js";
+import {copy_Array,approximately,CONFIG, DEG_90, DEG_180} from "./Config.js";
 import { Matrix_3 } from "./Graphics_Transform_Matrix.js";
-import { Matrix } from "./Vector_Matrix.js";
+import { Matrix, Vector } from "./Vector_Matrix.js";
 /*h*/const {sin,cos,asin,acos,atan,atan2,abs,sqrt,tan}=Math;
 
 /*h*//** @type {int[]} 对应轴向[z,x,y] (BPH)的旋转矩阵的空行/列的uv*/
@@ -27,7 +27,14 @@ import { Matrix } from "./Vector_Matrix.js";
 /*h*/const _EulerAngles__MAPPING__I_INDEX_MATRIX__LEFT=new Int8Array([1,5,6]);
 /*h*//** @type {int[]} 右手坐标系的 对应轴向[z,x,y] (BPH)的旋转矩阵的-sin的下标*/
 /*h*/const _EulerAngles__MAPPING__I_INDEX_MATRIX__RIGHT=new Int8Array([3,7,2]);
-
+/*h*/function load_MK__EulerAngles_setup_Matrix(out,op,om){
+    var m,i;
+    do{ // m0
+        m===0?m=2:--m;
+        i=Matrix.get_Index(3,op,m);
+        m===op?out[0]=m[i]:out[1]=m[i];
+    }while(m!==om);
+} 
 
 /** 3d旋转控制 */
 class Rotate_3D{
@@ -158,35 +165,65 @@ class Rotate_3D{
 /** 欧拉角 */
 class EulerAngles extends CONFIG.VALUE_TYPE{
 
-    /** 沿用基类的构造函数, 但长度限制为3
-     * @param {List_Value} data 欧拉角旋转数据 
+    /** 创建欧拉角
+     * @param  {List_Value} data 欧拉角旋转数据 
+     * @return {EulerAngles}返回一个新的欧拉角
      */
-    constructor(data){
-        super([data[0],data[1],data[2]]);
+    create(data){
+        var rtn=new EulerAngles(3);
+        if(data){
+            rtn[0]=data[0];
+            rtn[1]=data[1];
+            rtn[2]=data[2];
+        }
+        return rtn;
     }
 
-    /** 使用矩阵计算出欧拉角
-     * @param {Matrix_3} m 仅做过旋转变换的矩阵
-     * @param {int[]}  [_axis]    旋转轴顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
-     * @return {EulerAngles}
+    /** 使用矩阵生成欧拉角
+     * @param  {Matrix_3}     m         仅做过旋转变换的矩阵
+     * @param  {int[]}       [_axis]    创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
+     * @param  {List_Value}  [_out]      接收数据的对象
+     * @return {EulerAngles} 修改并返回 out, 或返回一个新的欧拉角
      */
-    static setup_Matrix(m,_axis){
+    static create_EulerAngles__Matrix(m,_axis,_out){
         var axis=_axis||[0,1,2];
-        var ou,ov,acs=asin;
-        var i1;
-        // todo
-        if(axis[0]===axis[2]){// Proper Euler angles
-            
-        }else{// Tait–Bryan angles
+        var u,v,i;
+        var acs=axis[0]===axis[2]?acos:asin;
+        var mk1;
+        var mk0 = new Vector(2),
+            mk2 = new Vector(2);
+        var rtn=_out||new EulerAngles(3);
+        var map_i=CONFIG.AXIS?  _EulerAngles__MAPPING__I_INDEX_MATRIX__LEFT:
+                                _EulerAngles__MAPPING__I_INDEX_MATRIX__RIGHT;
+        
+        v=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[0]];
+        u=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[2]];
+        i=Matrix.get_Index(3,u,v);
+        mk1= map_i.indexOf(i)?-m[i]:[i];
 
+        if(approximately(abs(mk1),1)){ // Euler Angles Lock
+            v=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[0]];
+            u=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[1]];
+            load_MK__EulerAngles_setup_Matrix(mk0,u,v);
+            rtn[0]==atan2(mk0[1],mk0[0]);
+            rtn[1]=axis[0]===axis[2]?DEG_180:DEG_90;
+            rtn[2]=0;
+        }else{ // default
+            load_MK__EulerAngles_setup_Matrix(mk0,u,v)
+            load_MK__EulerAngles_setup_Matrix(mk2,v,u)
+            rtn[0]=atan2(mk0[1],mk0[0]);
+            rtn[1]=acs(mk1);
+            rtn[2]=atan2(mk2[0],mk2[1]);
         }
+        return rtn;
     }
     
 
-    /** 使用四元数
-     * @param {Quat} quat       四元数
-     * @param {int}  [_axis]    旋转轴顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
-     * @return {EulerAngles}
+    /** 使用四元数生成欧拉角
+     * @param  {Quat}         quat      四元数
+     * @param  {int[]}       [_axis]    欧拉角旋转顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
+     * @param  {List_Value}  [out]      接收数据的对象
+     * @return {EulerAngles} 修改并返回 out, 或返回一个新的欧拉角
      */
     static setup_QUAT(m){
         // todo

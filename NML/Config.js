@@ -1,9 +1,9 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-10-24 00:07:09
- * @FilePath: \site\js\import\NML\NML.js
- * @Description: Nittle Math Library
+ * @LastEditTime: 2022-11-01 01:37:11
+ * @FilePath: \site\js\import\NML\NML\Config.js
+ * @Description: Nittle Math Library's Config
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
@@ -33,8 +33,8 @@
     //```
     const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
         DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
-        DEG_90  = 90*DEG,
-        DEG_180 = 180*DEG,
+        DEG_90  = Math.PI*0.5,
+        DEG_180 = Math.PI,
         CYCLES  = globalThis.CYCLES = Math.PI*2;
     //```
 

@@ -1,12 +1,12 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
-* @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
-* @LastEditTime: 2022-10-24 00:07:09
-* @FilePath: \site\js\import\NML\NML.js
-* @Description: Nittle Math Library
-* 
-* Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
-*/
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2022-11-01 01:36:22
+ * @FilePath: \site\js\import\NML\NML\Transform_Matrix_Ctrl.js
+ * @Description: 变换控制器
+ * todo
+ * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
+ */
 
 /*h*/// open * 类型注释 * open
 /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
