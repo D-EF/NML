@@ -20,21 +20,46 @@ import {copy_Array,approximately,CONFIG, DEG_90, DEG_180} from "./Config.js";
 import { Matrix_3 } from "./Graphics_Transform_Matrix.js";
 import { Matrix, Vector } from "./Vector_Matrix.js";
 /*h*/const {sin,cos,asin,acos,atan,atan2,abs,sqrt,tan}=Math;
+// open * 部分映射函数和映射表 * open
+    /** @type {int[]} 对应轴向[z,x,y] (BPH)的旋转矩阵的空行/列的uv*/
+    const _MAPPING__EulerAngles_NULL_UV_MATRIX=new Int8Array([2,0,1]);
+    /** @type {int[]} 左手坐标系的 对应轴向[z,x,y] (BPH)的旋转矩阵的-sin的下标*/
+    const _MAPPING__EulerAngles_I_INDEX_MATRIX__LEFT=new Int8Array([3,7,2]);
+    /** @type {int[]} 右手坐标系的 对应轴向[z,x,y] (BPH)的旋转矩阵的-sin的下标*/
+    const _MAPPING__EulerAngles_I_INDEX_MATRIX__RIGHT=new Int8Array([1,5,6]);
+    const _MAPPING__PROPER_EULER_ANGLE_COS=new Int8Array([
+        -1,
+        1, // [0,1,0] 01
+        0, // [0,2,0] 10
+        1, // [1,0,1] 10
+        -1,
+        2, // [1,2,1] 01
+        0, // [2,0,2] 01
+        2  // [2,1,2] 10
+    ]);
+    const _MAPPING__PROPER_EULER_ANGLE_I=new Int8Array([-1,0,1,1,-1,0,0,1]);
 
-/*h*//** @type {int[]} 对应轴向[z,x,y] (BPH)的旋转矩阵的空行/列的uv*/
-/*h*/const _EulerAngles__MAPPING__NULL_UV_MATRIX=new Int8Array([2,0,1]);
-/*h*//** @type {int[]} 左手坐标系的 对应轴向[z,x,y] (BPH)的旋转矩阵的-sin的下标*/
-/*h*/const _EulerAngles__MAPPING__I_INDEX_MATRIX__LEFT=new Int8Array([1,5,6]);
-/*h*//** @type {int[]} 右手坐标系的 对应轴向[z,x,y] (BPH)的旋转矩阵的-sin的下标*/
-/*h*/const _EulerAngles__MAPPING__I_INDEX_MATRIX__RIGHT=new Int8Array([3,7,2]);
-/*h*/function load_MK__EulerAngles_setup_Matrix(out,op,om){
-    var m,i;
-    do{ // m0
-        m===0?m=2:--m;
-        i=Matrix.get_Index(3,op,m);
-        m===op?out[0]=m[i]:out[1]=m[i];
-    }while(m!==om);
-} 
+    /** 获取atan2时使用的数据 
+     * @param {List_Value} out       输出对象
+     * @param {int}        op_static 静指针(下标)
+     * @param {int}        op_move   动指针(下标)
+     * @param {List_Value} m         矩阵数据
+     * @param {int[]}      map_i     坐标系-sin映射表
+     * @param {boolean}    uv_o_vu   静指针-动指针 是u-v(true)还是v-u(false)
+     * @param {int}        cos_uv    cos的uv
+     * @param {boolean}    f_i       是否使用置负
+     */
+    function load_MK__EulerAngles_setup_Matrix(out,op_static,op_move,m,map_i,uv_o_vu,cos_uv,f_i){
+        var p=op_move,i,j;
+        --p
+        do{ // out[1]:cos, out[0]:sin
+            i=uv_o_vu?Matrix.get_Index(3,op_static,p):Matrix.get_Index(3,p,op_static);
+            j=p===cos_uv?0:1;
+            out[j]=((~map_i.indexOf(i))&&(f_i))?-m[i]:m[i];
+            p===0?p=2:--p;
+        }while(p!==op_move);
+    }
+// end  * 部分映射函数和映射表 * end 
 
 /** 3d旋转控制 */
 class Rotate_3D{
@@ -187,33 +212,41 @@ class EulerAngles extends CONFIG.VALUE_TYPE{
      */
     static create_EulerAngles__Matrix(m,_axis,_out){
         var axis=_axis||[0,1,2];
-        var u,v,i;
+        var u,v,i,cos_uv,f_i;
         var acs=axis[0]===axis[2]?acos:asin;
         var mk1;
         var mk0 = new Vector(2),
             mk2 = new Vector(2);
         var rtn=_out||new EulerAngles(3);
-        var map_i=CONFIG.AXIS?  _EulerAngles__MAPPING__I_INDEX_MATRIX__LEFT:
-                                _EulerAngles__MAPPING__I_INDEX_MATRIX__RIGHT;
+        var map_i=CONFIG.AXIS?  _MAPPING__EulerAngles_I_INDEX_MATRIX__LEFT:
+                                _MAPPING__EulerAngles_I_INDEX_MATRIX__RIGHT;
         
-        v=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[0]];
-        u=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[2]];
+        v=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[0]];
+        u=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[2]];
         i=Matrix.get_Index(3,u,v);
-        mk1= map_i.indexOf(i)?-m[i]:[i];
+        mk1= ~map_i.indexOf(i)?-m[i]:m[i];
 
         if(approximately(abs(mk1),1)){ // Euler Angles Lock
-            v=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[0]];
-            u=_EulerAngles__MAPPING__NULL_UV_MATRIX[axis[1]];
-            load_MK__EulerAngles_setup_Matrix(mk0,u,v);
-            rtn[0]==atan2(mk0[1],mk0[0]);
+            v=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[0]];
+            u=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[1]];
+            load_MK__EulerAngles_setup_Matrix(mk0,u,v,m,map_i,true,u,true);
+            rtn[0]=atan2(mk0[1],mk0[0]);
             rtn[1]=axis[0]===axis[2]?DEG_180:DEG_90;
             rtn[2]=0;
         }else{ // default
-            load_MK__EulerAngles_setup_Matrix(mk0,u,v)
-            load_MK__EulerAngles_setup_Matrix(mk2,v,u)
+            if(axis[0]===axis[2]){
+                i=axis[0]*3+axis[1];
+                cos_uv=_MAPPING__PROPER_EULER_ANGLE_COS[i];
+                f_i=_MAPPING__PROPER_EULER_ANGLE_I[i];
+                load_MK__EulerAngles_setup_Matrix(mk0,u,v,m,map_i,true ,cos_uv,!f_i);
+                load_MK__EulerAngles_setup_Matrix(mk2,v,u,m,map_i,false,cos_uv,f_i);
+            }else{
+                load_MK__EulerAngles_setup_Matrix(mk0,u,v,m,map_i,true ,u,true);
+                load_MK__EulerAngles_setup_Matrix(mk2,v,u,m,map_i,false,v,true);
+            }
             rtn[0]=atan2(mk0[1],mk0[0]);
             rtn[1]=acs(mk1);
-            rtn[2]=atan2(mk2[0],mk2[1]);
+            rtn[2]=atan2(mk2[1],mk2[0]);
         }
         return rtn;
     }
