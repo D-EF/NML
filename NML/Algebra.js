@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-01 01:37:31
+ * @LastEditTime: 2022-11-04 21:44:41
  * @FilePath: \site\js\import\NML\NML\Algebra.js
  * @Description: 数字运算相关
  * 
@@ -18,7 +18,6 @@
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
-
 
 // open * 数与代数 * open 
 
@@ -157,8 +156,8 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
             root1 = u1 - v1 - a / 3;
             return [root1];
         }
-        /*h*/calc_rootsOfCubic._cuberoot=function(v){
-        /*h*/    return v < 0?-Math.pow(-v, 1 / 3) : Math.pow(v, 1 / 3);
+        /*h*/calc_rootsOfCubic._cuberoot=function(value){
+        /*h*/    return value < 0?-Math.pow(-value, 1 / 3) : Math.pow(value, 1 / 3);
         /*h*/}
     // end  * 解方程 * end 
 

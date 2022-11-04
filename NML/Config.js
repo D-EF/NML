@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-01 01:37:11
+ * @LastEditTime: 2022-11-04 21:44:31
  * @FilePath: \site\js\import\NML\NML\Config.js
  * @Description: Nittle Math Library's Config
  * 
@@ -46,19 +46,20 @@
     function approximately(num1,num2,tolerance){
         return Math.abs(num1-num2)<(tolerance||1e-12);
     }
+    
     /** 向数组写入数据
-     * @param {List_Value} rtn 输出对象
+     * @param {List_Value} out 输出对象
      * @param {List_Value} org 数据来源
      * @param {int} [_l]   写入长度
      * @return {List_Value} 修改并返回 out
      */
-    function copy_Array(rtn,org,_l){
-        var i=_l||(rtn.length>org.length?org.length:rtn.length);
+    function copy_Array(out,org,_l){
+        var i=_l||(out.length>org.length?org.length:out.length);
         do{
             --i;
-            rtn[i]=org[i];
+            out[i]=org[i];
         }while(i);
-        return rtn;
+        return out;
     }
 // end  * 配置/基础 * end 
 

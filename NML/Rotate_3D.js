@@ -40,22 +40,22 @@ import { Matrix, Vector } from "./Vector_Matrix.js";
     const _MAPPING__PROPER_EULER_ANGLE_I=new Int8Array([-1,0,1,1,-1,0,0,1]);
 
     /** 获取atan2时使用的数据 
-     * @param {List_Value} out       输出对象
-     * @param {int}        op_static 静指针(下标)
-     * @param {int}        op_move   动指针(下标)
-     * @param {List_Value} m         矩阵数据
-     * @param {int[]}      map_i     坐标系-sin映射表
-     * @param {boolean}    uv_o_vu   静指针-动指针 是u-v(true)还是v-u(false)
-     * @param {int}        cos_uv    cos的uv
-     * @param {boolean}    f_i       是否使用置负
+     * @param {List_Value} out         输出对象
+     * @param {int}        op_static   静指针(下标)
+     * @param {int}        op_move     动指针(下标)
+     * @param {List_Value} mat         矩阵数据
+     * @param {int[]}      map_inverse 坐标系-sin映射表
+     * @param {boolean}    uv_o_vu     静指针-动指针 是u-v(true)还是v-u(false)
+     * @param {int}        cos_uv      cos的uv
+     * @param {boolean}    f_inverse   是否使用置负
      */
-    function load_MK__EulerAngles_setup_Matrix(out,op_static,op_move,m,map_i,uv_o_vu,cos_uv,f_i){
+    function load_MK__EulerAngles_setup_Matrix(out,op_static,op_move,mat,map_inverse,uv_o_vu,cos_uv,f_inverse){
         var p=op_move,i,j;
         --p
         do{ // out[1]:cos, out[0]:sin
             i=uv_o_vu?Matrix.get_Index(3,op_static,p):Matrix.get_Index(3,p,op_static);
             j=p===cos_uv?0:1;
-            out[j]=((~map_i.indexOf(i))&&(f_i))?-m[i]:m[i];
+            out[j]=((~map_inverse.indexOf(i))&&(f_inverse))?-mat[i]:mat[i];
             p===0?p=2:--p;
         }while(p!==op_move);
     }
@@ -69,7 +69,6 @@ class Rotate_3D{
      * @param {int[]} [_euler_angles_axis] 欧拉角的顺序 (默认[0,1,2] (BPH)(zxy))
      */
     constructor(data,_calc_flag,_euler_angles_axis){
-        this.
         /** @type {EulerAngles} 欧拉角数据 */
         this._euler_angles=new EulerAngles(3);
         /** @type {Int8Array[]} 欧拉角的顺序 (默认[0,1,2] (BPH)(zxy)) */
@@ -205,48 +204,47 @@ class EulerAngles extends CONFIG.VALUE_TYPE{
     }
 
     /** 使用矩阵生成欧拉角
-     * @param  {Matrix_3}     m         仅做过旋转变换的矩阵
+     * @param  {Matrix_3}     mat         仅做过旋转变换的矩阵
      * @param  {int[]}       [_axis]    创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
      * @param  {List_Value}  [_out]      接收数据的对象
      * @return {EulerAngles} 修改并返回 out, 或返回一个新的欧拉角
      */
-    static create_EulerAngles__Matrix(m,_axis,_out){
+    static create_EulerAngles__Matrix(mat,_axis,_out){
         var axis=_axis||[0,1,2];
-        var u,v,i,cos_uv,f_i;
+        var u,v,index,cos_uv,flag_inverse;
         var acs=axis[0]===axis[2]?acos:asin;
-        var mk1;
-        var mk0 = new Vector(2),
-            mk2 = new Vector(2);
+        var sin_axis1;
+        var sin_cos_axis0 = new Vector(2),
+            sin_cos_axis2 = new Vector(2);
         var rtn=_out||new EulerAngles(3);
-        var map_i=CONFIG.AXIS?  _MAPPING__EulerAngles_I_INDEX_MATRIX__LEFT:
-                                _MAPPING__EulerAngles_I_INDEX_MATRIX__RIGHT;
+        var map__inverse=CONFIG.AXIS?  _MAPPING__EulerAngles_I_INDEX_MATRIX__LEFT:_MAPPING__EulerAngles_I_INDEX_MATRIX__RIGHT;
         
         v=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[0]];
         u=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[2]];
-        i=Matrix.get_Index(3,u,v);
-        mk1= ~map_i.indexOf(i)?-m[i]:m[i];
+        index=Matrix.get_Index(3,u,v);
+        sin_axis1= ~map__inverse.indexOf(index)?-mat[index]:mat[index];
 
-        if(approximately(abs(mk1),1)){ // Euler Angles Lock
+        if(approximately(abs(sin_axis1),1)){ // Euler Angles Lock
             v=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[0]];
             u=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[1]];
-            load_MK__EulerAngles_setup_Matrix(mk0,u,v,m,map_i,true,u,true);
-            rtn[0]=atan2(mk0[1],mk0[0]);
+            load_MK__EulerAngles_setup_Matrix(sin_cos_axis0,u,v,mat,map__inverse,true,u,true);
+            rtn[0]=atan2(sin_cos_axis0[1],sin_cos_axis0[0]);
             rtn[1]=axis[0]===axis[2]?DEG_180:DEG_90;
             rtn[2]=0;
         }else{ // default
             if(axis[0]===axis[2]){
-                i=axis[0]*3+axis[1];
-                cos_uv=_MAPPING__PROPER_EULER_ANGLE_COS[i];
-                f_i=_MAPPING__PROPER_EULER_ANGLE_I[i];
-                load_MK__EulerAngles_setup_Matrix(mk0,u,v,m,map_i,true ,cos_uv,!f_i);
-                load_MK__EulerAngles_setup_Matrix(mk2,v,u,m,map_i,false,cos_uv,f_i);
+                index=axis[0]*3+axis[1];
+                cos_uv=_MAPPING__PROPER_EULER_ANGLE_COS[index];
+                flag_inverse=_MAPPING__PROPER_EULER_ANGLE_I[index];
+                load_MK__EulerAngles_setup_Matrix(sin_cos_axis0,u,v,mat,map__inverse,true ,cos_uv,!flag_inverse);
+                load_MK__EulerAngles_setup_Matrix(sin_cos_axis2,v,u,mat,map__inverse,false,cos_uv,flag_inverse);
             }else{
-                load_MK__EulerAngles_setup_Matrix(mk0,u,v,m,map_i,true ,u,true);
-                load_MK__EulerAngles_setup_Matrix(mk2,v,u,m,map_i,false,v,true);
+                load_MK__EulerAngles_setup_Matrix(sin_cos_axis0,u,v,mat,map__inverse,true ,u,true);
+                load_MK__EulerAngles_setup_Matrix(sin_cos_axis2,v,u,mat,map__inverse,false,v,true);
             }
-            rtn[0]=atan2(mk0[1],mk0[0]);
-            rtn[1]=acs(mk1);
-            rtn[2]=atan2(mk2[1],mk2[0]);
+            rtn[0]=atan2(sin_cos_axis0[1],sin_cos_axis0[0]);
+            rtn[1]=acs(sin_axis1);
+            rtn[2]=atan2(sin_cos_axis2[1],sin_cos_axis2[0]);
         }
         return rtn;
     }
@@ -267,18 +265,18 @@ class EulerAngles extends CONFIG.VALUE_TYPE{
 class Quat extends CONFIG.VALUE_TYPE{
     
     /** 使用矩阵计算出欧拉角
-     * @param {Matrix_3} m 仅做过旋转变换的矩阵
+     * @param {Matrix_3} mat 仅做过旋转变换的矩阵
      * @return {EulerAngles}
      */
-    static setup_Matrix(m){
+    static setup_Matrix(mat){
         // todo
     }
 
     /** 使用四元数
-     * @param {Quat} m 仅做过旋转变换的矩阵
+     * @param {Quat} mat 仅做过旋转变换的矩阵
      * @return {EulerAngles}
      */
-    static setup_EulerAngles(m){
+    static setup_EulerAngles(mat){
         // todo
     }
 
