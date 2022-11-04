@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-04 21:44:03
+ * @LastEditTime: 2022-11-04 22:34:09
  * @FilePath: \site\js\import\NML\NML\Vector_Matrix.js
  * @Description: 向量和矩阵
  * 
@@ -43,7 +43,7 @@ class Vector extends CONFIG.VALUE_TYPE{
      * @return {Number} 返回模长
      */
     static mag(vec) {
-        var Squares;
+        var Squares=0;
         for(var i =vec.length-1;i>=0;--i){
             Squares+=vec[i]*vec[i];
         }
@@ -63,7 +63,7 @@ class Vector extends CONFIG.VALUE_TYPE{
      * @return {Vector} 返回新的向量
      */
     static create_Normalization(vec){
-        return Vector.normalize(Vector.copy(vec));
+        return Vector.normalize(new Vector(vec));
     }
 
     /** 标准化向量
@@ -71,8 +71,8 @@ class Vector extends CONFIG.VALUE_TYPE{
      * @return {List_Value} 修改并返回 vec
      */
     static normalize(vec) {
-        if(!Vector.is_Zero(vec))throw new Error("This is a zero Vector.");
-        var magSq = vec.get_Mag(),oneOverMag=0;
+        if(!Vector.is_Zero__Strict(vec))throw new Error("This is a zero Vector.");
+        var magSq = Vector.mag(vec),oneOverMag=0;
         if (magSq>0) {
             oneOverMag = 1.0/magSq;
             for(var i =vec.length-1;i>=0;--i){
@@ -82,16 +82,28 @@ class Vector extends CONFIG.VALUE_TYPE{
         return vec;
     }
 
-    /** 判断向量是不是零向量
+    /** 判断向量是不是零向量 (严格的,不考虑浮点数误差)
      * @param  {List_Value} vec 向量
      * @return {Number} 返回0或非0
      */
-    static is_Zero(vec){
+    static is_Zero__Strict(vec){
         var i=vec.length;
         do{
             --i;
         }while((!vec[i])&&i>0)
         return vec[i];
+    }
+    
+    /** 判断向量是不是零向量
+     * @param  {List_Value} vec 向量
+     * @return {Boolean} 返回 向量是不是零向量
+     */
+     static is_Zero(vec){
+        var i=vec.length;
+        do{
+            --i;
+        }while(!approximately(vec[i],0)&&i>0)
+        return !approximately(vec[i]);
     }
     
     /** 判断向量是否相等
