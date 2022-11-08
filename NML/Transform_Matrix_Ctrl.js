@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-01 01:36:22
+ * @LastEditTime: 2022-11-07 21:02:41
  * @FilePath: \site\js\import\NML\NML\Transform_Matrix_Ctrl.js
  * @Description: 变换控制器
  * todo
@@ -23,74 +23,41 @@ import { Matrix } from "./Vector_Matrix.js";
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
 
-
+// todo
 // open * 变换矩阵控制器 * open
-    // open * 3d 变换矩阵控制器 * open
-        /** 3d 变换矩阵控制器 */
-        class Transform_3D_Matrix_Ctrl{
-            /** 
-             * @param {Hand__Transform_3D_Matrix_Ctrl[]} process 
-             */
-            constructor(process){
-                /** @type {Hand__Transform_3D_Matrix_Ctrl[]} 变换过程 */
-                this.process=Object.assign({},process);
-                /** @type {Matrix} 4x4 矩阵,缓存的变换矩阵 */
-                this._mat=new Matrix(16);
-            }
+    class Transform_Matrix_Ctrl{
+        /** 
+         * @param {Hand__Transform_Matrix_Ctrl[]} process 
+         */
+        constructor(process){
+            /** @type {Hand__Transform_Matrix_Ctrl[]} 变换过程 */
+            this.process=Object.assign({},process);
+            /** @type {Matrix} 4x4 / 3x3 矩阵,  缓存的变换矩阵 */
+            this._mat;
+        }
 
-            /** 获取变换矩阵
-             * @return {Matrix} 返回一个新的矩阵
-             */
-            get_Matrix(){
-                return new Matrix(this._mat);
-            }
-            
-            /** 获取当前控制器的 变换矩阵的引用
-             * @return {Matrix} 返回 this._mat
-             */
-            get_Matrix__Life(){
-                return this._mat;
-            }
+        /** 获取变换矩阵
+         * @return {Matrix} 返回一个新的矩阵
+         */
+        create_Matrix(){
+            return new Matrix(this._mat);
         }
         
-        /** 3d 变换矩阵控制器 单个变换操作 */
-        class Hand__Transform_3D_Matrix_Ctrl{
-            /** 
-             * @param {Number|String} type 
-             * @param {*} params 
-             */
-            constructor(type,params){
-                /** @type {Number} */
-                this._type=type;
-                if(type.constructor!==Number){
-                    this._type=Hand__Transform_3D_Matrix_Ctrl.MAPPING__HAND_NO_TO_TYPE_NAME.indexOf(type);
-                }
-                this.params=params;
-            }
-
-            /**
-             * @param {Hand__Transform_3D_Matrix_Ctrl} tgt 拷贝对象
-             * @return {Hand__Transform_3D_Matrix_Ctrl}
-             */
-            copy(tgt){
-                // todo
-            }
-
-            /** @type {String[]} 操作类型映射表 */
-            static MAPPING__HAND_NO_TO_TYPE_NAME=[
-                // todo
-                "translate",
-                "size",
-                "rotate",
-                "pojection",
-                "shear",
-                "horizontal"
-            ]
+        /** 获取当前控制器的 变换矩阵的引用
+         * @return {Matrix} 返回 this._mat
+         */
+        get_Matrix__Life(){
+            return this._mat;
         }
-    // end  * 3d 变换矩阵控制器 * end 
+    }
+
+    class Hand__Transform_Matrix_Ctrl{
+        
+    }
+    
 // end  * 变换矩阵控制器 * end 
 
 export{
-    Transform_3D_Matrix_Ctrl,
-    Hand__Transform_3D_Matrix_Ctrl
+    Transform_Matrix_Ctrl,
+    Hand__Transform_Matrix_Ctrl
 }

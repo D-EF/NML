@@ -10,7 +10,7 @@
  */
 import {NML} from "../index.js";
 
-const {Vector,Matrix,Matrix_2,Matrix_3,Transform_3D_Matrix_Ctrl}=NML;
+const {Vector,Matrix,Matrix_2,Matrix_3,Transform_Matrix_Ctrl}=NML;
 
 function test(){
     var vec_3d=new Vector([1,2,3]);
