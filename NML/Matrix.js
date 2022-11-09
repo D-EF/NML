@@ -1,234 +1,24 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-04 22:34:09
- * @FilePath: \site\js\import\NML\NML\Vector_Matrix.js
- * @Description: 向量和矩阵
+ * @LastEditTime: 2022-11-10 03:06:25
+ * @FilePath: \site\js\import\NML\NML\Matrix.js
+ * @Description: 通用矩阵
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
 
 /*h*/// open * 类型注释 * open
-/*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-/*h*//** @typedef {Number} int      整形数字 */
-/*h*//** @typedef {Number} double   双浮点数字 */
-/*h*//** @typedef {Number} float    单浮点数字 */
-/*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
+    /*h*//** @typedef {Number} int      整形数字 */
+    /*h*//** @typedef {Number} double   双浮点数字 */
+    /*h*//** @typedef {Number} float    单浮点数字 */
+    /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
+import Vector from "./Vector.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
-
-/** 向量 */
-class Vector extends CONFIG.VALUE_TYPE{
-    // 继承使用 CONFIG.VALUE_TYPE 的构造函数
-
-    /** 判断2d向量在哪个象限上, 规定 0 视作正
-     * @param  {List_Value} vec 向量
-     * @return {int} 返回在哪个象限
-     */
-    static v2__get_Quadrant(vec){
-        var f1=vec[0]>=0,f2=vec[1]>=0;
-        if(f1){
-            if(f2)  return 1;
-            else    return 4;
-        }else{
-            if(f2)  return 2; 
-            else    return 3; 
-        }
-    }
-    
-    /** 求模长
-     * @param  {List_Value} vec 向量
-     * @return {Number} 返回模长
-     */
-    static mag(vec) {
-        var Squares=0;
-        for(var i =vec.length-1;i>=0;--i){
-            Squares+=vec[i]*vec[i];
-        }
-        return sqrt(Squares);
-    }
-
-    /** 判断某个向量是否为单位向量
-     * @param {List_Value} vec 向量
-     * @param {boolean} 返回是否为单位向量
-     */
-    static is_Unit(vec){
-        return abs(1-Vector.dot(vec,vec))<CONFIG.APPROXIMATELY_TOLERANCE;
-    }
-
-    /** 创建标准化向量
-     * @param  {List_Value} vec 向量
-     * @return {Vector} 返回新的向量
-     */
-    static create_Normalization(vec){
-        return Vector.normalize(new Vector(vec));
-    }
-
-    /** 标准化向量
-     * @param  {List_Value} vec 向量
-     * @return {List_Value} 修改并返回 vec
-     */
-    static normalize(vec) {
-        if(!Vector.is_Zero__Strict(vec))throw new Error("This is a zero Vector.");
-        var magSq = Vector.mag(vec),oneOverMag=0;
-        if (magSq>0) {
-            oneOverMag = 1.0/magSq;
-            for(var i =vec.length-1;i>=0;--i){
-                vec[i] *= oneOverMag;
-            }
-        }
-        return vec;
-    }
-
-    /** 判断向量是不是零向量 (严格的,不考虑浮点数误差)
-     * @param  {List_Value} vec 向量
-     * @return {Number} 返回0或非0
-     */
-    static is_Zero__Strict(vec){
-        var i=vec.length;
-        do{
-            --i;
-        }while((!vec[i])&&i>0)
-        return vec[i];
-    }
-    
-    /** 判断向量是不是零向量
-     * @param  {List_Value} vec 向量
-     * @return {Boolean} 返回 向量是不是零向量
-     */
-     static is_Zero(vec){
-        var i=vec.length;
-        do{
-            --i;
-        }while(!approximately(vec[i],0)&&i>0)
-        return !approximately(vec[i]);
-    }
-    
-    /** 判断向量是否相等
-     * @param  {List_Value} vec_left 向量1
-     * @param  {List_Value} vec_right 向量2
-     * @return {Boolean}
-     */
-    static is_Equal(vec_left,vec_right){
-        var i=vec_left.length;
-        if(i!==vec_right.length)return false;
-        do{
-            --i;
-        }while((vec_left[i]===vec_right[i])&&i>0)
-        return vec_left[i]===vec_right[i];
-    }
-    
-    /** 取反
-     * @param  {List_Value} vec 向量
-     * @return {Vector} 返回新的向量
-     */
-    static instead(vec){
-        return Vector.instead_b(new Vector(vec));
-    }
-    
-    /** 反转向量
-     * @param  {List_Value} vec 向量
-     * @return {List_Value} 修改并返回v
-     */
-    static instead_b(vec){
-        for(var i=vec.length-1;i>=0;--i){
-            vec[i]*=-1;
-        }
-        return vec;
-    }
-
-    /** 求向量和
-     * @param  {List_Value} vec_left 向量1
-     * @param  {List_Value} vec_right 向量2
-     * @return {Vector} 返回新的向量
-     */
-    static sum(vec_left,vec_right){
-        return Vector.translate(new Vector(vec_left),vec_right);
-    }
-    
-    /** 平移
-     * @param {List_Value} vec_left  原向量
-     * @param {List_Value} vec_right  偏移量向量
-     * @return {List_Value} 修改并返回 vec_left
-     */
-    static translate(vec_left,vec_right){
-        if(vec_left.length!==vec_right.length) throw new Error("They vectors have different length!")
-        for(var i=vec_left.length-1;i>=0;--i){
-            vec_left[i]+=vec_right[i];
-        }
-        return vec_left;
-    }
-    
-    /** 求向量差 1-2
-     * @param {List_Value} vec_left 向量1
-     * @param {List_Value} vec_right 向量2
-     * @return {Vector} 返回一个新向量
-     */
-    static dif(vec_left,vec_right){
-        return Vector.translate(Vector.instead(vec_right),vec_left);
-    }
-    
-    /** 数字乘向量 
-     * @param {List_Value} vec    向量
-     * @param {Number} k 标量
-     * @return {Vector} 返回新的向量
-     */
-    static np(vec,k){
-        return Vector.np_b(new Vector(vec),k);
-    }
-
-    /** 数字乘向量 
-     * @param {List_Value} vec    向量
-     * @param {Number} k 标量
-     * @return {Vector}  修改并返回 v
-     */
-    static np_b(vec,k){
-        for(var i=vec.length-1;i>=0;--i){
-            vec[i]*=k;
-        }
-        return vec;
-    }
-
-    /** 向量内积
-     * @param {List_Value} vec_left 向量1
-     * @param {List_Value} vec_right 向量2
-     * @return {Number} 返回 vec_left * vec_right
-     */
-    static dot(vec_left,vec_right){
-        if(vec_left.length!==vec_right.length) throw new Error("They vectors have different length!")
-        var rtn=0;
-        for(var i=vec_left.length-1;i>=0;--i){
-            rtn+=vec_left[i]*vec_right[i];
-        }
-        return rtn;
-    }
-
-    /** 向量外积 仅支持 3D 和 2D 向量
-     * @param {List_Value} vec_left 向量1
-     * @param {List_Value} vec_right 向量2
-     * @return {Number|List_Value} 返回 vec_left x vec_right
-     */
-    static cross(vec_left,vec_right){
-        if(vec_left.length===2&&vec_right.length===2)return vec_left[0]*vec_right[1]-vec_left[1]*vec_right[0];
-        else if(vec_left.length===3&&vec_right.length===3) return  new Vector([
-            vec_left[1]*vec_right[2]-vec_left[2]*vec_right[1],    // x : y1z2-z1y2
-            vec_left[2]*vec_right[0]-vec_left[0]*vec_right[2],    // y : z1x2-x1z2
-            vec_left[0]*vec_right[1]-vec_left[1]*vec_right[0]     // z : x1y2-y1x2
-        ]);
-        else throw new Error("This function only run in 2D or 3D Vector! ");
-    }
-
-    /** 计算向量夹角 ∠AOB 的 cos
-     * @param {List_Value} vec_left 表示角的一边的射线上 的 向量A
-     * @param {List_Value} vec_right 表示角的一边的射线上 的 向量B
-     * @return {Number} 返回夹角的cos值
-     */
-    static cos_2Vec(vec_left,vec_right){
-        return Vector.dot(vec_left,vec_right)/(Vector.mag(vec_left)*Vector.mag(vec_right));
-    }
-}
 
 /** 矩阵
  * 矩阵的数据类型为1维线性表:
@@ -267,6 +57,20 @@ class Matrix extends CONFIG.VALUE_TYPE{
         var n=parseInt(_n||sqrt(mat.length));
         if(n*n!==mat.length) throw new Error("This is not a square matrix! It should be a (n*n)!");
         return n;
+    }
+
+    /** 判断两个矩阵是否相等 (允许误差)
+     * @param {Matrix} mat1 
+     * @param {Matrix} mat2 
+     */
+    static check_Equal(mat1,mat2){
+        var i=mat1.length;
+        if(i===mat2.length)do{
+            --i;
+            if(!approximately(mat1[i],mat2[i]))return false;
+        }while(i);
+        else return false;
+        return true
     }
 
     /** 根据原矩阵创建新的矩阵, 可以改变矩阵的宽高, 在空的地方会写入单位矩阵的数据 
@@ -548,6 +352,33 @@ class Matrix extends CONFIG.VALUE_TYPE{
         return rtn;
     }
 
+    /**
+     * 
+     * @param {Matrix}  mat_left  左矩阵
+     * @param {Matrix}  mat_right 右矩阵
+     * 
+     * @param {int}     [_original_width_left]   左矩阵原宽度
+     * @param {int}     [_original_height_left]  左矩阵原高度
+     * @param {int}     [_original_width_right]  右矩阵原宽度
+     * @param {int}     [_original_height_right] 右矩阵原高度
+     * 
+     * @param {int}     [_calc_height_left]             左矩阵高度
+     * @param {int}     [_calc_width_left_height_right] 左矩阵的宽度 与 右矩阵的高度
+     * @param {int}     [_calc_width_right]             右矩阵宽度
+     * 
+     * @param {int}     [_shift_u_left]  左矩阵 u 偏移量 (默认0)
+     * @param {int}     [_shift_v_left]  左矩阵 v 偏移量 (默认0)
+     * @param {int}     [_shift_u_right] 右矩阵 u 偏移量 (默认0)
+     * @param {int}     [_shift_v_right] 右矩阵 v 偏移量 (默认0)
+     */
+    multiplication__DifferentSize(mat_left,mat_right,
+                                _original_width_left,_original_height_left,_original_width_right,_original_height_right,
+                                _new_height_left,_new_width_left_height_right,_new_width_right,
+                                _shift_u_left,_shift_v_left,_shift_u_right,_shift_v_right){
+        // todo
+            
+    }
+
     /** 检查矩阵正交
      * @param {Matrix} mat    矩阵
      * @param {Matrix} [_n] n阶矩阵
@@ -823,6 +654,5 @@ class Matrix extends CONFIG.VALUE_TYPE{
 
 //# 导出
 export{
-    Vector,
     Matrix
 }

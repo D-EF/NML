@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-07 21:02:41
+ * @LastEditTime: 2022-11-10 03:05:57
  * @FilePath: \site\js\import\NML\NML\Transform_Matrix_Ctrl.js
  * @Description: 变换控制器
  * todo
@@ -9,17 +9,17 @@
  */
 
 /*h*/// open * 类型注释 * open
-/*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-/*h*//** @typedef {Number} int      整形数字 */
-/*h*//** @typedef {Number} double   双浮点数字 */
-/*h*//** @typedef {Number} float    单浮点数字 */
-/*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
+    /*h*//** @typedef {Number} int      整形数字 */
+    /*h*//** @typedef {Number} double   双浮点数字 */
+    /*h*//** @typedef {Number} float    单浮点数字 */
+    /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
-import { Matrix_2, Matrix_3 } from "./Graphics_Transform_Matrix.js";
+import { Matrix_2, Matrix_3 } from "./Matrix_3D.js";
 import { EulerAngles, Quat, Rotate_3D } from "./Rotate_3D.js";
-import { Matrix } from "./Vector_Matrix.js";
+import { Matrix } from "./Matrix.js";
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
 

@@ -44,7 +44,7 @@
      * @param {Number} tolerance 容差， 默认为 1e-12
      */
     function approximately(num1,num2,tolerance){
-        return Math.abs(num1-num2)<(tolerance||1e-12);
+        return Math.abs(num1-num2)<(tolerance||CONFIG.APPROXIMATELY_TOLERANCE);
     }
     
     /** 向数组写入数据
