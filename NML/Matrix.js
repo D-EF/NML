@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-10 03:06:25
+ * @LastEditTime: 2022-11-22 18:14:37
  * @FilePath: \site\js\import\NML\NML\Matrix.js
  * @Description: 通用矩阵
  * 
@@ -95,7 +95,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     }
 
 
-    /** 矩阵数据转移
+    /** 矩阵数据转移 空省位置会保留out的内容
      * @param {Matrix} out        数据输出对象(要写入的矩阵)
      * @param {Matrix} mat        数据来源矩阵
      * @param {int} low_width     原矩阵宽度
@@ -107,10 +107,10 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @return {Matrix} 修改 out 并返回
      */
     static setup(out,mat,low_width,new_width,_low_hight,_new_hight,_shift_left,_shift_top){
-        var low_hight=_low_hight||low_width,new_h=_new_hight||new_width,
+        var low_hight  = _low_hight||low_width,new_h=_new_hight||new_width,
             shift_top  = (_shift_top&&((new_width+_shift_top)%new_width))||0,
             shift_left = _shift_left===undefined?shift_top:((new_h+_shift_left)%new_h),
-            length=new_width*new_h,
+            length     = new_width*new_h,
             temp_u,temp_v,u,v,
             i;
         u=new_width-1;
@@ -335,7 +335,9 @@ class Matrix extends CONFIG.VALUE_TYPE{
         var height_left=_height_left||n,
             width_left_height_right=_width_left_height_right||n,
             width_right=_width_right||n;
+            
         if(height_left<=0&&width_left_height_right<=0&&width_right<=0) throw new Error ("had null matrix in param!");
+
         var length=width_right*height_left, index_mat_left, index_mat_right, index_rtn, u, v, i;
         var rtn=new Matrix(length);
         
@@ -351,41 +353,13 @@ class Matrix extends CONFIG.VALUE_TYPE{
         }
         return rtn;
     }
-
-    /**
-     * 
-     * @param {Matrix}  mat_left  左矩阵
-     * @param {Matrix}  mat_right 右矩阵
-     * 
-     * @param {int}     [_original_width_left]   左矩阵原宽度
-     * @param {int}     [_original_height_left]  左矩阵原高度
-     * @param {int}     [_original_width_right]  右矩阵原宽度
-     * @param {int}     [_original_height_right] 右矩阵原高度
-     * 
-     * @param {int}     [_calc_height_left]             左矩阵高度
-     * @param {int}     [_calc_width_left_height_right] 左矩阵的宽度 与 右矩阵的高度
-     * @param {int}     [_calc_width_right]             右矩阵宽度
-     * 
-     * @param {int}     [_shift_u_left]  左矩阵 u 偏移量 (默认0)
-     * @param {int}     [_shift_v_left]  左矩阵 v 偏移量 (默认0)
-     * @param {int}     [_shift_u_right] 右矩阵 u 偏移量 (默认0)
-     * @param {int}     [_shift_v_right] 右矩阵 v 偏移量 (默认0)
-     */
-    multiplication__DifferentSize(mat_left,mat_right,
-                                _original_width_left,_original_height_left,_original_width_right,_original_height_right,
-                                _new_height_left,_new_width_left_height_right,_new_width_right,
-                                _shift_u_left,_shift_v_left,_shift_u_right,_shift_v_right){
-        // todo
-            
-    }
-
+    
     /** 检查矩阵正交
      * @param {Matrix} mat    矩阵
      * @param {Matrix} [_n] n阶矩阵
      * @return {Boolean}
      */
     static check_Orthogonal(mat,_n){
-
         var n=Matrix.check_Square(mat,_n);
         var rows=new Array(n);
         var i,j;
@@ -402,7 +376,6 @@ class Matrix extends CONFIG.VALUE_TYPE{
             }
         }
         return f;
-        
     }
 
     /** 矩阵转置

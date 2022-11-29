@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-04 22:34:09
+ * @LastEditTime: 2022-11-10 16:02:45
  * @FilePath: \site\js\import\NML\NML\Vector.js
  * @Description: 向量
  * 
@@ -230,7 +230,6 @@ class Vector extends CONFIG.VALUE_TYPE{
     }
 }
 
-export default Vector;
 export{
     Vector
 }

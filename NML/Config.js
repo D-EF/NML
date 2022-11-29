@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-04 21:44:31
+ * @LastEditTime: 2022-11-22 09:21:38
  * @FilePath: \site\js\import\NML\NML\Config.js
  * @Description: Nittle Math Library's Config
  * 
@@ -20,15 +20,15 @@
      * @typedef Config__NML
      * @property {Float32ArrayConstructor|Float64ArrayConstructor} VALUE_TYPE 向量使用的数据类型; 可选值为 {Float32Array, Float64Array}, 默认为 Float32Array
      * @property {float} APPROXIMATELY_TOLERANCE 计算容差 默认为 1e-6
-     * @property {int} AXIS 坐标系 [左手系,右手系] (默认为0 左手系)
+     * @property {int} COORDINATE_SYSTEM 坐标系 [左手系,右手系] (默认为0 左手系)
      */
     globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
-    globalThis.NML_AXIS=globalThis.NML_AXIS||0;
+    globalThis.NML_COORDINATE_SYSTEM=globalThis.NML_COORDINATE_SYSTEM||0;
     /** @type {Config__NML} 配置 */
     const CONFIG=Object.assign({
         VALUE_TYPE:globalThis.NML_VALUE_TYPE,
         APPROXIMATELY_TOLERANCE:1e-6,
-        AXIS:globalThis.NML_AXIS
+        COORDINATE_SYSTEM:globalThis.NML_COORDINATE_SYSTEM
     },globalThis.NML_CONFIG);
     //```
     const {sin,cos,asin,acos,abs,sqrt,tan}=Math,

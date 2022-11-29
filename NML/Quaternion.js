@@ -24,8 +24,8 @@
 class Quaternion extends CONFIG.VALUE_TYPE{
     
     /** 使用矩阵计算出欧拉角
-     * @param {Matrix_3} mat 仅做过旋转变换的矩阵
-     * @return {EulerAngles}
+     * @param {Matrix_3D} mat 仅做过旋转变换的矩阵
+     * @return {Euler_Angles}
      */
     static setup_Matrix(mat){
         // todo
@@ -33,7 +33,7 @@ class Quaternion extends CONFIG.VALUE_TYPE{
 
     /** 使用四元数
      * @param {Quaternion} mat 仅做过旋转变换的矩阵
-     * @return {EulerAngles}
+     * @return {Euler_Angles}
      */
     static setup_EulerAngles(mat){
         // todo

@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-10 03:05:57
+ * @LastEditTime: 2022-11-21 18:06:10
  * @FilePath: \site\js\import\NML\NML\Transform_Matrix_Ctrl.js
  * @Description: 变换控制器
  * todo
@@ -17,47 +17,60 @@
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
-import { Matrix_2, Matrix_3 } from "./Matrix_3D.js";
-import { EulerAngles, Quat, Rotate_3D } from "./Rotate_3D.js";
+import { Matrix_2, Matrix_3D } from "./Matrix_3D.js";
+import { Euler_Angles, Quat, Rotate_3D } from "./Rotate_3D.js";
 import { Matrix } from "./Matrix.js";
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
 
-// todo
-// open * 变换矩阵控制器 * open
-    class Transform_Matrix_Ctrl{
-        /** 
-         * @param {Hand__Transform_Matrix_Ctrl[]} process 
-         */
-        constructor(process){
-            /** @type {Hand__Transform_Matrix_Ctrl[]} 变换过程 */
-            this.process=Object.assign({},process);
-            /** @type {Matrix} 4x4 / 3x3 矩阵,  缓存的变换矩阵 */
-            this._mat;
-        }
-
-        /** 获取变换矩阵
-         * @return {Matrix} 返回一个新的矩阵
-         */
-        create_Matrix(){
-            return new Matrix(this._mat);
-        }
-        
-        /** 获取当前控制器的 变换矩阵的引用
-         * @return {Matrix} 返回 this._mat
-         */
-        get_Matrix__Life(){
-            return this._mat;
-        }
+class Transform_Matrix_Ctrl{
+    /** 
+     * @param {Hand__Transform_Matrix_Ctrl[]} process 
+     */
+    constructor(process){
+        /** @type {Hand__Transform_Matrix_Ctrl[]} 变换过程 */
+        this.process=Object.assign({},process);
+        /** @type {Matrix} 4x4 / 3x3 矩阵,  缓存的变换矩阵 */
+        this._mat;
     }
 
-    class Hand__Transform_Matrix_Ctrl{
-        
+    /** 获取变换矩阵
+     * @return {Matrix} 返回一个新的矩阵
+     */
+    create_Matrix(){
+        return new Matrix(this._mat);
     }
     
-// end  * 变换矩阵控制器 * end 
+    /** 获取当前控制器的 变换矩阵的引用
+     * @return {Matrix} 返回 this._mat
+     */
+    get_Matrix__Life(){
+        return this._mat;
+    }
+}
+
+class Hand__Transform_Matrix_Ctrl__Base{
+    constructor(){
+        /** @abstract @type {Matrix} 实际的变换矩阵 */
+        this.mat;
+        /** @abstract @type {*[]} 参数 */
+        this.params;
+    }
+    /** 刷新变换矩阵 
+     * @abstract
+     */
+    refresh_Mat(){}
+}
+
+/** 2D变换矩阵(3x3)转换为 canvas2D的api使用的数据
+ * @param {Matrix_2} mat 
+ * @return {float[]} 返回长度6的浮点数数组 为 CanvasRenderingContext2D.prototype.transform 的参数数组
+ */
+function conversion__Matrix2D_To_Canvas2D(mat){
+    // todo
+}
 
 export{
     Transform_Matrix_Ctrl,
-    Hand__Transform_Matrix_Ctrl
+    Hand__Transform_Matrix_Ctrl__Base
 }

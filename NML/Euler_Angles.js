@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-10 02:49:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-10 03:06:43
+ * @LastEditTime: 2022-11-22 11:27:19
  * @FilePath: \site\js\import\NML\NML\Euler_Angles.js
  * @Description: 欧拉角
  * 
@@ -74,14 +74,14 @@ import {Vector} from "./Vector.js";
 // end  * 部分映射函数和映射表 * end 
 
 /** 欧拉角 */
-class EulerAngles extends CONFIG.VALUE_TYPE{
+class Euler_Angles extends CONFIG.VALUE_TYPE{
 
     /** 创建欧拉角
      * @param  {List_Value} data 欧拉角旋转数据 
-     * @return {EulerAngles}返回一个新的欧拉角
+     * @return {Euler_Angles}返回一个新的欧拉角
      */
     create(data){
-        var rtn=new EulerAngles(3);
+        var rtn=new Euler_Angles(3);
         if(data){
             rtn[0]=data[0];
             rtn[1]=data[1];
@@ -90,21 +90,29 @@ class EulerAngles extends CONFIG.VALUE_TYPE{
         return rtn;
     }
 
+    static create_EulerAngles__Matrix4x4(mat,_axis,_out){
+        return Euler_Angles.create_EulerAngles__Matrix3x3([
+            mat[0],mat[1],mat[2],
+            mat[4],mat[5],mat[6],
+            mat[8],mat[9],mat[10]
+        ],_axis,_out);
+    }
+
     /** 使用矩阵生成欧拉角
-     * @param  {Matrix_3}     mat         仅做过旋转变换的矩阵
-     * @param  {int[]}       [_axis]    创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
-     * @param  {List_Value}  [_out]      接收数据的对象
-     * @return {EulerAngles} 修改并返回 out, 或返回一个新的欧拉角
+     * @param  {Matrix}      mat    仅做过旋转变换的3x3矩阵
+     * @param  {int[]}      [_axis] 创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
+     * @param  {List_Value} [_out]  接收数据的对象
+     * @return {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
      */
-    static create_EulerAngles__Matrix(mat,_axis,_out){
+    static create_EulerAngles__Matrix3x3(mat,_axis,_out){
         var axis=_axis||[0,1,2];
         var u,v,index,cos_uv,flag_inverse;
         var acs=axis[0]===axis[2]?acos:asin;
         var sin_axis1;
         var sin_cos_axis0 = new Vector(2),
             sin_cos_axis2 = new Vector(2);
-        var rtn=_out||new EulerAngles(3);
-        var map__inverse=CONFIG.AXIS?  _MAPPING__EulerAngles_INVERSE_INDEX_MATRIX__LEFT:_MAPPING__EulerAngles_INVERSE_INDEX_MATRIX__RIGHT;
+        var rtn=_out||new Euler_Angles(3);
+        var map__inverse=CONFIG.COORDINATE_SYSTEM?  _MAPPING__EulerAngles_INVERSE_INDEX_MATRIX__LEFT:_MAPPING__EulerAngles_INVERSE_INDEX_MATRIX__RIGHT;
         
         v=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[0]];
         u=_MAPPING__EulerAngles_NULL_UV_MATRIX[axis[2]];
@@ -141,7 +149,7 @@ class EulerAngles extends CONFIG.VALUE_TYPE{
      * @param  {Quat}         quat      四元数
      * @param  {int[]}       [_axis]    欧拉角旋转顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
      * @param  {List_Value}  [out]      接收数据的对象
-     * @return {EulerAngles} 修改并返回 out, 或返回一个新的欧拉角
+     * @return {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
      */
     static setup_QUAT(m){
         // todo
@@ -149,5 +157,5 @@ class EulerAngles extends CONFIG.VALUE_TYPE{
 }
 
 export{
-    EulerAngles
+    Euler_Angles
 }
