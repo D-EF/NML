@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-04 21:44:41
+ * @LastEditTime: 2022-12-18 23:28:40
  * @FilePath: \site\js\import\NML\NML\Algebra.js
  * @Description: 数字运算相关
  * 

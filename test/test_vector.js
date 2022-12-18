@@ -2,13 +2,13 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-01 00:48:35
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:16:49
+ * @LastEditTime: 2022-12-18 23:31:34
  * @FilePath: \site\js\import\NML\test\test_Vector.js
  * @Description: 
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
-import {NML} from "../index.js";
+import NML from "../index.js";
 
 const {Vector}=NML;
 

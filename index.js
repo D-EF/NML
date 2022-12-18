@@ -2,30 +2,42 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-10-07 16:55:37
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-10 03:03:15
+ * @LastEditTime: 2022-12-18 23:35:28
  * @FilePath: \site\js\import\NML\index.js
  * @Description: index
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
-import * as m1 from "./NML/Algebra.js";
-import * as m2 from "./NML/Config.js";
-import * as m3 from "./NML/Vector_Matrix.js";
-import * as m4 from "./NML/Matrix_3D.js";
-import * as m5 from "./NML/Euler_Angles";
-import * as m6 from "./NML/Vector_Matrix.js";
-import * as m7 from "./NML/Transform_Matrix_Ctrl.js";
+import * as Algbra from "./NML/Algebra.js";
+import {CONFIG} from "./NML/Config.js";
+import {Vector} from "./NML/Vector.js";
+import {Matrix} from "./NML/Matrix.js";
+import {Matrix_2D} from "./NML/Matrix_2D.js";
+import {Matrix_3D} from "./NML/Matrix_3D.js";
+import {Euler_Angles} from "./NML/Euler_Angles.js";
+import {Quaternion} from "./NML/Quaternion.js";
+import {Transform_Matrix_Ctrl} from "./NML/Transform_Matrix_Ctrl.js";
 
 const NML ={
-    ...m1,
-    ...m2,
-    ...m3,
-    ...m4,
-    ...m5,
-    ...m6,
-    ...m7,
+    Algbra,
+    CONFIG,
+    Vector,
+    Matrix,
+    Matrix_2D,
+    Matrix_3D,
+    Euler_Angles,
+    Quaternion,
+    Transform_Matrix_Ctrl
 }
 export default NML;
 export {
-    NML
+    Algbra,
+    CONFIG,
+    Vector,
+    Matrix,
+    Matrix_2D,
+    Matrix_3D,
+    Euler_Angles,
+    Quaternion,
+    Transform_Matrix_Ctrl
 }
