@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-21 18:06:10
+ * @LastEditTime: 2022-11-29 23:57:06
  * @FilePath: \site\js\import\NML\NML\Transform_Matrix_Ctrl.js
  * @Description: 变换控制器
  * todo
@@ -22,7 +22,8 @@ import { Euler_Angles, Quat, Rotate_3D } from "./Rotate_3D.js";
 import { Matrix } from "./Matrix.js";
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
-
+// todo
+/** 矩阵变换控制器 */
 class Transform_Matrix_Ctrl{
     /** 
      * @param {Hand__Transform_Matrix_Ctrl[]} process 
@@ -48,7 +49,7 @@ class Transform_Matrix_Ctrl{
         return this._mat;
     }
 }
-
+/** 矩阵变换控制器的单个动作 */
 class Hand__Transform_Matrix_Ctrl__Base{
     constructor(){
         /** @abstract @type {Matrix} 实际的变换矩阵 */

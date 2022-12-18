@@ -1,3 +1,13 @@
+/*
+ * @Author: Darth_Eternalfaith darth_ef@hotmail.com
+ * @Date: 2022-11-14 01:09:18
+ * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
+ * @LastEditTime: 2022-12-18 23:14:24
+ * @FilePath: \site\js\import\NML\NML\Matrix_2D.js
+ * @Description: 2D变换矩阵
+ * 
+ * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
+ */
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */

@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-10 16:02:45
+ * @LastEditTime: 2022-12-18 23:13:12
  * @FilePath: \site\js\import\NML\NML\Vector.js
  * @Description: 向量
  * 
@@ -122,23 +122,17 @@ class Vector extends CONFIG.VALUE_TYPE{
     
     /** 取反
      * @param  {List_Value} vec 向量
-     * @return {Vector} 返回新的向量
+     * @param  {List_Value} [_out] 输出目标
+     * @return {List_Value|Vector} 返回 _out 或 新的向量
      */
-    static instead(vec){
-        return Vector.instead_b(new Vector(vec));
+    static instead(vec,_out){
+        var out=_out||new Vector(vec.length);
+        for(var i=out.length-1;i>=0;--i){
+            out[i]=-vec[i];
+        }
+        return out;
     }
     
-    /** 反转向量
-     * @param  {List_Value} vec 向量
-     * @return {List_Value} 修改并返回v
-     */
-    static instead_b(vec){
-        for(var i=vec.length-1;i>=0;--i){
-            vec[i]*=-1;
-        }
-        return vec;
-    }
-
     /** 求向量和
      * @param  {List_Value} vec_left 向量1
      * @param  {List_Value} vec_right 向量2

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-10 02:49:29
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-22 11:27:19
+ * @LastEditTime: 2022-12-01 16:34:40
  * @FilePath: \site\js\import\NML\NML\Euler_Angles.js
  * @Description: 欧拉角
  * 
@@ -20,6 +20,7 @@
 
 import { CONFIG } from "./Config.js";
 import { Matrix } from "./Matrix.js";
+import { Matrix_3D } from "./Matrix_3D.js";
 import {Vector} from "./Vector.js";
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
@@ -90,6 +91,12 @@ class Euler_Angles extends CONFIG.VALUE_TYPE{
         return rtn;
     }
 
+    /**
+     * @param {Matrix_3D} mat 4x4 旋转矩阵
+     * @param  {int[]}      [_axis] 创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
+     * @param  {List_Value} [_out]  接收数据的对象
+     * @return {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
+     */
     static create_EulerAngles__Matrix4x4(mat,_axis,_out){
         return Euler_Angles.create_EulerAngles__Matrix3x3([
             mat[0],mat[1],mat[2],
@@ -151,7 +158,7 @@ class Euler_Angles extends CONFIG.VALUE_TYPE{
      * @param  {List_Value}  [out]      接收数据的对象
      * @return {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
      */
-    static setup_QUAT(m){
+    static create_EulerAngles__QUAT(m){
         // todo
     }
 }
