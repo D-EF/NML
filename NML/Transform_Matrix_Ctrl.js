@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-29 23:57:06
+ * @LastEditTime: 2022-12-18 23:39:30
  * @FilePath: \site\js\import\NML\NML\Transform_Matrix_Ctrl.js
  * @Description: 变换控制器
  * todo
@@ -16,9 +16,7 @@
     /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG} from "./Config.js";
-import { Matrix_2, Matrix_3D } from "./Matrix_3D.js";
-import { Euler_Angles, Quat, Rotate_3D } from "./Rotate_3D.js";
+import {CONFIG} from "./Config.js";
 import { Matrix } from "./Matrix.js";
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;

@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-01 00:48:35
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:31:34
- * @FilePath: \site\js\import\NML\test\test_Vector.js
+ * @LastEditTime: 2022-12-18 23:54:44
+ * @FilePath: \site\js\import\NML\test\test__Vector.js
  * @Description: 
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -34,7 +34,6 @@ function test(){
          console.log("Vector.create_Normalization("+list_test_vec[i]+")",                       Vector.create_Normalization(list_test_vec[i]) );
          console.log("Vector.is_Zero("+list_test_vec[i]+")",                                    Vector.is_Zero(list_test_vec[i]) );
          console.log("Vector.instead("+list_test_vec[i]+")",                                    Vector.instead(list_test_vec[i]) );
-         console.log("Vector.instead_b("+list_test_vec[i]+")",                                  Vector.instead_b(list_test_vec[i]) );
          console.log("Vector.is_Equal("+list_test_vec[i],list_test_vec[i]+")",                  Vector.is_Equal(list_test_vec[i],list_test_vec[i]) );
          console.log("Vector.sum("+list_test_vec[i],list_test_vec[i]+")",                       Vector.sum(list_test_vec[i],list_test_vec[i]) );
          console.log("Vector.translate("+list_test_vec[i],list_test_vec[i]+")",                 Vector.translate(list_test_vec[i],list_test_vec[i]) );

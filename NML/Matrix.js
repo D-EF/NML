@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-22 18:14:37
+ * @LastEditTime: 2022-12-18 23:41:34
  * @FilePath: \site\js\import\NML\NML\Matrix.js
  * @Description: 通用矩阵
  * 
@@ -17,7 +17,7 @@
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
-import Vector from "./Vector.js";
+import {Vector} from "./Vector.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
 
 /** 矩阵

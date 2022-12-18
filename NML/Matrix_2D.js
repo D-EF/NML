@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-14 01:09:18
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:14:24
+ * @LastEditTime: 2022-12-18 23:41:57
  * @FilePath: \site\js\import\NML\NML\Matrix_2D.js
  * @Description: 2D变换矩阵
  * 
@@ -18,7 +18,7 @@
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
-import Vector from "./Vector.js";
+import {Vector} from "./Vector.js";
 import { Matrix } from "./Matrix.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
 /*h*/const _MATRIX_IDENTITY_3X3=new Matrix([1,0,0,0,1,0,0,0,1]);

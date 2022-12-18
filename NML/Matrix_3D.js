@@ -18,9 +18,8 @@
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
-import Vector from "./Vector.js";
+import {Vector} from "./Vector.js";
 import { Matrix } from "./Matrix.js";
-import { Matrix_2 } from "./Matrix_2D.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
 
 /*h*/const _MAPPING_SHEAR_COORDINATE_SYSTEM_TO_INDEX__3D=[8,4,1,9,6,2];

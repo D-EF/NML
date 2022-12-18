@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-09-10 19:51:58
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-10-07 02:55:31
- * @FilePath: \site\js\import\PrimitivesTGT\test\test_matrix.js
+ * @LastEditTime: 2022-12-18 23:48:45
+ * @FilePath: \site\js\import\NML\test\test_Matrix.js
  * @Description: test Matrix
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -131,5 +131,5 @@ Object.assign(window,{
 });
 
 export {
-    test__Det_And_Inverse as test__matrix
+    test__Det_And_Inverse as test
 }

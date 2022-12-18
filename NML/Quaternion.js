@@ -2,16 +2,16 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-10 02:56:44
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:11:55
+ * @LastEditTime: 2022-12-18 23:40:17
  * @FilePath: \site\js\import\NML\NML\Quaternion.js
  * @Description: 四元数
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-import { copy_Array } from "./Config";
-import { Euler_Angles } from "./Euler_Angles";
-import { Vector } from "./Vector";
+import { copy_Array } from "./Config.js";
+import { Euler_Angles } from "./Euler_Angles.js";
+import { Vector } from "./Vector.js";
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
@@ -26,7 +26,7 @@ import { Vector } from "./Vector";
 /*h*/// 四元数 var t=theta*0.5; return [...cos_Vector(t,v3),cos(t)]
 
 /** 四元数 使用线性结构 [x,y,z,w] */
-class Quaternion {// extends Vector{
+class Quaternion extends Vector{
     
     /** 
      * @param {float[]} data 四元数数据
