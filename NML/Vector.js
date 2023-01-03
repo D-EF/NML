@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:13:12
+ * @LastEditTime: 2023-01-04 00:57:52
  * @FilePath: \site\js\import\NML\NML\Vector.js
  * @Description: 向量
  * 
@@ -52,10 +52,11 @@ class Vector extends CONFIG.VALUE_TYPE{
 
     /** 判断某个向量是否为单位向量
      * @param {List_Value} vec 向量
+     * @param {float}      _tolerance 容差 默认为CONFIG.APPROXIMATELY_TOLERANCE
      * @param {boolean} 返回是否为单位向量
      */
-    static is_Unit(vec){
-        return abs(1-Vector.dot(vec,vec))<CONFIG.APPROXIMATELY_TOLERANCE;
+    static is_Unit(vec,_tolerance){
+        return approximately(Vector.dot(vec,vec),1,_tolerance);
     }
 
     /** 创建标准化向量
@@ -94,31 +95,6 @@ class Vector extends CONFIG.VALUE_TYPE{
         return vec[i];
     }
     
-    /** 判断向量是不是零向量
-     * @param  {List_Value} vec 向量
-     * @return {Boolean} 返回 向量是不是零向量
-     */
-     static is_Zero(vec){
-        var i=vec.length;
-        do{
-            --i;
-        }while(!approximately(vec[i],0)&&i>0)
-        return !approximately(vec[i]);
-    }
-    
-    /** 判断向量是否相等
-     * @param  {List_Value} vec_left 向量1
-     * @param  {List_Value} vec_right 向量2
-     * @return {Boolean}
-     */
-    static is_Equal(vec_left,vec_right){
-        var i=vec_left.length;
-        if(i!==vec_right.length)return false;
-        do{
-            --i;
-        }while((vec_left[i]===vec_right[i])&&i>0)
-        return vec_left[i]===vec_right[i];
-    }
     
     /** 取反
      * @param  {List_Value} vec 向量
@@ -219,7 +195,7 @@ class Vector extends CONFIG.VALUE_TYPE{
      * @param {List_Value} vec_right 表示角的一边的射线上 的 向量B
      * @return {Number} 返回夹角的cos值
      */
-    static cos_2Vec(vec_left,vec_right){
+    static get_Cos__Vec2(vec_left,vec_right){
         return Vector.dot(vec_left,vec_right)/(Vector.mag(vec_left)*Vector.mag(vec_right));
     }
 }

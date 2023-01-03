@@ -42,7 +42,7 @@ function test(){
          console.log("Vector.np_b("+list_test_vec[i],list_test_vec[i][0]+")",                   Vector.np_b(list_test_vec[i],list_test_vec[i][0]) );
          console.log("Vector.dot("+list_test_vec[i],list_test_vec[i]+")",                       Vector.dot(list_test_vec[i],list_test_vec[i]) );
          console.log("Vector.cross("+list_test_vec[i],list_test_vec[i]+")",                     Vector.cross(list_test_vec[i],list_test_vec[i]) );
-         console.log("Vector.cos_2Vec("+list_test_vec[i],Vector.instead(list_test_vec[i])+")",  Vector.cos_2Vec(list_test_vec[i],Vector.instead(list_test_vec[i])) );
+         console.log("Vector.get_Cos__Vec2("+list_test_vec[i],Vector.instead(list_test_vec[i])+")",  Vector.get_Cos__Vec2(list_test_vec[i],Vector.instead(list_test_vec[i])) );
          console.log('\n\n\n');
     }while(i);
 }

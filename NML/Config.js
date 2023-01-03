@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-22 09:21:38
+ * @LastEditTime: 2023-01-04 00:41:32
  * @FilePath: \site\js\import\NML\NML\Config.js
  * @Description: Nittle Math Library's Config
  * 
@@ -41,10 +41,29 @@
     /** 近似相等, 用于浮点误差计算后判断结果是否相近; 
      * @param {Number} num1 数字
      * @param {Number} num2 数字
-     * @param {Number} tolerance 容差， 默认为 1e-12
+     * @param {Number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
      */
-    function approximately(num1,num2,tolerance){
-        return Math.abs(num1-num2)<(tolerance||CONFIG.APPROXIMATELY_TOLERANCE);
+    function approximately(num1,num2,_tolerance){
+        return Math.abs(num1-num2)<(_tolerance===undefined?CONFIG.APPROXIMATELY_TOLERANCE:_tolerance);
+    }
+
+    /** 数值数组近似相等
+     * @param {number[]} arr1 数组1
+     * @param {number[]} arr2 数组2
+     * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
+     * @return {Boolean}
+     */
+    function approximately__Array(arr1,arr2,_tolerance){
+        var i =arr1.length;
+        if(i!==arr2.length){
+            return false;
+        }
+        for(--i;i>=0;--i){
+            if(abs(arr1[i]-arr2[i])>(_tolerance||CONFIG.APPROXIMATELY_TOLERANCE)){
+                return false
+            }
+        }
+        return true;
     }
     
     /** 向数组写入数据
@@ -85,5 +104,6 @@ export{
     DEG_180,
     CYCLES,
     copy_Array,
-    approximately
+    approximately,
+    approximately__Array
 }
