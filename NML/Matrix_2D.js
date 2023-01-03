@@ -17,10 +17,10 @@
     /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG} from "./Config.js";
+import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
 import {Vector} from "./Vector.js";
 import { Matrix } from "./Matrix.js";
-/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
+/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
 /*h*/const _MATRIX_IDENTITY_3X3=new Matrix([1,0,0,0,1,0,0,0,1]);
 
 /** 2D变换矩阵数据结构为3x3矩阵 */

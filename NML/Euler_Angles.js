@@ -18,12 +18,12 @@
     /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import { CONFIG } from "./Config.js";
+import { CONFIG, SAFE_MATH_TOOLS } from "./Config.js";
 import { Matrix } from "./Matrix.js";
 import { Matrix_3D } from "./Matrix_3D.js";
 import {Vector} from "./Vector.js";
 
-/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
+/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
 
 // open * 部分映射函数和映射表 * open
 

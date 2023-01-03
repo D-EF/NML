@@ -16,9 +16,9 @@
     /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG} from "./Config.js";
+import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
 import {Vector} from "./Vector.js";
-/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
+/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
 
 /** 矩阵
  * 矩阵的数据类型为1维线性表:

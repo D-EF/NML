@@ -17,10 +17,10 @@
     /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG} from "./Config.js";
+import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
 import {Vector} from "./Vector.js";
 import { Matrix } from "./Matrix.js";
-/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
+/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
 
 /*h*/const _MAPPING_SHEAR_COORDINATE_SYSTEM_TO_INDEX__3D=[8,4,1,9,6,2];
 /*h*/const MAPPING_TRANSPOSE__3D  = new Int8Array([11,7,3,6,2,1, -1 ,4,8,9,12,13,14]);

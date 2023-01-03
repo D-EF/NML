@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-01 00:48:35
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-04 00:56:30
+ * @LastEditTime: 2023-01-04 01:25:51
  * @FilePath: \site\js\import\NML\test\test__Vector.js
  * @Description: 
  * 
@@ -89,8 +89,8 @@ function test(){
         console.log(`Vector.np(${test_unit_vec_1}\t*919.5575022803088\t)\n[123.0, 456.0, 789.0]\n`,     temp=Vector.np(test_unit_vec_1,919.5575022803088),  throw__F(approximately__Array(temp,[123.0, 456.0, 789.0])));
         console.log(`Vector.np(${test_unit_vec_2}\t*3.7416573867739413\t)\n[3.0, 2.0, 1.0]\n`,          temp=Vector.np(test_unit_vec_2,3.7416573867739413), throw__F(approximately__Array(temp,[3.0, 2.0, 1.0])));
 
-    console.log("\nVector.get_Cos__Vec2\n");
-        console.log(`Vector.get_Cos__Vec2(${test_vec_1}\t,\t${test_vec_2})\n0.6016271623980259`,  temp=Vector.get_Cos__Vec2(test_vec_1,test_vec_2),   throw__F(approximately(temp,0.6016271623980259)) );
+    console.log("\nVector.cos_2Vec\n");
+        console.log(`Vector.cos_2Vec(${test_vec_1}\t,\t${test_vec_2})\n0.6016271623980259`,  temp=Vector.cos_2Vec(test_vec_1,test_vec_2),   throw__F(approximately(temp,0.6016271623980259)) );
 
         
     debugger

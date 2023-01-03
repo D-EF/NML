@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-04 00:41:32
+ * @LastEditTime: 2023-01-04 01:27:10
  * @FilePath: \site\js\import\NML\NML\Config.js
  * @Description: Nittle Math Library's Config
  * 
@@ -30,8 +30,27 @@
         APPROXIMATELY_TOLERANCE:1e-6,
         COORDINATE_SYSTEM:globalThis.NML_COORDINATE_SYSTEM
     },globalThis.NML_CONFIG);
+
+    function acos__Safe(value){
+        if(value<=-1.0){
+            return Math.PI;
+        }
+        if(value>=1.0){
+            return 0.0
+        }
+        return Math.acos(value)
+    }
     //```
-    const {sin,cos,asin,acos,abs,sqrt,tan}=Math,
+    const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
+    const SAFE_MATH_TOOLS={
+        sin:Math.sin,
+        cos:Math.cos,
+        asin:Math.asin,
+        acos:acos__Safe,
+        abs:Math.abs,
+        sqrt:Math.sqrt,
+        tan:Math.tan
+        },
         DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
         DEG_90  = Math.PI*0.5,
         DEG_180 = Math.PI,
@@ -65,6 +84,7 @@
         }
         return true;
     }
+    
     
     /** 向数组写入数据
      * @param {List_Value} out 输出对象
@@ -105,5 +125,6 @@ export{
     CYCLES,
     copy_Array,
     approximately,
-    approximately__Array
+    approximately__Array,
+    SAFE_MATH_TOOLS
 }

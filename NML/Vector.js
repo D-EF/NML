@@ -1,7 +1,7 @@
 /*
 * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-04 00:57:52
+ * @LastEditTime: 2023-01-04 01:24:13
  * @FilePath: \site\js\import\NML\NML\Vector.js
  * @Description: 向量
  * 
@@ -16,8 +16,8 @@
     /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG} from "./Config.js";
-/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
+import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
+/*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
 
 /** 向量 */
 class Vector extends CONFIG.VALUE_TYPE{
@@ -56,7 +56,7 @@ class Vector extends CONFIG.VALUE_TYPE{
      * @param {boolean} 返回是否为单位向量
      */
     static is_Unit(vec,_tolerance){
-        return approximately(Vector.dot(vec,vec),1,_tolerance);
+        return abs(1-Vector.dot(vec,vec))<(_tolerance||CONFIG.APPROXIMATELY_TOLERANCE);
     }
 
     /** 创建标准化向量
@@ -79,6 +79,10 @@ class Vector extends CONFIG.VALUE_TYPE{
             for(var i =vec.length-1;i>=0;--i){
                 vec[i] *= oneOverMag;
             }
+        }else{
+            console.warn("This is a zero vector!");
+            copy_Array(vec,new Vector(vec.length));
+            vec[0]=1;
         }
         return vec;
     }
@@ -94,7 +98,6 @@ class Vector extends CONFIG.VALUE_TYPE{
         }while((!vec[i])&&i>0)
         return vec[i];
     }
-    
     
     /** 取反
      * @param  {List_Value} vec 向量
@@ -195,7 +198,7 @@ class Vector extends CONFIG.VALUE_TYPE{
      * @param {List_Value} vec_right 表示角的一边的射线上 的 向量B
      * @return {Number} 返回夹角的cos值
      */
-    static get_Cos__Vec2(vec_left,vec_right){
+    static cos_2Vec(vec_left,vec_right){
         return Vector.dot(vec_left,vec_right)/(Vector.mag(vec_left)*Vector.mag(vec_right));
     }
 }
