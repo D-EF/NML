@@ -2,12 +2,21 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-10-07 16:55:37
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:35:28
+ * @LastEditTime: 2023-01-19 23:36:16
  * @FilePath: \site\js\import\NML\index.js
  * @Description: index
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
+
+/** @typedef {Number} int      整形数字 */
+/** @typedef {Number} double   双浮点数字 */
+/** @typedef {Number} float    单浮点数字 */
+/** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+/** @typedef {List_Value} Vec  数据的各种存储形式 */
+/** @typedef {List_Value} Matrix  数据的各种存储形式 */
+
+
 import * as Algbra from "./NML/Algebra.js";
 import {CONFIG} from "./NML/Config.js";
 import {Vector} from "./NML/Vector.js";
@@ -32,7 +41,7 @@ const NML ={
 export default NML;
 export {
     Algbra,
-    CONFIG,
+    CONFIG as NML_CONFIG,
     Vector,
     Matrix,
     Matrix_2D,

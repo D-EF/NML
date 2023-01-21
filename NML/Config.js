@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-04 01:27:10
+ * @LastEditTime: 2023-01-20 03:28:34
  * @FilePath: \site\js\import\NML\NML\Config.js
  * @Description: Nittle Math Library's Config
  * 
@@ -12,22 +12,26 @@
     /*h*//** @typedef {Number} int      整形数字 */
     /*h*//** @typedef {Number} double   双浮点数字 */
     /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 // open * 配置/基础 * open
+
+    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
+    globalThis.NML_COORDINATE_SYSTEM=globalThis.NML_COORDINATE_SYSTEM||0;
+    globalThis.APPROXIMATELY_TOLERANCE=globalThis.NML_VALUE_TYPE===Float32Array?1e-6:1e-15;
+    
     /**
-     * @typedef Config__NML
+     * @typedef Config__NML NML 的配置参数对象
      * @property {Float32ArrayConstructor|Float64ArrayConstructor} VALUE_TYPE 向量使用的数据类型; 可选值为 {Float32Array, Float64Array}, 默认为 Float32Array
      * @property {float} APPROXIMATELY_TOLERANCE 计算容差 默认为 1e-6
      * @property {int} COORDINATE_SYSTEM 坐标系 [左手系,右手系] (默认为0 左手系)
      */
-    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
-    globalThis.NML_COORDINATE_SYSTEM=globalThis.NML_COORDINATE_SYSTEM||0;
+    
     /** @type {Config__NML} 配置 */
     const CONFIG=Object.assign({
         VALUE_TYPE:globalThis.NML_VALUE_TYPE,
-        APPROXIMATELY_TOLERANCE:1e-6,
+        APPROXIMATELY_TOLERANCE:globalThis.APPROXIMATELY_TOLERANCE,
         COORDINATE_SYSTEM:globalThis.NML_COORDINATE_SYSTEM
     },globalThis.NML_CONFIG);
 
@@ -49,7 +53,9 @@
         acos:acos__Safe,
         abs:Math.abs,
         sqrt:Math.sqrt,
-        tan:Math.tan
+        tan:Math.tan,
+        atan:Math.atan,
+        atan2:Math.atan2
         },
         DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
         DEG_90  = Math.PI*0.5,
@@ -70,7 +76,7 @@
      * @param {number[]} arr1 数组1
      * @param {number[]} arr2 数组2
      * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     function approximately__Array(arr1,arr2,_tolerance){
         var i =arr1.length;
@@ -90,7 +96,7 @@
      * @param {List_Value} out 输出对象
      * @param {List_Value} org 数据来源
      * @param {int} [_l]   写入长度
-     * @return {List_Value} 修改并返回 out
+     * @returns {List_Value} 修改并返回 out
      */
     function copy_Array(out,org,_l){
         var i=_l||(out.length>org.length?org.length:out.length);

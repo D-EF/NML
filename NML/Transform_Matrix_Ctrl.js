@@ -13,7 +13,7 @@
     /*h*//** @typedef {Number} int      整形数字 */
     /*h*//** @typedef {Number} double   双浮点数字 */
     /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
@@ -34,14 +34,14 @@ class Transform_Matrix_Ctrl{
     }
 
     /** 获取变换矩阵
-     * @return {Matrix} 返回一个新的矩阵
+     * @returns {Matrix} 返回一个新的矩阵
      */
     create_Matrix(){
         return new Matrix(this._mat);
     }
     
     /** 获取当前控制器的 变换矩阵的引用
-     * @return {Matrix} 返回 this._mat
+     * @returns {Matrix} 返回 this._mat
      */
     get_Matrix__Life(){
         return this._mat;
@@ -63,7 +63,7 @@ class Hand__Transform_Matrix_Ctrl__Base{
 
 /** 2D变换矩阵(3x3)转换为 canvas2D的api使用的数据
  * @param {Matrix_2} mat 
- * @return {float[]} 返回长度6的浮点数数组 为 CanvasRenderingContext2D.prototype.transform 的参数数组
+ * @returns {float[]} 返回长度6的浮点数数组 为 CanvasRenderingContext2D.prototype.transform 的参数数组
  */
 function conversion__Matrix2D_To_Canvas2D(mat){
     // todo

@@ -1,7 +1,7 @@
 /*
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:28:40
+ * @LastEditTime: 2023-01-20 19:13:27
  * @FilePath: \site\js\import\NML\NML\Algebra.js
  * @Description: 数字运算相关
  * 
@@ -13,7 +13,7 @@
     /*h*//** @typedef {Number} int      整形数字 */
     /*h*//** @typedef {Number} double   双浮点数字 */
     /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "./Config.js";
@@ -279,7 +279,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
      * @param {Number[]} points        控制点集合
      * @param {Number[][]} matrix 分割时使用的矩阵, 用 create_CutBezierMatrixQ 函数生成
      * @param {Boolean} flag 前后两边 false(0)为p1起点, true(!0)为p4终点
-     * @return {Number[]} 返回两组控制点
+     * @returns {Number[]} 返回两组控制点
      */
     function cut_Bezier__ByMatrix(points,matrix,flag){
         var n=points.length-1,
@@ -351,6 +351,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
     const BEZIER_TO_CYCLES_K__1D4=0.551784777779014;
 
 // end  * 贝塞尔曲线 * end 
+
 
 //# 导出
 export{

@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-01 00:48:35
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-04 01:25:51
+ * @LastEditTime: 2023-01-05 21:33:09
  * @FilePath: \site\js\import\NML\test\test__Vector.js
  * @Description: 
  * 
@@ -10,9 +10,9 @@
  */
 import NML from "../index.js";
 import { approximately, approximately__Array, CONFIG } from "../NML/Config.js";
-import { callback_ClacErr__ErrLog } from "./base__test.js";
+import { callback_calcErr__ErrLog } from "./base__test.js";
 
-var throw__F=callback_ClacErr__ErrLog;
+var throw__F=callback_calcErr__ErrLog;
 
 const {Vector}=NML;
 
@@ -92,8 +92,8 @@ function test(){
     console.log("\nVector.cos_2Vec\n");
         console.log(`Vector.cos_2Vec(${test_vec_1}\t,\t${test_vec_2})\n0.6016271623980259`,  temp=Vector.cos_2Vec(test_vec_1,test_vec_2),   throw__F(approximately(temp,0.6016271623980259)) );
 
-        
-    debugger
+    window.Vector=Vector;
+    // debugger
 }
 
 console.log(`test in  2022/11/04. down`);

@@ -10,7 +10,7 @@
  */
 
 /** 参数遇到 false 时抛出异常 */
-function callback_ClacErr__Throw(...arg){
+function callback_calcErr__Throw(...arg){
     if(arg.includes(false)||arg.includes(undefined)||arg.includes(null)){
         throw new Error("Bad calc!");
     }
@@ -19,7 +19,7 @@ function callback_ClacErr__Throw(...arg){
 
 
 /** 参数遇到 false 时打印错误 */
-function callback_ClacErr__ErrLog(...arg){
+function callback_calcErr__ErrLog(...arg){
     if(arg.includes(false)||arg.includes(undefined)||arg.includes(null)){
         console.error("Bad calc!");
     }
@@ -27,6 +27,6 @@ function callback_ClacErr__ErrLog(...arg){
 }
 
 export{
-    callback_ClacErr__Throw,
-    callback_ClacErr__ErrLog
+    callback_calcErr__Throw,
+    callback_calcErr__ErrLog
 }

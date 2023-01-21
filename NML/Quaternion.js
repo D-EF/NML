@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-10 02:56:44
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-30 17:49:29
+ * @LastEditTime: 2023-01-05 22:26:08
  * @FilePath: \site\js\import\NML\NML\Quaternion.js
  * @Description: 四元数
  * 
@@ -18,7 +18,7 @@ import { Vector } from "./Vector.js";
     /*h*//** @typedef {Number} int      整形数字 */
     /*h*//** @typedef {Number} double   双浮点数字 */
     /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array|Matrix} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
@@ -38,22 +38,39 @@ class Quaternion extends Vector{
         }
     }
 
-    /** 使用旋转轴和旋转弧度生成四元数
-     * @param {Number} theta 旋转弧度
-     * @param {Vector} axis 旋转轴向量 (3d单位向量)
+    /** 使用xyz坐标轴的旋转
+     * @param {float}   thrta   旋转弧度
+     * @param {int}     axis    旋转中心轴 [x,y,z]
+     * @param {Quaternion} _out 输出对象
+     * @returns {Quaternion} 返回一个四元数
      */
-    static create_Axis(theta,axis){
+    static create_ThetaXYZ(theta,axis){
+        
+    }
+
+    /** 使用旋转轴和旋转弧度生成四元数
+     * @param {float} theta 旋转弧度
+     * @param {Vector} axis 旋转轴向量 (3d单位向量)
+     * @param {Quaternion} _out 输出对象
+     * @returns {Quaternion} 返回一个四元数
+     */
+    static create_Axis(theta,axis,_out){
         var theta_over2=theta*0.5;
         var sin_t=sin(theta_over2),
             cos_t=cos(theta_over2);
-        return new Quaternion([sin_t*axis[0],sin_t*axis[1],sin_t*axis[2],cos_t]);
+        return copy_Array(_out||new Quaternion(),[
+            sin_t*axis[0],
+            sin_t*axis[1],
+            sin_t*axis[2],
+            cos_t
+        ]);
     }
 
     /** 使用四元数计算出旋转弧度
      * @param {Quaternion} quat  四元数
-     * @return {float} 返回旋转弧度
+     * @returns {float} 返回旋转弧度
      */
-    static clac_Angle(quat){
+    static calc_Angle(quat){
         var theta_over2=acos(quat[3]);
         return theta_over2*2;
     }
@@ -61,9 +78,9 @@ class Quaternion extends Vector{
     /** 使用四元数计算出旋转轴
      * @param {Quaternion} quat 四元数
      * @param {Vector} _out 输出对象
-     * @return {Vector} 返回旋转向量
+     * @returns {Vector} 返回旋转向量
      */
-    static clac_Axis(quat,_out){
+    static calc_Axis(quat,_out){
         var w=quat[3];
         var sin_theta_over2_sq=1.0-w*w;
         var one_over_sin_theta_over2=1.0/sqrt(sin_theta_over2_sq);
@@ -76,7 +93,7 @@ class Quaternion extends Vector{
 
     /** 使用矩阵生成四元数
      * @param {Matrix} mat 仅做过旋转变换的矩阵
-     * @return {Quaternion} 返回四元数
+     * @returns {Quaternion} 返回四元数
      */
     static create_Matrix(mat){
         // todo
@@ -85,34 +102,21 @@ class Quaternion extends Vector{
     /** 使用欧拉角生成四元数
      * @param {Euler_Angles} euler_angles 欧拉角数据
      * @param  {int[]}      [_axis] 创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
-     * @return {Quaternion} 返回四元数
+     * @returns {Quaternion} 返回四元数
      */
     static create_EulerAngles(euler_angles){
         // todo
     }
 
     /**
-     * 提取虚部(旋转轴向量)
-     * @param {Quaternion} quat 四元数数据
-     * @return {Vector} 返回长度为 3 的向量
-     */
-    static get_AxisVector(quat){
-        return [
-            quat[1],
-            quat[2],
-            quat[3],
-        ]
-    }
-
-    /**
      * 四元数的共轭 (逆)
-     * @param {List_Value|Quaternion} quat  原数据四元数
-     * @param {List_Value|Quaternion} out   输出对象
-     * @return {List_Value|Quaternion} 返回新的四元数
+     * @param {Quaternion} quat  原数据四元数
+     * @param {Quaternion} out   输出对象
+     * @returns {Quaternion} 返回新的四元数
      */
     static instead(quat,_out){
         var out=_out||new Quaternion();
-        out[0]=+quat[0];
+        out[0]= quat[0];
         out[1]=-quat[1];
         out[2]=-quat[2];
         out[3]=-quat[3];
