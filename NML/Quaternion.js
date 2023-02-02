@@ -42,7 +42,7 @@ class Quaternion extends Vector{
      * @param {float}   thrta   旋转弧度
      * @param {int}     axis    旋转中心轴 [x,y,z]
      * @param {Quaternion} _out 输出对象
-     * @returns {Quaternion} 返回一个四元数
+     * @return {Quaternion} 返回一个四元数
      */
     static create_ThetaXYZ(theta,axis){
         
@@ -52,7 +52,7 @@ class Quaternion extends Vector{
      * @param {float} theta 旋转弧度
      * @param {Vector} axis 旋转轴向量 (3d单位向量)
      * @param {Quaternion} _out 输出对象
-     * @returns {Quaternion} 返回一个四元数
+     * @return {Quaternion} 返回一个四元数
      */
     static create_Axis(theta,axis,_out){
         var theta_over2=theta*0.5;
@@ -68,7 +68,7 @@ class Quaternion extends Vector{
 
     /** 使用四元数计算出旋转弧度
      * @param {Quaternion} quat  四元数
-     * @returns {float} 返回旋转弧度
+     * @return {float} 返回旋转弧度
      */
     static calc_Angle(quat){
         var theta_over2=acos(quat[3]);
@@ -78,7 +78,7 @@ class Quaternion extends Vector{
     /** 使用四元数计算出旋转轴
      * @param {Quaternion} quat 四元数
      * @param {Vector} _out 输出对象
-     * @returns {Vector} 返回旋转向量
+     * @return {Vector} 返回旋转向量
      */
     static calc_Axis(quat,_out){
         var w=quat[3];
@@ -93,7 +93,7 @@ class Quaternion extends Vector{
 
     /** 使用矩阵生成四元数
      * @param {Matrix} mat 仅做过旋转变换的矩阵
-     * @returns {Quaternion} 返回四元数
+     * @return {Quaternion} 返回四元数
      */
     static create_Matrix(mat){
         // todo
@@ -102,7 +102,7 @@ class Quaternion extends Vector{
     /** 使用欧拉角生成四元数
      * @param {Euler_Angles} euler_angles 欧拉角数据
      * @param  {int[]}      [_axis] 创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
-     * @returns {Quaternion} 返回四元数
+     * @return {Quaternion} 返回四元数
      */
     static create_EulerAngles(euler_angles){
         // todo
@@ -112,7 +112,7 @@ class Quaternion extends Vector{
      * 四元数的共轭 (逆)
      * @param {Quaternion} quat  原数据四元数
      * @param {Quaternion} out   输出对象
-     * @returns {Quaternion} 返回新的四元数
+     * @return {Quaternion} 返回新的四元数
      */
     static instead(quat,_out){
         var out=_out||new Quaternion();

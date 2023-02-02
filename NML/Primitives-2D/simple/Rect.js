@@ -2,8 +2,8 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2023-01-19 23:53:42
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-21 03:49:27
- * @FilePath: \site\js\import\NML\NML\Primitives-2D\rect.js
+ * @LastEditTime: 2023-01-23 00:52:24
+ * @FilePath: \site\js\import\NML\NML\Primitives-2D\simple\Rect.js
  * @Description: 2D 矩形
  * 
  * Copyright (c) 2023 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -32,7 +32,8 @@ class Rect extends Primitive_Data_Base{
      * @param {Rect} data 矩形数据
      */
     constructor(data){
-        super(4);
+        super(data);
+        return;
 
         /** @type {float} x 绘制坐标 x*/
         this[0]=data.this[0];
@@ -42,23 +43,87 @@ class Rect extends Primitive_Data_Base{
         this[2]=data.this[2];
         /** @type {float} h 绘制高度 */
         this[3]=data.this[3];
-
-        this.__cache_path_length=-1;
     }
-    /** @type {[min:Vector,max:Vector]} 矩形周长 */
-    get path_length(){
-        if(!~this.__cache_path_length){
-            var w=abs(this[2]),
-                h=abs(this[3]);
-            this.__cache_path_length=w+w+h+h;
+
+    // open * 访问器函数 * open
+
+        /** @type {float} 定位点 x 坐标 */
+            get x(){return this[0];}
+            set x(val){
+                this[0]=val;
+                this.__cache_aabb=null;
+                return this[0];
+            }
+        
+        /** @type {float} 定位点 y 坐标 */
+            get y(){return this[1];}
+            set y(val){
+                this[1]=val;
+                this.__cache_aabb=null;
+                return this[1];
+            }
+
+        /** @type {float} 绘制宽度 */
+            get w(){return this[2];}
+            set w(val){
+                this[2]=val;
+                this.refresh_Cache();
+                return this[2];
+            }
+
+        /** @type {float} 绘制高度 */
+            get h(){return this[3];}
+            set h(val){
+                this[3]=val;
+                this.refresh_Cache();
+                return this[3];
+            }
+        
+    // end  * 访问器函数 * end 
+
+    
+    /** 刷新缓存数据 */
+    refresh_Cache(){
+        super.refresh_Cache();
+    }
+
+    static calc_AABB(rect){
+        var min=new Vector(2),
+            max=new Vector(2);
+
+        if(rect[2]<0){
+            min[0]=rect[0]+rect[2];
+            max[0]=rect[0];
+        }else{
+            min[0]=rect[0];
+            max[0]=rect[0]+rect[2];
         }
+        if(rect[3]<0){
+            min[1]=rect[1]+rect[3];
+            max[1]=rect[1];
+        }else{
+            min[1]=rect[1];
+            max[1]=rect[1]+rect[3];
+        }
+
+        return [min,max];
+    }
+
+    /** 计算矩形周长
+     * @param {Rect}  rect 矩形数据
+     * @return {float} 返回矩形周长
+     */
+    static calc_PathLength(rect){
+        var w=abs(rect[2]),
+            h=abs(rect[3]);
+        return w+w+h+h;
     }
     
     /** 采样 (矩形路径绘制顺序 [xw,yh,-xw,-yh])
      * @param {Rect}    rect  矩形数据
      * @param {float}   t     时间参数 t (0~1)
      * @param {Vector} [_out] 输出对象
-     * @returns {Vector} 返回一个 2D 向量
+     * @return {Vector} 返回一个 2D 向量
      */
     static sample(rect,t,_out){
         var out=_out||new Vector(2);

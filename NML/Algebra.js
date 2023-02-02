@@ -27,7 +27,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
         /*h*/calc_PascalsTriangle(3);
         /** 演算帕斯卡三角
          * @param {Number} n 到多少阶停止
-         * @returns 演算并返回缓存的帕斯卡三角数据 不规则二维数组, **别修改内容返回值的内容**!
+         * @return 演算并返回缓存的帕斯卡三角数据 不规则二维数组, **别修改内容返回值的内容**!
          */
         function calc_PascalsTriangle(n){
             var i,j;
@@ -56,7 +56,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
      *         i=0
      * ```
      * @param {Number[]} coefficients 各次幂的系数 [1, t^1, t^2, t^3, ...]
-     * @returns {Number[]}  导数的各次幂的系数 [1, t^1, t^2, t^3, ...] 长度会比形参少 1
+     * @return {Number[]}  导数的各次幂的系数 [1, t^1, t^2, t^3, ...] 长度会比形参少 1
      */
     function derivative(coefficients){
         var i=coefficients.length-1,
@@ -71,7 +71,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
         /** 解二元一次方程
          * z1 + o1 \* x = z2 + o2 \* y;
          * z3 + o3 \* x = z4 + o4 \* y;
-         * @returns {{x:Number,y:Number}} 
+         * @return {{x:Number,y:Number}} 
          */
         function solve_BinaryLinearEquation(z1,o1,z2,o2,z3,o3,z4,o4){
             var x=(z2*o4+o2*z3-z4*o2-z1*o4)/(o1*o4-o2*o3),
@@ -81,7 +81,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
 
         /** 解一元三次方程, ax^3+bx^2+cx+d=0
          * @param {Number[]} coefficient 系数集合 从低次幂到高次幂 [ x^0, x^1, x^2, x^3 ]
-         * @returns {Number[]} 返回根的集合
+         * @return {Number[]} 返回根的集合
          */
         function calc_rootsOfCubic(coefficient){
             var a=coefficient[2]||0,
@@ -170,7 +170,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
      * 算法代码来自 https://pomax.github.io/bezierinfo/zh-CN/index.html
      * @param {{x:Number,y:Number}[]} points 控制点集合
      * @param {Number} t t参数
-     * @returns {{x:Number,y:Number}} 返回对应点
+     * @return {{x:Number,y:Number}} 返回对应点
      */
      function get_BezierCurvePoint__DeCasteljau(points,t){
         if(points.length>1){
@@ -191,7 +191,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
     /*h*/ const _BEZIER_MATRIXS=[[1]];
     /** 获取贝塞尔曲线的计算矩阵 
      * @param {Number} n n阶贝塞尔曲线
-     * @returns {Number[][]} 贝塞尔曲线的计算矩阵
+     * @return {Number[][]} 贝塞尔曲线的计算矩阵
      */
     function get_BezierMatrix(n){
         if(_BEZIER_MATRIXS[n])return _BEZIER_MATRIXS[n];
@@ -213,7 +213,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
 
     /** 贝塞尔曲线控制点求各次幂的系数
      * @param {Number[]} points 控制点集合
-     * @returns {Number[]} 贝塞尔曲线采样计算系数
+     * @return {Number[]} 贝塞尔曲线采样计算系数
      */
     function get_BezierCoefficient(points){
         var n=points.length-1;
@@ -232,7 +232,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
 
     /** 求贝塞尔曲线的导函数的控制点 (一维)
      * @param {Number[]} points 原曲线的控制点集合 
-     * @returns {Number[]} 导函数的控制点
+     * @return {Number[]} 导函数的控制点
      */
     function get_BezierDerivativesPoints(points){
         var n=points.length-2;
@@ -247,7 +247,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
     /** 计算贝塞尔曲线分割时使用的 Q 矩阵 (不补零)
      * @param {Number} n  n阶贝塞尔曲线
      * @param {Number} t  t参数 0~1
-     * @returns {Number[][]} 贝塞尔曲线的计算分割时使用的矩阵
+     * @return {Number[][]} 贝塞尔曲线的计算分割时使用的矩阵
      */
     function create_CutBezierMatrixQ(n,t){
         if(_G_PASCALS_TRIANGLE.length<=n){
@@ -279,7 +279,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
      * @param {Number[]} points        控制点集合
      * @param {Number[][]} matrix 分割时使用的矩阵, 用 create_CutBezierMatrixQ 函数生成
      * @param {Boolean} flag 前后两边 false(0)为p1起点, true(!0)为p4终点
-     * @returns {Number[]} 返回两组控制点
+     * @return {Number[]} 返回两组控制点
      */
     function cut_Bezier__ByMatrix(points,matrix,flag){
         var n=points.length-1,
@@ -312,7 +312,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
 
     /** 通过系数创建贝塞尔曲线控制点
      * @param {Number[]}    coefficient 采样点计算系数
-     * @returns {Number[]}  返回控制点
+     * @return {Number[]}  返回控制点
      */
     function calc_BezierCtrlPoints__ByCoefficientTo(coefficient){
         var n=coefficient.length,
@@ -341,7 +341,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
     /*h*/const _DIVISION_4_3=4/3;
     /** 计算 贝塞尔曲线拟合圆弧 的 k 值
      * @param   {Number} angle 夹角
-     * @returns {Number} 返回 k 值
+     * @return {Number} 返回 k 值
      */
     function calc_k__BezierToCyles(angle){
         return _DIVISION_4_3*tan(angle*0.25);

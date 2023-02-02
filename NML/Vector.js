@@ -25,7 +25,7 @@ class Vector extends CONFIG.VALUE_TYPE{
 
     /** 判断2d向量在哪个象限上, 规定 0 视作正
      * @param  {List_Value} vec 向量
-     * @returns {int} 返回在哪个象限
+     * @return {int} 返回在哪个象限
      */
     static v2__get_Quadrant(vec){
         var f1=vec[0]>=0,f2=vec[1]>=0;
@@ -40,7 +40,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     
     /** 求模长
      * @param  {List_Value} vec 向量
-     * @returns {Number} 返回模长
+     * @return {Number} 返回模长
      */
     static mag(vec) {
         var Squares=0;
@@ -61,7 +61,7 @@ class Vector extends CONFIG.VALUE_TYPE{
 
     /** 创建标准化向量
      * @param  {List_Value} vec 向量
-     * @returns {Vector} 返回新的向量
+     * @return {Vector} 返回新的向量
      */
     static create_Normalization(vec){
         return Vector.normalize(new Vector(vec));
@@ -69,7 +69,7 @@ class Vector extends CONFIG.VALUE_TYPE{
 
     /** 标准化向量
      * @param  {List_Value} vec 向量
-     * @returns {List_Value} 修改并返回 vec
+     * @return {List_Value} 修改并返回 vec
      */
     static normalize(vec) {
         if(!Vector.is_Zero__Strict(vec))throw new Error("This is a zero Vector.");
@@ -89,7 +89,7 @@ class Vector extends CONFIG.VALUE_TYPE{
 
     /** 判断向量是不是零向量 (严格的,不考虑浮点数误差)
      * @param  {List_Value} vec 向量
-     * @returns {Number} 返回0或非0
+     * @return {Number} 返回0或非0
      */
     static is_Zero__Strict(vec){
         var i=vec.length;
@@ -102,7 +102,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 取反
      * @param  {List_Value} vec 向量
      * @param  {List_Value} [_out] 输出目标
-     * @returns {List_Value|Vector} 返回 _out 或 新的向量
+     * @return {List_Value|Vector} 返回 _out 或 新的向量
      */
     static instead(vec,_out){
         var out=_out||new Vector(vec.length);
@@ -115,7 +115,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 求向量和
      * @param  {List_Value} vec_left 向量1
      * @param  {List_Value} vec_right 向量2
-     * @returns {Vector} 返回新的向量
+     * @return {Vector} 返回新的向量
      */
     static sum(vec_left,vec_right){
         return Vector.translate(new Vector(vec_left),vec_right);
@@ -124,7 +124,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 平移
      * @param {List_Value} vec_left  原向量
      * @param {List_Value} vec_right  偏移量向量
-     * @returns {List_Value} 修改并返回 vec_left
+     * @return {List_Value} 修改并返回 vec_left
      */
     static translate(vec_left,vec_right){
         if(vec_left.length!==vec_right.length) throw new Error("They vectors have different length!")
@@ -137,7 +137,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 求向量差 1-2
      * @param {List_Value} vec_left 向量1
      * @param {List_Value} vec_right 向量2
-     * @returns {Vector} 返回一个新向量
+     * @return {Vector} 返回一个新向量
      */
     static dif(vec_left,vec_right){
         return Vector.translate(Vector.instead(vec_right),vec_left);
@@ -146,7 +146,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 数字乘向量 
      * @param {List_Value} vec    向量
      * @param {Number} k 标量
-     * @returns {Vector} 返回新的向量
+     * @return {Vector} 返回新的向量
      */
     static np(vec,k){
         return Vector.np_b(new Vector(vec),k);
@@ -155,7 +155,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 数字乘向量 
      * @param {List_Value} vec    向量
      * @param {Number} k 标量
-     * @returns {Vector}  修改并返回 v
+     * @return {Vector}  修改并返回 v
      */
     static np_b(vec,k){
         for(var i=vec.length-1;i>=0;--i){
@@ -167,7 +167,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 向量内积
      * @param {List_Value} vec_left 向量1
      * @param {List_Value} vec_right 向量2
-     * @returns {Number} 返回 vec_left * vec_right
+     * @return {Number} 返回 vec_left * vec_right
      */
     static dot(vec_left,vec_right){
         if(vec_left.length!==vec_right.length) throw new Error("They vectors have different length!")
@@ -181,7 +181,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 向量外积 仅支持 3D 和 2D 向量
      * @param {List_Value} vec_left 向量1
      * @param {List_Value} vec_right 向量2
-     * @returns {Number|List_Value} 返回 vec_left x vec_right
+     * @return {Number|List_Value} 返回 vec_left x vec_right
      */
     static cross(vec_left,vec_right){
         if(vec_left.length===2&&vec_right.length===2)return vec_left[0]*vec_right[1]-vec_left[1]*vec_right[0];
@@ -196,7 +196,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 计算向量夹角 ∠AOB 的 cos
      * @param {List_Value} vec_left 表示角的一边的射线上 的 向量A
      * @param {List_Value} vec_right 表示角的一边的射线上 的 向量B
-     * @returns {Number} 返回夹角的cos值
+     * @return {Number} 返回夹角的cos值
      */
     static cos_2Vec(vec_left,vec_right){
         return Vector.dot(vec_left,vec_right)/(Vector.mag(vec_left)*Vector.mag(vec_right));

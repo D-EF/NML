@@ -49,7 +49,7 @@ class Polygon extends Array {
 
     /** 当长度为奇数时截断尾部
      * @param {Polygon} out 数据对象
-     * @returns {Polygon} 修改并返回 out
+     * @return {Polygon} 修改并返回 out
      */
     static cut_end__OddLength(out){
         if(out.length&1){

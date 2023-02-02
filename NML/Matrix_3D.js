@@ -36,7 +36,7 @@ class Matrix_3D extends Matrix{
     }
 
     /** 创建单位矩阵
-     * @returns {Matrix_3D} 返回一个2x2矩阵
+     * @return {Matrix_3D} 返回一个2x2矩阵
      */
     static create_Identity(){
         return new Matrix_3D(_MATRIX_IDENTITY_4X4);
@@ -44,7 +44,7 @@ class Matrix_3D extends Matrix{
 
     /** 矩阵转置
      * @param {Matrix_3D} out 要转置的矩阵
-     * @returns {Matrix_3D} 修改并返回 out
+     * @return {Matrix_3D} 修改并返回 out
      */
     static transpose(out){
         var i=MAPPING_TRANSPOSE__3D.length-1,
@@ -64,7 +64,7 @@ class Matrix_3D extends Matrix{
      * @param {flot} scale_y y坐标中的缩放系数
      * @param {flot} scale_z z坐标中的缩放系数
      * @param  {List_Value}  [_out] 接收数据的对象
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Scale(scale_x,scale_y,scale_z,_out){
         return copy_Array(_out||new Matrix_3D(),[
@@ -79,7 +79,7 @@ class Matrix_3D extends Matrix{
      * @param {float} theta 旋转弧度
      * @param {int} axis 旋转中心轴  [z,x,y]
      * @param  {List_Value}  [_out] 接收数据的对象
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Rotate(theta,axis,_out){
         // todo
@@ -124,7 +124,7 @@ class Matrix_3D extends Matrix{
      * @param {float} theta 旋转弧度
      * @param {List_Value} axis 一个3D向量表示的旋转轴
      * @param  {List_Value}  [_out] 接收数据的对象
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Rotate__Axis(theta,axis,_out){
         var k     = Vector.is_Unit(axis)?axis:Vector.create_Normalization(axis),
@@ -159,7 +159,7 @@ class Matrix_3D extends Matrix{
      * @param {List_Value} euler_angles 欧拉角参数 各旋转角角的弧度
      * @param {List_Value} [_axis] 矩阵乘法的旋转轴顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
      * @param  {List_Value}  [_out] 接收数据的对象
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Rotate__EulerAngles(euler_angles,_axis,_out){
         var axis=_axis||[0,1,2];
@@ -174,7 +174,7 @@ class Matrix_3D extends Matrix{
     /** 创建旋转矩阵, 使用四元数
      * @param {List_Value} quat 欧拉角参数 各旋转角角的弧度
      * @param  {List_Value}  [_out] 接收数据的对象
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Rotate__QUAT(quat,_out){
         // todo
@@ -183,7 +183,7 @@ class Matrix_3D extends Matrix{
     /** 创建正交投影(平行投影)矩阵
      * @param {List_Value} normal 使用3d向量表示 投影面的法向
      * @param  {List_Value}  [_out] 接收数据的对象
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Projection__Orthographic(normal,_out){
         var n= Vector.is_Unit(normal)?normal:Vector.create_Normalization(normal);
@@ -205,7 +205,7 @@ class Matrix_3D extends Matrix{
      * @param {List_Value[]} k_point  切变系数, 使用二维向量表示
      * @param {Number} axis 在哪个面上进行切变 [xy,xz,yz]
      * @param  {List_Value}  [_out] 接收数据的对象
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Shear(k_point,axis,_out){
         var rtn=Matrix_3D.create_Identity();
@@ -217,7 +217,7 @@ class Matrix_3D extends Matrix{
     
     /** 创建镜像矩阵
      * @param {List_Value} normal 镜面的法向 3D向量
-     * @returns {Matrix_3D} 返回一个4x4矩阵
+     * @return {Matrix_3D} 返回一个4x4矩阵
      */
     static create_Horizontal(normal){
         var i2xy=-2*normal[0]*normal[1],

@@ -34,7 +34,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 创建打印用的二维数组
      * @param {List_Value} mat 矩阵
      * @param {int} width 矩阵有多少列(宽度)
-     * @returns {Number[][]} 
+     * @return {Number[][]} 
      */
     static create_Print(mat,width){
         var l=mat.length,i,
@@ -50,7 +50,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 校验矩阵是否为方阵
      * @param {List_Value} mat    矩阵
      * @param {int} [_n]    n阶矩阵
-     * @returns {int} 返回 n
+     * @return {int} 返回 n
      * @throws {Error} 当 n 和 m 的长度 无法形成方阵时 将会抛出异常
      */
     static check_Square(mat,_n){
@@ -87,7 +87,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {int} [_new_hight]        新矩阵高度 无输入时将使用 new_w
      * @param {int} [_shift_left]   旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
      * @param {int} [_shift_top]    旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
-     * @returns {Matrix} 返回一个新矩阵
+     * @return {Matrix} 返回一个新矩阵
      */
     static create_NewSize(mat,low_width,new_width,_low_hight,_new_hight,_shift_left,_shift_top){
         var rtn=Matrix.create_Identity(new_width,_new_hight);
@@ -104,7 +104,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {int} [_new_hight]  新矩阵高度 无输入时将使用 new_w
      * @param {int} [_shift_left] 旧矩阵拷贝到新矩阵时的左侧偏移 默认为 0
      * @param {int} [_shift_top]  旧矩阵拷贝到新矩阵时的上方偏移 默认为 _shift_left
-     * @returns {Matrix} 修改 out 并返回
+     * @return {Matrix} 修改 out 并返回
      */
     static setup(out,mat,low_width,new_width,_low_hight,_new_hight,_shift_left,_shift_top){
         var low_hight  = _low_hight||low_width,new_h=_new_hight||new_width,
@@ -141,7 +141,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {int} [_hight1] 矩阵1的高度 默认认为 m1 是列向量(h1=m1.length)
      * @param {int} [_width_right] 矩阵2的宽度 默认认为 m2 是行向量(w2=m2.length)
      * @param {int} [_hight2] 矩阵2的高度 默认认为 m2 是行向量(h2=1)
-     * @returns {Matrix} 返回一个新的矩阵
+     * @return {Matrix} 返回一个新的矩阵
      */
     static create_TensorProduct(mat_left,mat_right,_width_left,_hight1,_width_right,_hight2){
         var width_left=_width_left||1,
@@ -162,7 +162,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param  {int} mat_width      m_list[i]的宽度
      * @param  {int} [_list_height]   m_list中一列放几个矩阵
      * @param  {int} [_mat_height]   m_list[i]的高度
-     * @returns {Matrix} 返回一个新的矩阵
+     * @return {Matrix} 返回一个新的矩阵
      * ```javascript
      *    Matrix.create_Concat([[1,2,3,4], [5,6,7,8]], 2, 2);
      *    // [1,2]   [5,6] >> [1,2,5,6] >> [1,2,5,6,3,4,7,8]
@@ -201,7 +201,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 矩阵乘标量
      * @param {List_Value}     mat   矩阵
      * @param {Number}  k   标量
-     * @returns {Matrix} 返回一个新的矩阵
+     * @return {Matrix} 返回一个新的矩阵
      */
     static np(mat,k){
         return Matrix.np_b(new Matrix(mat),k);
@@ -210,7 +210,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 矩阵乘标量
      * @param {List_Value}     mat   矩阵
      * @param {Number}  k   标量
-     * @returns {List_Value} 修改m并返回
+     * @return {List_Value} 修改m并返回
      */
     static np_b(mat,k){
         var i;
@@ -232,7 +232,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 创建单位矩阵
      * @param {int}  width   矩阵宽度
      * @param {int} [_height]  矩阵高度 默认和 w 相等
-     * @returns {Matrix} 
+     * @return {Matrix} 
      */
     static create_Identity(width,_height){
         var height=_height||width;
@@ -253,7 +253,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {int} n       n阶矩阵 用来表示一行的长度
      * @param {int} v1      矩阵v坐标1 (要对调的行下标1)
      * @param {int} v2      矩阵v坐标2 (要对调的行下标2)
-     * @returns {m} 修改并返回m
+     * @return {m} 修改并返回m
      */
     static transform_Exchange(mat,n,v1,v2){
         var i,j,k,t,temp;
@@ -301,7 +301,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {int} v           当前v坐标(行下标)
      * @param {int} step_length 寻址步长,应为 ±n
      * @param {int} [_index_m]  传入多个矩阵时使用哪个矩阵的值 默认0
-     * @returns {Matrix} 
+     * @return {Matrix} 
      */
     static exchange_zero(m,index,v,step_length,_index_m){
         if(!step_length) return m;
@@ -324,7 +324,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {int} [_height_left]   左矩阵的行数(高度)
      * @param {int} [_width_left_height_right] 左矩阵的列数(宽度) 与 右矩阵的行数(高度)
      * @param {int} [_width_right]   右矩阵的列数(宽度)
-     * @returns {Matrix} 返回一个新的矩阵
+     * @return {Matrix} 返回一个新的矩阵
      */
     static multiplication(mat_left,mat_right,_height_left,_width_left_height_right,_width_right){
         var n=_height_left||_width_left_height_right||_width_right;
@@ -357,7 +357,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 检查矩阵正交
      * @param {Matrix} mat    矩阵
      * @param {Matrix} [_n] n阶矩阵
-     * @returns {Boolean}
+     * @return {Boolean}
      */
     static check_Orthogonal(mat,_n){
         var n=Matrix.check_Square(mat,_n);
@@ -382,7 +382,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {List_Value} out 矩阵
      * @param {int} [_width] 矩阵宽度(列数)
      * @param {int} [_height] 矩阵高度(行数)
-     * @returns {m} 修改mat并返回
+     * @return {m} 修改mat并返回
      */
     static transpose(out,_width,_height){
         var u, v, point_u, point_v, temp;
@@ -419,7 +419,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 创建矩阵的转置
      * @param {List_Value} mat 矩阵
      * @param {int} [_n] 矩阵为n阶矩阵
-     * @returns {m} 返回一个新的矩阵
+     * @return {m} 返回一个新的矩阵
      */
     static create_Transposed(mat,_n){
         return Matrix.transpose(new Matrix(mat),_n);
@@ -428,7 +428,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 计算矩阵行列式
      * @param {List_Value} mat 矩阵
      * @param {int} [_n] 矩阵为n阶矩阵
-     * @returns {Number} 返回矩阵的行列式
+     * @return {Number} 返回矩阵的行列式
      */
     static calc_Det(mat,_n){
         switch(mat.length){
@@ -470,7 +470,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 计算矩阵行列式 --使用初等变换
      * @param {List_Value} mat 矩阵
      * @param {int} [_n] 矩阵为n阶矩阵
-     * @returns {Number} 返回矩阵的行列式
+     * @return {Number} 返回矩阵的行列式
      */
     static calc_Det__Transform(mat,_n){
         var n, uv, index_mat__uv, i, j, flag=1;
@@ -513,7 +513,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 变换得到矩阵逆 高斯乔丹消元法(初等变换法)
      * @param {List_Value} mat 传入矩阵, 计算完后将会变成单位矩阵
      * @param {int} [_n]     矩阵为n阶矩阵
-     * @returns {Matrix}      返回一个新的矩阵
+     * @return {Matrix}      返回一个新的矩阵
      */
     static create_Inverse__Transform(mat,_n){
         var n,uv,index_mat__uv,i,j,v,temp;
@@ -560,7 +560,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 求矩阵的逆 (创建逆矩阵)
      * @param {List_Value} mat       矩阵
      * @param {int} [_n]    矩阵为n阶矩阵
-     * @returns {Matrix|null}     返回一个新的矩阵
+     * @return {Matrix|null}     返回一个新的矩阵
      */
     static create_Inverse(mat,_n){
         // 公式法 m^-1=adj(m)/|m|

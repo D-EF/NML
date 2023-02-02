@@ -76,7 +76,7 @@
      * @param {number[]} arr1 数组1
      * @param {number[]} arr2 数组2
      * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
-     * @returns {Boolean}
+     * @return {Boolean}
      */
     function approximately__Array(arr1,arr2,_tolerance){
         var i =arr1.length;
@@ -96,7 +96,7 @@
      * @param {List_Value} out 输出对象
      * @param {List_Value} org 数据来源
      * @param {int} [_l]   写入长度
-     * @returns {List_Value} 修改并返回 out
+     * @return {List_Value} 修改并返回 out
      */
     function copy_Array(out,org,_l){
         var i=_l||(out.length>org.length?org.length:out.length);

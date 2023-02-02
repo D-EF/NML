@@ -79,7 +79,7 @@ class Euler_Angles extends CONFIG.VALUE_TYPE{
 
     /** 创建欧拉角
      * @param  {List_Value} data 欧拉角旋转数据 
-     * @returns {Euler_Angles}返回一个新的欧拉角
+     * @return {Euler_Angles}返回一个新的欧拉角
      */
     create(data){
         var rtn=new Euler_Angles(3);
@@ -95,7 +95,7 @@ class Euler_Angles extends CONFIG.VALUE_TYPE{
      * @param {Matrix_3D} mat 4x4 旋转矩阵
      * @param  {int[]}      [_axis] 创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
      * @param  {List_Value} [_out]  接收数据的对象
-     * @returns {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
+     * @return {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
      */
     static create_EulerAngles__Matrix4x4(mat,_axis,_out){
         return Euler_Angles.create_EulerAngles__Matrix3x3([
@@ -109,7 +109,7 @@ class Euler_Angles extends CONFIG.VALUE_TYPE{
      * @param  {Matrix}      mat    仅做过旋转变换的3x3矩阵
      * @param  {int[]}      [_axis] 创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
      * @param  {List_Value} [_out]  接收数据的对象
-     * @returns {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
+     * @return {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
      */
     static create_EulerAngles__Matrix3x3(mat,_axis,_out){
         var axis=_axis||[0,1,2];
@@ -156,7 +156,7 @@ class Euler_Angles extends CONFIG.VALUE_TYPE{
      * @param  {Quat}         quat      四元数
      * @param  {int[]}       [_axis]    欧拉角旋转顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
      * @param  {List_Value}  [out]      接收数据的对象
-     * @returns {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
+     * @return {Euler_Angles} 修改并返回 out, 或返回一个新的欧拉角
      */
     static create_EulerAngles__QUAT(m){
         // todo
