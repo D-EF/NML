@@ -13,10 +13,10 @@
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-    /*h*//** @typedef {Number} int      整形数字 */
-    /*h*//** @typedef {Number} double   双浮点数字 */
-    /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number} int      整形数字 */
+    /*h*//** @typedef {number} double   双浮点数字 */
+    /*h*//** @typedef {number} float    单浮点数字 */
+    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import { CONFIG, copy_Array, SAFE_MATH_TOOLS } from "../Config.js";

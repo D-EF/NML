@@ -9,10 +9,10 @@
  */
 
 /*h*/// open * 类型注释 * open
-    /*h*//** @typedef {Number} int      整形数字 */
-    /*h*//** @typedef {Number} double   双浮点数字 */
-    /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number} int      整形数字 */
+    /*h*//** @typedef {number} double   双浮点数字 */
+    /*h*//** @typedef {number} float    单浮点数字 */
+    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 // open * 配置/基础 * open
@@ -64,9 +64,9 @@
     //```
 
     /** 近似相等, 用于浮点误差计算后判断结果是否相近; 
-     * @param {Number} num1 数字
-     * @param {Number} num2 数字
-     * @param {Number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
+     * @param {number} num1 数字
+     * @param {number} num2 数字
+     * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
      */
     function approximately(num1,num2,_tolerance){
         return Math.abs(num1-num2)<(_tolerance===undefined?CONFIG.APPROXIMATELY_TOLERANCE:_tolerance);

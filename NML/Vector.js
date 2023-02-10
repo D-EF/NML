@@ -10,10 +10,10 @@
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-    /*h*//** @typedef {Number} int      整形数字 */
-    /*h*//** @typedef {Number} double   双浮点数字 */
-    /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number} int      整形数字 */
+    /*h*//** @typedef {number} double   双浮点数字 */
+    /*h*//** @typedef {number} float    单浮点数字 */
+    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
@@ -40,7 +40,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     
     /** 求模长
      * @param  {List_Value} vec 向量
-     * @return {Number} 返回模长
+     * @return {number} 返回模长
      */
     static mag(vec) {
         var Squares=0;
@@ -89,7 +89,7 @@ class Vector extends CONFIG.VALUE_TYPE{
 
     /** 判断向量是不是零向量 (严格的,不考虑浮点数误差)
      * @param  {List_Value} vec 向量
-     * @return {Number} 返回0或非0
+     * @return {number} 返回0或非0
      */
     static is_Zero__Strict(vec){
         var i=vec.length;
@@ -145,7 +145,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     
     /** 数字乘向量 
      * @param {List_Value} vec    向量
-     * @param {Number} k 标量
+     * @param {number} k 标量
      * @return {Vector} 返回新的向量
      */
     static np(vec,k){
@@ -154,7 +154,7 @@ class Vector extends CONFIG.VALUE_TYPE{
 
     /** 数字乘向量 
      * @param {List_Value} vec    向量
-     * @param {Number} k 标量
+     * @param {number} k 标量
      * @return {Vector}  修改并返回 v
      */
     static np_b(vec,k){
@@ -167,7 +167,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 向量内积
      * @param {List_Value} vec_left 向量1
      * @param {List_Value} vec_right 向量2
-     * @return {Number} 返回 vec_left * vec_right
+     * @return {number} 返回 vec_left * vec_right
      */
     static dot(vec_left,vec_right){
         if(vec_left.length!==vec_right.length) throw new Error("They vectors have different length!")
@@ -181,7 +181,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 向量外积 仅支持 3D 和 2D 向量
      * @param {List_Value} vec_left 向量1
      * @param {List_Value} vec_right 向量2
-     * @return {Number|List_Value} 返回 vec_left x vec_right
+     * @return {number|List_Value} 返回 vec_left x vec_right
      */
     static cross(vec_left,vec_right){
         if(vec_left.length===2&&vec_right.length===2)return vec_left[0]*vec_right[1]-vec_left[1]*vec_right[0];
@@ -196,7 +196,7 @@ class Vector extends CONFIG.VALUE_TYPE{
     /** 计算向量夹角 ∠AOB 的 cos
      * @param {List_Value} vec_left 表示角的一边的射线上 的 向量A
      * @param {List_Value} vec_right 表示角的一边的射线上 的 向量B
-     * @return {Number} 返回夹角的cos值
+     * @return {number} 返回夹角的cos值
      */
     static cos_2Vec(vec_left,vec_right){
         return Vector.dot(vec_left,vec_right)/(Vector.mag(vec_left)*Vector.mag(vec_right));

@@ -11,10 +11,10 @@
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-    /*h*//** @typedef {Number} int      整形数字 */
-    /*h*//** @typedef {Number} double   双浮点数字 */
-    /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number} int      整形数字 */
+    /*h*//** @typedef {number} double   双浮点数字 */
+    /*h*//** @typedef {number} float    单浮点数字 */
+    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
@@ -203,7 +203,7 @@ class Matrix_3D extends Matrix{
     
     /** 创建切变矩阵
      * @param {List_Value[]} k_point  切变系数, 使用二维向量表示
-     * @param {Number} axis 在哪个面上进行切变 [xy,xz,yz]
+     * @param {number} axis 在哪个面上进行切变 [xy,xz,yz]
      * @param  {List_Value}  [_out] 接收数据的对象
      * @return {Matrix_3D} 返回一个4x4矩阵
      */

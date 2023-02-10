@@ -37,7 +37,7 @@ import {
  */
 class Math2D{
     /** 旋转的单位向量
-     * @param {Number} angle 旋转弧度
+     * @param {number} angle 旋转弧度
      * @return  {Vector2} 返回一个单位向量
      */
     static rotateVector2(angle){
@@ -46,7 +46,7 @@ class Math2D{
     /** 计算线段长度
      * @param {Vector2} v1 线段端点
      * @param {Vector2} v2 线段端点
-     * @return {Number} 返回线段长度
+     * @return {number} 返回线段长度
      */
     static get_LineLength(v1,v2){
         var a=v2.x-v1.x,
@@ -71,9 +71,9 @@ class Math2D{
     }
 
     /** 将相同起点终点的弧度变成更长的
-     * @param {Number} angle_a 端点弧度 取值范围在 -PI~PI
-     * @param {Number} angle_b 端点弧度 取值范围在 -PI~PI
-     * @return {Number[]}
+     * @param {number} angle_a 端点弧度 取值范围在 -PI~PI
+     * @param {number} angle_b 端点弧度 取值范围在 -PI~PI
+     * @return {number[]}
      */
     static toLargeArc(angle_a,angle_b){
         var a=angle_a,b=angle_b;
@@ -88,7 +88,7 @@ class Math2D{
      * @param {Vector2} point   点
      * @param {Vector2} lp1     线段起点
      * @param {Vector2} lp2     线段终点
-     * @return {Number} 投影系数
+     * @return {number} 投影系数
      */
     static get_PointInLine(point,lp1,lp2){
         var tp1=Vector2.dif(point,lp1),
@@ -98,7 +98,7 @@ class Math2D{
     /** 用时间参数t获取线段上的点
      * @param {Vector2} lop 线段起点  
      * @param {Vector2} led 线段终点  
-     * @param {Number} t  时间参数t
+     * @param {number} t  时间参数t
      * @return {Vector2} 返回线段上的点
      */
     static sample_Line(lop,led,t){
@@ -111,7 +111,7 @@ class Math2D{
      * @param {Vector2} point 点
      * @param {Vector2} line_p1 线段端点
      * @param {Vector2} line_p2 线段端点
-     * @return {Number} 返回点到线段的距离
+     * @return {number} 返回点到线段的距离
      */
     static get_DistanceOfPointToLine(point,line_p1,line_p2){
         var d1=Vector2.dif(line_p2,line_p1),
@@ -121,7 +121,7 @@ class Math2D{
         return Math2D.get_LineLength(point,d);
     }
     /** 与 get_distanceOfPointToLine 相似, 多返回个 k 值(点在线上的投影的系数)
-     * @return {length:Number,k:Number}
+     * @return {length:number,k:number}
      */
     static get_distanceOfPointToLine_k(point,line_p1,line_p2){
         var d1=Vector2.dif(line_p2,line_p1),
@@ -132,9 +132,9 @@ class Math2D{
     }
     /** 判断两个圆形是否相交
      * @param {Vector2} c1  圆1 圆心坐标
-     * @param {Number} r1   圆1 半径
+     * @param {number} r1   圆1 半径
      * @param {Vector2} c2  圆2 圆心坐标
-     * @param {Number} r2   圆2 半径
+     * @param {number} r2   圆2 半径
      * @return {Boolean} 返回相交情况
      */
     static get_intersectionOfCircleCircle_f(c1,r1,c2,r2){
@@ -148,9 +148,9 @@ class Math2D{
     }
     /** 获得两个圆形的交点
      * @param {Vector2} c1  圆1 圆心坐标
-     * @param {Number} r1   圆1 半径
+     * @param {number} r1   圆1 半径
      * @param {Vector2} c2  圆2 圆心坐标
-     * @param {Number} r2   圆2 半径
+     * @param {number} r2   圆2 半径
      * @return {Vector2[]} 返回交点
      */
     static get_intersectionOfCircleCircle_V(c1,r1,c2,r2){
@@ -199,7 +199,7 @@ class Math2D{
      * @param {Vector2} lop 线段起点
      * @param {Vector2} led 线段终点
      * @param {Vector2} c   圆心
-     * @param {Number}  r   圆形的半径
+     * @param {number}  r   圆形的半径
      * @return {Vector2[]} 长度最多为2的数组, 交点的坐标
      */
     static get_intersectionOfCircleLine_V(lop,led,c,r) {
@@ -304,7 +304,7 @@ class Math2D{
      * @param {Vector2} l1ed    线段1的终点
      * @param {Vector2} l2op    线段2的起点
      * @param {Vector2} l2ed    线段2的终点
-     * @return{Number} 返回 1 表示相交; 0 表示没有相交; -1 表示 l1 终点在 l2 上, 或者 l2 起点在 l1 上; 2 表示 l2 终点在 l1 上, 或者 l1 起点在 l2 上; 
+     * @return{number} 返回 1 表示相交; 0 表示没有相交; -1 表示 l1 终点在 l2 上, 或者 l2 起点在 l1 上; 2 表示 l2 终点在 l1 上, 或者 l1 起点在 l2 上; 
      */
     static get_intersectionOfLineLine_f(l1op,l1ed,l2op,l2ed){
         var temp1=Vector2.dif(l1ed,l1op),
@@ -343,15 +343,15 @@ class Math2D{
         return 0;
     }
     /** 求线段交点坐标
-     * @param {Number} x1 线段a端点1 x坐标
-     * @param {Number} y1 线段a端点1 y坐标
-     * @param {Number} x2 线段a端点2 x坐标
-     * @param {Number} y2 线段a端点2 y坐标
-     * @param {Number} x3 线段a端点1 x坐标
-     * @param {Number} y3 线段a端点1 y坐标
-     * @param {Number} x4 线段a端点2 x坐标
-     * @param {Number} y4 线段a端点2 y坐标
-     * @return {x:Number,y:Number} 如果返回 Infinity 或 -Infinity 则为未相交
+     * @param {number} x1 线段a端点1 x坐标
+     * @param {number} y1 线段a端点1 y坐标
+     * @param {number} x2 线段a端点2 x坐标
+     * @param {number} y2 线段a端点2 y坐标
+     * @param {number} x3 线段a端点1 x坐标
+     * @param {number} y3 线段a端点1 y坐标
+     * @param {number} x4 线段a端点2 x坐标
+     * @param {number} y4 线段a端点2 y坐标
+     * @return {x:number,y:number} 如果返回 Infinity 或 -Infinity 则为未相交
      */
     static get_intersectionOfLineLine_v(x1,y1,x2,y2,x3,y3,x4,y4){
         var bx=x2-x1,
@@ -372,8 +372,8 @@ class Math2D{
         return {x:t.x*bx+x1,y:t.x*by+y1};
     }
     /** 求贝塞尔曲线的导函数的控制点
-     * @param {{x:Number,y:Number}[]} points 原曲线的控制点集合 
-     * @return {{x:Number,y:Number}[]} 导函数的控制点
+     * @param {{x:number,y:number}[]} points 原曲线的控制点集合 
+     * @return {{x:number,y:number}[]} 导函数的控制点
      */
     static get_BezierDerivativesPoints(points){
         var n=points.length-1,
@@ -390,7 +390,7 @@ class Math2D{
     }
     /** 二维中的贝塞尔曲线分割
      * @param {Vector2[]} points 控制点集合
-     * @param {Number} t t时间参数
+     * @param {number} t t时间参数
      * @return {Vector2[][]} 返回新的两组贝塞尔曲线的点
      */
     static get_CutOffBezierCurve(points,t){
@@ -507,11 +507,11 @@ class Math2D{
         return rtn;
     }
     /** x方向射线 与 线段 判断相交情况
-     * @param {Number} x 射线起点
-     * @param {Number} y 射线起点
+     * @param {number} x 射线起点
+     * @param {number} y 射线起点
      * @param {Vector2} v1 线段端点
      * @param {Vector2} v2 线段端点
-     * @return {Number} 射线穿过情况
+     * @return {number} 射线穿过情况
      */
     static get_intersectionOfXRadialLine_Fn(x,y,v1,v2){
         if(v1.x==x&&v1.y==y) return 1;//如果正好在顶点上直接算在内部
@@ -535,8 +535,8 @@ class Math2D{
         return 0;
     }
     /** 射线穿过曲线次数
-     * @param {Number} x 射线起点
-     * @param {Number} y 射线起点
+     * @param {number} x 射线起点
+     * @param {number} y 射线起点
      * @param {BezierCurve} bezier 曲线实例
      * @return {number} 射线穿过曲线次数 返回-1代表点正好在曲线坐标上
      */
@@ -554,7 +554,7 @@ class Math2D{
     /** 贝塞尔曲线求交
      * @param {BezierCurve} bezier1 贝塞尔曲线1
      * @param {BezierCurve} bezier2 贝塞尔曲线2
-     * @param {Number} _accuracy 采样临界值(最终包围框的宽高最大不超过) 默认 1 值越小精度越高
+     * @param {number} _accuracy 采样临界值(最终包围框的宽高最大不超过) 默认 1 值越小精度越高
      * @param {Boolean} f_lil 是否使用最后得到的向量配对进行交点计算, 默认为true, 注意 如果采样精度太低进行求交可能会导致交点丢失
      * @return {Vectore2[]}  返回交点的集合
      */
@@ -564,7 +564,7 @@ class Math2D{
             l=group_bezier[0].length-1,
             k=group_bezier[1].length-1,
             i,j;
-        /**@type {Number} 精度 */
+        /**@type {number} 精度 */
         var accuracy=(_accuracy&&(_accuracy>0))?_accuracy:1;
         /**@type {Unilateral_Bezier_Box[]} 用来配对的集合*/
         var group=new Array(l),
@@ -687,9 +687,9 @@ class Math2D{
     }
     //  Bezier The projection identity 投影恒等式 数学内容来自 https://pomax.github.io/bezierinfo/zh-CN/index.html#abc 和 https://mathoverflow.net/questions/122257/finding-the-formula-for-bezier-curve-ratios-hull-point-point-baseline
     /** 贝塞尔曲线的t值对应的基线上的投影点C
-     * @param {Number} n n阶曲线
-     * @param {Number} t 曲线的时间参数t
-     * @return {Number} 基线的t参数
+     * @param {number} n n阶曲线
+     * @param {number} t 曲线的时间参数t
+     * @return {number} 基线的t参数
      */
     static get_bezierIdentityFormulaUt_Value(n,t){
         var td=1-t,
@@ -707,9 +707,9 @@ class Math2D{
         // 目前没有更高阶的
     }
     /** 曲线投影的 BC:AB constant
-     * @param {Number} n n阶曲线
-     * @param {Number} t 曲线的时间参数t
-     * @return {Number} 基线的t参数
+     * @param {number} n n阶曲线
+     * @param {number} t 曲线的时间参数t
+     * @return {number} 基线的t参数
      */
     static get_bezierIdentityFormulaRatio_Value(n,t){
         var td=1-t,
@@ -772,7 +772,7 @@ class Math2D{
      * @param {Vector2} p1 起点
      * @param {Vector2} p2 中间的点
      * @param {Vector2} p3 终点
-     * @param {Number}  _t
+     * @param {number}  _t
      * @return 
      */
     static create_CubicBezierBy3Point(p1,p2,p3,_t){
@@ -819,10 +819,10 @@ class Math2D{
 /** 矩形的数据
  */
 class Data_Rect{
-    /** @param {Number} x 坐标
-     * @param {Number} y 坐标
-     * @param {Number} w 宽度
-     * @param {Number} h 高度
+    /** @param {number} x 坐标
+     * @param {number} y 坐标
+     * @param {number} w 宽度
+     * @param {number} h 高度
      */
     constructor(x,y,w,h){
         this.x=x;
@@ -892,8 +892,8 @@ class Data_Rect{
         return new Vector2(rtnx,rtny);
     }
     /** 判断点是否在内部
-     * @param {Number} x 点的x坐标
-     * @param {Number} y 点的y坐标
+     * @param {number} x 点的x坐标
+     * @param {number} y 点的y坐标
      * @return {Boolean} 返回 点是否在内部
      */
     is_Inside(x,y){
@@ -913,11 +913,11 @@ class Data_Rect{
  */
  class Data_Arc{
      /** 旋转方向默认是顺时针, 并且 起点弧度 始终 会 小于 终点弧度
-      * @param {Number} cx 圆心坐标
-      * @param {Number} cy 圆心坐标
-      * @param {Number} r  半径
-      * @param {Number} angle_A     弧形端点弧度
-      * @param {Number} angle_B     弧形端点弧度
+      * @param {number} cx 圆心坐标
+      * @param {number} cy 圆心坐标
+      * @param {number} r  半径
+      * @param {number} angle_A     弧形端点弧度
+      * @param {number} angle_B     弧形端点弧度
       */
     constructor(cx,cy,r,angle_A,angle_B){
         /**圆心的坐标 */
@@ -935,7 +935,7 @@ class Data_Rect{
         this._max=null;
         /** @type {Polygon} 多边形拟合代理对象 */
         this._polygon_proxy=null;
-        /** @type {Number} 每个点相差的弧度 */
+        /** @type {number} 每个点相差的弧度 */
         this._polygon_proxy_want_sp=10*deg;
         this.polygon_proxy_sp=this._polygon_proxy_want_sp;
 
@@ -958,7 +958,7 @@ class Data_Rect{
         this._bezier_curve_proxy.length=0;
     }
     /** 获取导向量
-     * @param {Number} t t参数0~1
+     * @param {number} t t参数0~1
      * @return {Vector2} 返回一个向量
      */
     get_Tangent(t){
@@ -969,7 +969,7 @@ class Data_Rect{
         return Math2D.rotateVector2(angle).np(this.r);
     }
     /** 法线
-     * @param {Number} t t参数0~1
+     * @param {number} t t参数0~1
      * @return {Vector2} 返回一个标准化的相对坐标
      */
     get_Normal(t){
@@ -977,7 +977,7 @@ class Data_Rect{
         return new Vector2(Math.cos(angle),Math.sin(angle));
     }
     /** 采样点
-     * @param {Number} t  0~1 时间参数t 
+     * @param {number} t  0~1 时间参数t 
      * @return 
      */
     sample(t){
@@ -986,15 +986,15 @@ class Data_Rect{
         return (new Vector2(Math.cos(angle)*r,Math.sin(angle)*r)).translate(this.c);
     }
     /** 采样点 使用弧度采样
-     * @param {Number} angle  采样弧度
+     * @param {number} angle  采样弧度
      * @return 
      */
     sample_ByAngle(angle){
         return (new Vector2(Math.cos(angle)*this.r,Math.sin(angle)*this.r)).translate(this.c);
     }
     /** 重设两个端点的弧度
-     * @param {Number} angle_A     弧形端点弧度
-     * @param {Number} angle_B     弧形端点弧度
+     * @param {number} angle_A     弧形端点弧度
+     * @param {number} angle_B     弧形端点弧度
      */
     setAngle_AB(angle_A,angle_B){
         this._startAngle=angle_A;
@@ -1067,14 +1067,14 @@ class Data_Rect{
         return this._min;
     }
     /** 夹角弧度 Angle 
-     * @return {Number}
+     * @return {number}
      */
     get angle(){
         /**夹角弧度 */
         return Math.abs(this.startAngle-this.endAngle);
     }
     /** 录入 弧形起点的弧度 startAngle , 根据大小关系会修改起点和终点的顺序
-     * @param {Number} val
+     * @param {number} val
      */
     set startAngle(val){
         if(val.constructor===Number){
@@ -1087,7 +1087,7 @@ class Data_Rect{
         }
     }
     /** 录入 弧形终点的弧度 endAngle , 根据大小关系会修改起点和终点的顺序
-     * @param {Number} val
+     * @param {number} val
      */
     set endAngle(val){
         if(val.constructor===Number){
@@ -1100,8 +1100,8 @@ class Data_Rect{
         }
     }
     /** 录入 两个端点的弧度
-     * @param {Number} val1 端点的弧度
-     * @param {Number} val2 端点的弧度
+     * @param {number} val1 端点的弧度
+     * @param {number} val2 端点的弧度
      */
     set_EndpointAngle(val1,val2){
         if((val1.constructor!==Number)||(val2.constructor!==Number)){
@@ -1135,7 +1135,7 @@ class Data_Rect{
         return this._r;
     }
     /** 求弧长
-     * @return {Number} 弧长 */
+     * @return {number} 弧长 */
     get_LengthLong(){
         return this.angle*this.r;
     }
@@ -1308,8 +1308,8 @@ class Data_Rect{
         return(!((x>this.max.x)||(x<this.min.x)||(y>this.max.y)||(y<this.min.y)));
     }
     /** 点是否在弧形(割圆)内
-     * @param {Number} x 
-     * @param {Number} y 
+     * @param {number} x 
+     * @param {number} y 
      */
     is_InArc(_x,_y,f){
         var r=this._r;
@@ -1351,8 +1351,8 @@ class Data_Rect{
         return false;
     }
     /** 点是否在内部
-     * @param {Number} _x 点的坐标x
-     * @param {Number} _y 点的坐标y
+     * @param {number} _x 点的坐标x
+     * @param {number} _y 点的坐标y
      * @param {Boolean} f want_to_closePath 当没有成为完整的圆时, 是否需要将其当作一个割圆
      * @return {Boolean} 返回 点是否在内部
      */
@@ -1362,11 +1362,11 @@ class Data_Rect{
         }
         return false;
     }
-    /** @type {Number} 每个点相差的弧度 */
+    /** @type {number} 每个点相差的弧度 */
     get polygon_proxy_want_sp(){
         return this._polygon_proxy_want_sp;
     }
-    /** @type {Number} 每个点相差的弧度 */
+    /** @type {number} 每个点相差的弧度 */
     set polygon_proxy_want_sp(val){
         if(val===this._polygon_proxy_want_sp){
             return val;
@@ -1374,7 +1374,7 @@ class Data_Rect{
         this.polygon_proxy=null;
         return this._polygon_proxy_want_sp=val;
     }
-    /** @type {{t:Number,l:Number}[]} 弧长显式查找表 */
+    /** @type {{t:number,l:number}[]} 弧长显式查找表 */
     get length_long_lut(){
         var polygon=this.polygon_proxy;
         if(this._length_long_lut[0].l===null){
@@ -1427,8 +1427,8 @@ class Data_Rect{
         };
     }
     /** 使用弧长求t值
-     * @param {Number} length 当前弧长, 为负数时使用终点开始算; 当弧长超出取值范围时取0
-     * @return {Number} 对应的时间参数t
+     * @param {number} length 当前弧长, 为负数时使用终点开始算; 当弧长超出取值范围时取0
+     * @return {number} 对应的时间参数t
      */
     get_t_ByLengthLong(length){
         var arcl=this.get_LengthLong();
@@ -1479,18 +1479,18 @@ class Data_Rect{
 
 class Data_Arc__Ellipse extends Data_Arc {
     /**
-     * @param {Number} cx       圆心坐标 x
-     * @param {Number} cy       圆心坐标 y
-     * @param {Number} rx       x 方向 半径
-     * @param {Number} ry       y 方向 半径
-     * @param {Number} angle_A  未进行变换时的 起点角度
-     * @param {Number} angle_B  未进行变换时的 终点角度
-     * @param {Number} rotate   旋转椭圆的弧度
+     * @param {number} cx       圆心坐标 x
+     * @param {number} cy       圆心坐标 y
+     * @param {number} rx       x 方向 半径
+     * @param {number} ry       y 方向 半径
+     * @param {number} angle_A  未进行变换时的 起点角度
+     * @param {number} angle_B  未进行变换时的 终点角度
+     * @param {number} rotate   旋转椭圆的弧度
      * @param {Boolean} flip_horizontal_flag 水平翻转
      */
     constructor(cx,cy,rx,ry,angle_A,angle_B,rotate,flip_horizontal_flag){
         super(0,0,rx,angle_A,angle_B);
-        /** @type {Number} ry, rx d的比 */
+        /** @type {number} ry, rx d的比 */
         this.ry_ratio_rx=ry/rx;
         /** @type {Matrix2x2T} */
         this._transform_matrix=new Matrix2x2T();
@@ -1505,7 +1505,7 @@ class Data_Arc__Ellipse extends Data_Arc {
         
         /** @type {Matrix2x2T} 变换矩阵 */
         this._transform_matrix.translate(cx,cy);
-        /** @type {Number} 存储旋转值 */
+        /** @type {number} 存储旋转值 */
         this._rotate=rotate||0;
         /** @type {Matrix2x2T} 世界坐标系 to 局部坐标系 变换矩阵, 由transform矩阵的逆运算得到 */
         this._world_to_local_matrix=null;
@@ -1544,7 +1544,7 @@ class Data_Arc__Ellipse extends Data_Arc {
             this._endAngle,
         );
     }
-    /** @type {Number} 设置基础半径 */
+    /** @type {number} 设置基础半径 */
     set basics_r(r){
         this.r=r;
         return r;
@@ -1661,17 +1661,17 @@ class Data_Arc__Ellipse extends Data_Arc {
         return temp
     }
     /** 求弧长
-     * @param {Number} step_size 弧度采样精度 在变换前的采样点间的弧度差异
-     * @return {Number} 使用多边形拟合曲线求得的长度
+     * @param {number} step_size 弧度采样精度 在变换前的采样点间的弧度差异
+     * @return {number} 使用多边形拟合曲线求得的长度
      */
     get_LengthLong(step_size){
         if(step_size) this.polygon_proxy_want_sp=step_size;
         return this.polygon_proxy.get_LengthLong();
     }
     /** 使用弧长求t值
-     * @param {Number} length 当前弧长, 为负数时使用终点开始算; 当弧长超出取值范围时取0
-     * @param {Number} step_size t 时间参数的采样步长, 设置越接近0精度越高; 默认为 0.1 或者保留原有的
-     * @return {Number} 对应的时间参数t
+     * @param {number} length 当前弧长, 为负数时使用终点开始算; 当弧长超出取值范围时取0
+     * @param {number} step_size t 时间参数的采样步长, 设置越接近0精度越高; 默认为 0.1 或者保留原有的
+     * @return {number} 对应的时间参数t
      */
     get_t_ByLengthLong(length,step_size){
         if(step_size) this.polygon_proxy_want_sp=step_size;
@@ -1722,8 +1722,8 @@ class Data_Arc__Ellipse extends Data_Arc {
      * 使用起点, 终点, 半径 等参数创建弧形 
      * @param {Vector2} op                 起点
      * @param {Vector2} ed                 终点
-     * @param {Number}  rx                 水平方向半径
-     * @param {Number}  ry                 垂直方向半径
+     * @param {number}  rx                 水平方向半径
+     * @param {number}  ry                 垂直方向半径
      * @param {Boolean} rotate_angle       旋转弧度(用圆心进行旋转) 
      * @param {Boolean} large_arc_flag     使用更长或更短的边   和 sweep_flag 联动来确定弧线
      * @param {Boolean} sweep_flag         弧形绘制方向        和 large_arc_flag 联动来确定弧线
@@ -1780,8 +1780,8 @@ class Data_Arc__Ellipse extends Data_Arc {
     /** 使用起点, 终点, 半径 等参数创建弧形
      * @param {Vector2} op                 起点
      * @param {Vector2} ed                 终点
-     * @param {Number}  rx                 水平方向半径
-     * @param {Number}  ry                 垂直方向半径
+     * @param {number}  rx                 水平方向半径
+     * @param {number}  ry                 垂直方向半径
      * @param {Boolean} rotate_angle       旋转弧度(用圆心进行旋转)
      * @param {Boolean} large_arc_flag     使用更长或更短的边   和 sweep_flag 联动来确定弧线
      * @param {Boolean} sweep_flag         弧形绘制方向        和 large_arc_flag 联动来确定弧线
@@ -1809,11 +1809,11 @@ class Data_Arc__Ellipse extends Data_Arc {
  */
 class Data_Sector extends Data_Arc{
      /** 旋转方向默认是顺时针, 并且 起点弧度 始终 会 小于 终点弧度
-      * @param {Number} cx 圆心坐标
-      * @param {Number} cy 圆心坐标
-      * @param {Number} r  半径
-      * @param {Number} angle_A     弧形端点弧度
-      * @param {Number} angle_B     弧形端点弧度
+      * @param {number} cx 圆心坐标
+      * @param {number} cy 圆心坐标
+      * @param {number} r  半径
+      * @param {number} angle_A     弧形端点弧度
+      * @param {number} angle_B     弧形端点弧度
       */
     constructor(cx,cy,r,angle_A,angle_B){
         super(cx,cy,r,angle_A,angle_B);
@@ -1867,13 +1867,13 @@ class Data_Sector extends Data_Arc{
 
 /** 
  * @class 2维向量
- * @param {Number}  x 
- * @param {Number}  y 
+ * @param {number}  x 
+ * @param {number}  y 
  */
  class Vector2{
     /** 
-     * @param {Number}  x
-     * @param {Number}  y
+     * @param {number}  x
+     * @param {number}  y
      */
     constructor(x,y){
         this.x=x||0;
@@ -1911,8 +1911,8 @@ class Data_Sector extends Data_Arc{
         }
     }
     /** 使用x坐标和y坐标的数组创建向量
-     * @param {Number[]} x_arr x坐标的集合
-     * @param {Number[]} y_arr y坐标的集合
+     * @param {number[]} x_arr x坐标的集合
+     * @param {number[]} y_arr y坐标的集合
      * @return {Vector2[]} 返回坐标向量集合
      */
     static create_ByArray(x_arr,y_arr){
@@ -1923,7 +1923,7 @@ class Data_Sector extends Data_Arc{
         return rtn
     }
     /**求模
-     * @return {Number} 
+     * @return {number} 
 	 */
 	get_Mag() {
 		return Math.sqrt(this.x*this.x+this.y*this.y);
@@ -1972,7 +1972,7 @@ class Data_Sector extends Data_Arc{
         return this;
     }
     /**数字乘向量 
-     * @param {Number} n
+     * @param {number} n
      * @return {Vector2} 返回新的向量
      */
     np(n){return new Vector2(this.x*n,this.y*n);}
@@ -1983,12 +1983,12 @@ class Data_Sector extends Data_Arc{
     dif(v2){return new Vector2(this.x-v2.x,this.y-v2.y);}
     /** 向量内积
      * @param {Vector2} v2
-     * @return{Number} 
+     * @return{number} 
      */
     dot(v2){return this.x*v2.x+this.y*v2.y;}
     /**向量外积
      * @param {Vector2} v2 
-     * @return{Number} 
+     * @return{number} 
      */
     cross(v2){return this.x*v2.y-this.y*v2.x;}
     /** 进行线性变换
@@ -2052,19 +2052,19 @@ class Data_Sector extends Data_Arc{
     /** 向量内积
      * @param {Vector2} v1
      * @param {Vector2} v2
-     * @return{Number}
+     * @return{number}
      */
     static dot(v1,v2){return v1.x*v2.x+v1.y*v2.y;}
     /**向量外积
      * @param {Vector2} v1
      * @param {Vector2} v2
-     * @return{Number}
+     * @return{number}
      */
     static cross(v1,v2){return v1.x*v2.y-v1.y*v2.x;}
     
     /**数字乘向量 
      * @param {Vector2} v
-     * @param {Number} n
+     * @param {number} n
      * @return {Vector2} 返回新的向量
     */
     static np(v,n){return new Vector2(v.x*n,v.y*n);}
@@ -2178,7 +2178,7 @@ class Data_Sector extends Data_Arc{
     /** 向量夹角运算
      * @param {Vector2} v1 表示角的一边的射线上 的 向量
      * @param {Vector2} v2 表示角的一边的射线上 的 向量
-     * @return {Number} 返回夹角的cos值
+     * @return {number} 返回夹角的cos值
      */
     static cos_VV(v1,v2){
         return Vector2.dot(v1,v2)/(Vector2.get_Mag(v1)*Vector2.get_Mag(v2));
@@ -2191,10 +2191,10 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
 /* 矩阵 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */
 
 /** 2*2矩阵
- * @param {Number} a  矩阵的参数 m11
- * @param {Number} b  矩阵的参数 m12
- * @param {Number} c  矩阵的参数 m21
- * @param {Number} d  矩阵的参数 m22
+ * @param {number} a  矩阵的参数 m11
+ * @param {number} b  矩阵的参数 m12
+ * @param {number} c  矩阵的参数 m21
+ * @param {number} d  矩阵的参数 m22
  */
  class Matrix2x2{
     constructor(a,b,c,d){
@@ -2210,7 +2210,7 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
     get c(){return this._data[2];} set c(val){return this._data[2]=val;}
     get d(){return this._data[3];} set d(val){return this._data[3]=val;}
     /** 将矩阵的数字转换成字符串
-     * @param {String} sp_str 
+     * @param {string} sp_str 
      * @return 
      */
     join(sp_str){
@@ -2290,7 +2290,7 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
         return rtn;
     }
     /** 矩阵的行列式
-     * @return{Number} 行列式
+     * @return{number} 行列式
      */
     get_Det(){
         return this.a*this.d-this.b*this.c;
@@ -2317,8 +2317,8 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
         return rtn;
     }
     /** 缩放
-     * @param {Number} x x 轴方向上的缩放系数
-     * @param {Number} y y 轴方向上的缩放系数
+     * @param {number} x x 轴方向上的缩放系数
+     * @param {number} y y 轴方向上的缩放系数
      */
     scale(x,y){
         return this.multiplication(
@@ -2326,7 +2326,7 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
         );
     }
     /** 旋转
-     * @param {Number} theta 顺时针 旋转角弧度
+     * @param {number} theta 顺时针 旋转角弧度
      */
     rotate(theta){
         return this.multiplication(
@@ -2334,8 +2334,8 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
         );
     }
     /** 切变
-     * @param {Number} axis 方向轴 0:x 非零:y
-     * @param {Number} k 切变系数
+     * @param {number} axis 方向轴 0:x 非零:y
+     * @param {number} k 切变系数
      */
     shear(axis,k){
         return this.multiplication(
@@ -2343,8 +2343,8 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
         );
     }
     /** 镜像(对称)
-     * @param {Number} x 对称轴的法向 x 坐标
-     * @param {Number} y 对称轴的法向 y 坐标
+     * @param {number} x 对称轴的法向 x 坐标
+     * @param {number} y 对称轴的法向 y 坐标
      */
     horizontal(x,y){
         return this.multiplication(
@@ -2390,7 +2390,7 @@ Vector2.INFINITY=new Vector2(Infinity,Infinity);
  */
 Matrix2x2.create={
     /** 旋转
-     * @param {Number} theta 顺时针 旋转角弧度
+     * @param {number} theta 顺时针 旋转角弧度
      * @return {Matrix2x2}
      */
     rotate:function(theta){
@@ -2399,16 +2399,16 @@ Matrix2x2.create={
         return new Matrix2x2(c,s,-s,c);
     },
     /** 缩放
-     * @param {Number} x x 轴方向上的缩放系数
-     * @param {Number} y y 轴方向上的缩放系数
+     * @param {number} x x 轴方向上的缩放系数
+     * @param {number} y y 轴方向上的缩放系数
      * @return {Matrix2x2}
      */
     scale:function(x,y){
         return new Matrix2x2(x,0,0,y);
     },
     /** 镜像(对称)
-     * @param {Number} x 对称轴的法向 x 坐标
-     * @param {Number} y 对称轴的法向 y 坐标
+     * @param {number} x 对称轴的法向 x 坐标
+     * @param {number} y 对称轴的法向 y 坐标
      * @return {Matrix2x2}
      */
     horizontal:function (x,y){
@@ -2418,8 +2418,8 @@ Matrix2x2.create={
         )
     },
     /** 切变
-     * @param {Number} axis 方向轴 0:x 非零:y
-     * @param {Number} k 切变系数
+     * @param {number} axis 方向轴 0:x 非零:y
+     * @param {number} k 切变系数
      * @return {Matrix2x2}
      */
     shear:function(axis,k){
@@ -2451,12 +2451,12 @@ Matrix2x2.ROTATE_90=new Matrix2x2(0,1,-1,0);
 Matrix2x2.ROTATE_90_I=new Matrix2x2(0,-1,1,0);
 Matrix2x2.FLIP_HORIZONTAL=new Matrix2x2(-1,0,0,1)
 /** 2*2矩阵 + 平移
- * @param {Number} a  矩阵的参数 m11
- * @param {Number} b  矩阵的参数 m12
- * @param {Number} c  矩阵的参数 m21
- * @param {Number} d  矩阵的参数 m22
- * @param {Number} e  平移量x
- * @param {Number} f  平移量y
+ * @param {number} a  矩阵的参数 m11
+ * @param {number} b  矩阵的参数 m12
+ * @param {number} c  矩阵的参数 m21
+ * @param {number} d  矩阵的参数 m22
+ * @param {number} e  平移量x
+ * @param {number} f  平移量y
  */
 class Matrix2x2T extends Matrix2x2{
     constructor(a,b,c,d,e,f){
@@ -2543,8 +2543,8 @@ class Matrix2x2T extends Matrix2x2{
         return rtn.multiplication(m);
     }
     /** 设置 translate 值
-     * @param {Number} x 
-     * @param {Number} y 
+     * @param {number} x 
+     * @param {number} y 
      */
     set_Translate(x,y){
         this.e=x;
@@ -2552,8 +2552,8 @@ class Matrix2x2T extends Matrix2x2{
         return this;
     }
     /** 再平移
-     * @param {Number} x x轴偏移量
-     * @param {Number} y y轴偏移量
+     * @param {number} x x轴偏移量
+     * @param {number} y y轴偏移量
      */
     translate(x,y){
         this.e+=x;
@@ -2572,7 +2572,7 @@ class Matrix2x2T extends Matrix2x2{
 
 /** 矩阵转换成css的样子
  * @param {Matrix2x2T} m 
- * @return {String}
+ * @return {string}
  */
  function matrixToCSS(m){
     return "matrix("+
@@ -2632,12 +2632,12 @@ class MatrixController extends MatrixController__base{
 /** 矩阵 */
 class MatrixController__matrix extends MatrixController__base{
     /**
-     * @param {Number} a 矩阵计算参数 m11   重载  使用矩阵
-     * @param {Number} b 矩阵计算参数 m12
-     * @param {Number} c 矩阵计算参数 m21
-     * @param {Number} d 矩阵计算参数 m22
-     * @param {Number} e 齐次坐标 平移量
-     * @param {Number} f 齐次坐标 平移量
+     * @param {number} a 矩阵计算参数 m11   重载  使用矩阵
+     * @param {number} b 矩阵计算参数 m12
+     * @param {number} c 矩阵计算参数 m21
+     * @param {number} d 矩阵计算参数 m22
+     * @param {number} e 齐次坐标 平移量
+     * @param {number} f 齐次坐标 平移量
      */
     constructor(a,b,c,d,e,f){
         this.type="matrix";
@@ -2658,7 +2658,7 @@ class MatrixController__matrix extends MatrixController__base{
 /** 旋转 */
  class MatrixController__rotate extends MatrixController__base{
     /**
-     * @param {Number} rotate 旋转弧度
+     * @param {number} rotate 旋转弧度
      */
     constructor(rotate){
         this.type="rotate";
@@ -2674,8 +2674,8 @@ class MatrixController__matrix extends MatrixController__base{
 /** 平移 */
  class MatrixController__translate extends MatrixController__base{
     /**
-     * @param {Number} x x坐标平移量
-     * @param {Number} y y坐标平移量
+     * @param {number} x x坐标平移量
+     * @param {number} y y坐标平移量
      */
     constructor(x,y){
         this.type="translate";
@@ -2692,8 +2692,8 @@ class MatrixController__matrix extends MatrixController__base{
 /** 镜像 */
  class MatrixController__horizontal extends MatrixController__base{
     /**
-     * @param {Number} x 对称轴的法向坐标
-     * @param {Number} y 对称轴的法向坐标
+     * @param {number} x 对称轴的法向坐标
+     * @param {number} y 对称轴的法向坐标
      */
     constructor(x,y){
         this.type="horizontal";
@@ -2710,8 +2710,8 @@ class MatrixController__matrix extends MatrixController__base{
 /** 切变 */
  class MatrixController__shear extends MatrixController__base{
     /**
-     * @param {Number} axis 方向轴 0:x 非零:y
-     * @param {Number} k 切变系数
+     * @param {number} axis 方向轴 0:x 非零:y
+     * @param {number} k 切变系数
      */
     constructor(axis,k){
         this.type="shear";
@@ -2728,8 +2728,8 @@ class MatrixController__matrix extends MatrixController__base{
 /** 缩放 */
 class MatrixController__scale extends MatrixController__base{
     /** 
-     * @param {Number} x x方向的缩放系数
-     * @param {Number} y y方向的缩放系数
+     * @param {number} x x方向的缩放系数
+     * @param {number} y y方向的缩放系数
      */
     constructor(x,y){
         super();
@@ -2762,9 +2762,9 @@ class Polygon{
         if(nodes&&nodes.constructor==Array){
             this.add_Nodes(nodes);
         }
-        /**@type {Number[]} 边线长度lut表 */
+        /**@type {number[]} 边线长度lut表 */
         this._length_long_lut=[];
-        /**@type {Number} 所有边线总长度 为负数时说明是未计算状态*/
+        /**@type {number} 所有边线总长度 为负数时说明是未计算状态*/
         this._all_lines_length=-1;
         /**@type {Delegate} 顶点插入或删除后的委托  */
         this.after_nodes_move_Delegate=Delegate.create();
@@ -2835,7 +2835,7 @@ class Polygon{
         }
     }
     /** 插入顶点
-     * @param {Number} index    要插入的顶点的下标
+     * @param {number} index    要插入的顶点的下标
      * @param {Vector2} v       要插入的顶点
      */
     insert_Node(index,v){
@@ -2851,7 +2851,7 @@ class Polygon{
         this.after_nodes_Move(index,true);
     }
     /** 移除顶点
-     * @param {Number} index 要删除的顶点的下标
+     * @param {number} index 要删除的顶点的下标
      */
     remove_Node(index){
         var tflag;
@@ -2872,7 +2872,7 @@ class Polygon{
         this._all_lines_length=-1;
     }
     /** 在插入顶点或删除顶点后的操作
-     * @param {Number} index 修改的点的下标
+     * @param {number} index 修改的点的下标
      * @param {Boolean} f 插入还是删除
      */
     after_nodes_Move(index,f){
@@ -2888,7 +2888,7 @@ class Polygon{
         this.after_nodes_move_Delegate(i,f);
     }
     /** 修改顶点后的操作
-     * @param {Number} index 修改的点的下标
+     * @param {number} index 修改的点的下标
      */
     after_node_Change(index){
         this._length_long_lut[index]=undefined;
@@ -2896,7 +2896,7 @@ class Polygon{
         this.after_node_change_Delegate(i);
     }
     /** 修改顶点
-     * @param {Number} index 修改顶点的下标
+     * @param {number} index 修改顶点的下标
      * @param {Vector2} v 点的坐标
      * @return {Vector2} 返回当前修改的点
      */
@@ -2929,8 +2929,8 @@ class Polygon{
         return this.max;
     }
     /** 使用局部坐标系判断某点是否在内部, 
-     * @param {Number} x 局部坐标系中的坐标
-     * @param {Number} y 局部坐标系中的坐标
+     * @param {number} x 局部坐标系中的坐标
+     * @param {number} y 局部坐标系中的坐标
      * @param {Boolean} f 是否认作是一个密封的多边形 为true时会多计算一个起点和终点的线
      */
     is_Inside(x,y,f){
@@ -2998,8 +2998,8 @@ class Polygon{
         }
     }
     /** 生成代理用的多边形
-     * @param {Number} _accuracy 精度 在这里是无用的
-     * @param {Number} _closeFlag 是否需要封闭
+     * @param {number} _accuracy 精度 在这里是无用的
+     * @param {number} _closeFlag 是否需要封闭
      */
     create_PolygonProxy(_accuracy,_closeFlag){
         var rtn= this.copy();
@@ -3009,8 +3009,8 @@ class Polygon{
         return rtn;
     }
     /** 分割线段生成新顶点
-     * @param {Number} index 前驱顶点下标
-     * @param {Number} z     t参数
+     * @param {number} index 前驱顶点下标
+     * @param {number} z     t参数
      * @return {Vector2} 新加入的顶点
      */
     cut(index,z){
@@ -3025,7 +3025,7 @@ class Polygon{
     /** 点趋向于哪条边
      * @param {Vector2} point 点
      * @param {Boolean} want_to_close 将没闭合的路径视作闭合路径
-     * @return {{i:Number,l:Number,k:Number}}  i:线段前驱顶点的下标, l:点到线段的距离, k:点投影到线段的系数
+     * @return {{i:number,l:number,k:number}}  i:线段前驱顶点的下标, l:点到线段的距离, k:点投影到线段的系数
      */
     get_PointInLine(point,want_to_close){
         var nodes=this.nodes;
@@ -3048,14 +3048,14 @@ class Polygon{
     }
     /** 点在顶点上或在多边形线段上 顶点优先
      * @param {Vector2} point 点
-     * @param {Number} r 顶点的计算半径 取负数将无法取到顶点
-     * @param {Number} lineWidth 线段容差宽度 超出距离不计 取负数将无法取到边
+     * @param {number} r 顶点的计算半径 取负数将无法取到顶点
+     * @param {number} lineWidth 线段容差宽度 超出距离不计 取负数将无法取到边
      * @param {Boolean} want_to_close 将没闭合的路径视作闭合路径
-     * @return {{type:Number,i:Number,l:Number,k:Number}}
-     * @return {Number} type 在顶点上(0) 或 在边上(1)
-     * @return {Number} i 当前顶点下标 或边的前驱顶点下标
-     * @return {Number} l 点到目标的距离
-     * @return {Number} k 目标为边时点到边的投影的系数
+     * @return {{type:number,i:number,l:number,k:number}}
+     * @return {number} type 在顶点上(0) 或 在边上(1)
+     * @return {number} i 当前顶点下标 或边的前驱顶点下标
+     * @return {number} l 点到目标的距离
+     * @return {number} k 目标为边时点到边的投影的系数
      */
     pointInNodeOrLine(point,r,lineWidth,want_to_close){
         var nodes=this.nodes;
@@ -3091,8 +3091,8 @@ class Polygon{
         }
     }
     /** 获取边的长度
-     * @param {Number} index 前驱顶点做为起点 如果是最后一个顶点则会视作 第一个和最后一个顶点 的线
-     * @return {Number} 返回线段的长度
+     * @param {number} index 前驱顶点做为起点 如果是最后一个顶点则会视作 第一个和最后一个顶点 的线
+     * @return {number} 返回线段的长度
      */
     get_LineLength(index){
         var j=index===this.nodes.length-1?0:index+1;
@@ -3103,7 +3103,7 @@ class Polygon{
     }
     /** 多边形所有边的长度和
      * @param {Boolean} closeFlag 是否闭合多边形
-     * @return {Number}
+     * @return {number}
      */
     get_LengthLong(closeFlag){
         if(this._all_lines_length<0||this._all_lines_length===undefined){
@@ -3120,7 +3120,7 @@ class Polygon{
         return this._all_lines_length;
     }
     /** 使用参数t获取多边形上的点的坐标和法向
-     * @param {Number} t 全多边形的时间参数t
+     * @param {number} t 全多边形的时间参数t
      * @param {Boolean} closeFlag 是否闭合多边形
      * @return {{v:Vector2,n:Vector2}} v: 点的坐标, n: 当前点的法向(一个相对于v的标准化向量)
      */
@@ -3142,7 +3142,7 @@ class Polygon{
     
     /** 用于同一接口的函数, 不推荐使用。 
      * 使用参数t获取多边形上的点的坐标和法向
-     * @param {Number} t 全多边形的时间参数t
+     * @param {number} t 全多边形的时间参数t
      * @param {Boolean} closeFlag 是否闭合多边形
      * @return {Vector2} v: 点的坐标, n: 当前点的法向(一个相对于v的标准化向量)
      */
@@ -3161,10 +3161,10 @@ class Polygon{
         return ret;
     }
     /** 生成拟合弧形的多边形, 如果弧度的 绝对值 大于 2π 将作为圆形而不是弧形
-     * @param {Number} r                半径
-     * @param {Number} startAngle       开始的弧度(rad)
-     * @param {Number} endAngle         结束的弧度(rad)
-     * @param {Number} _accuracy         精度 最小为2, 表示弧形由个顶点构成
+     * @param {number} r                半径
+     * @param {number} startAngle       开始的弧度(rad)
+     * @param {number} endAngle         结束的弧度(rad)
+     * @param {number} _accuracy         精度 最小为2, 表示弧形由个顶点构成
      * @param {Boolean} _closeFlag 当不足为整个圆时 是否要封闭
      */
     static create_Arc(r,_startAngle,_endAngle,_accuracy,_closeFlag){
@@ -3210,7 +3210,7 @@ class Polygon{
     /** 获取两个多边形的相交次数
      * @param   {Polygon}   _polygon1
      * @param   {Polygon}   _polygon2
-     * @return {Number}    相交的次数
+     * @return {number}    相交的次数
      */
     static getImpactCount(_polygon1,_polygon2){
         //  当两个多边形的角碰到角的时候，会出现两次计算，会比预算结果多1
@@ -3265,9 +3265,9 @@ class BezierCurve{
     constructor(points){
         /**@type {Vector2[]} 曲线控制点*/
         this._points=null;
-        /**@type {Number[]} x 坐标的 计算系数*/
+        /**@type {number[]} x 坐标的 计算系数*/
         this._coefficient_x=null;
-        /**@type {Number[]} y 坐标的 计算系数*/
+        /**@type {number[]} y 坐标的 计算系数*/
         this._coefficient_y=null;
         /**@type {BezierCurve} 导函数*/
         this._derivatives=null;
@@ -3281,12 +3281,12 @@ class BezierCurve{
         this._align_matrix_i=null;
         /**@type {Polygon} 多边形代理,拟合曲线的多边形*/
         this._polygon_proxy=null;
-        /**@type {Number} 多边形代理的步长*/
+        /**@type {number} 多边形代理的步长*/
         this._polygon_proxy_sp=0;
-        /**@type {Number} 目标的多边形代理的步长,如果和_polygon_proxy_sp不同时，get访问器会重新生成多边形代理*/
+        /**@type {number} 目标的多边形代理的步长,如果和_polygon_proxy_sp不同时，get访问器会重新生成多边形代理*/
         this._polygon_proxy_want_sp;
         this.polygon_proxy_want_sp=0.1;
-        /**@type {{t:Number,l:Number}[]} 弧长显式查找表 */
+        /**@type {{t:number,l:number}[]} 弧长显式查找表 */
         this._length_long_lut=null;
         if(points) this.reset_Points(points);
         /**@type {Object} t参数对应的点的集合 */
@@ -3325,8 +3325,8 @@ class BezierCurve{
         this.clearProxy();
     }
     /** 重新设置系数
-     * @param {Number[]} coefficient_x X系数
-     * @param {Number[]} coefficient_y Y系数
+     * @param {number[]} coefficient_x X系数
+     * @param {number[]} coefficient_y Y系数
      */
     reset_Coefficient(coefficient_x,coefficient_y){
         this._coefficient_x=coefficient_x.concat();
@@ -3384,11 +3384,11 @@ class BezierCurve{
         }
         return this._align_proxy;
     }
-    /** @type {Number} 拟合多边形 t 步长 */
+    /** @type {number} 拟合多边形 t 步长 */
     get polygon_proxy_want_sp(){
         return this._polygon_proxy_want_sp;
     }
-    /** @type {Number} 拟合多边形 t 步长 */
+    /** @type {number} 拟合多边形 t 步长 */
     set polygon_proxy_want_sp(step_size){
         var sp=Math.abs(step_size);
         this._polygon_proxy_want_sp=sp>1?1:sp;
@@ -3449,8 +3449,8 @@ class BezierCurve{
         return this;
     }
     /** 获取 x 坐标
-     * @param {Number} t t 参数
-     * @return {Number}
+     * @param {number} t t 参数
+     * @return {number}
      */
     sample_x(t){
         var rtn=0;
@@ -3461,8 +3461,8 @@ class BezierCurve{
         return rtn;
     }
     /** 获取 y 坐标
-     * @param {Number} t t 参数
-     * @return {Number}
+     * @param {number} t t 参数
+     * @return {number}
      */
     sample_y(t){
         var rtn=0;
@@ -3473,14 +3473,14 @@ class BezierCurve{
         return rtn;
     }
     /** 获取坐标
-     * @param {Number} t t 参数
+     * @param {number} t t 参数
      * @return {Vector2} 返回坐标
      */
     sample(t){
         return this._point_t[t]||(this._point_t[t]=new Vector2(this.sample_x(t),this.sample_y(t)));
     }
     /** 使用弧长线性的采样 
-     * @param {Number} t t 参数
+     * @param {number} t t 参数
      * @return {Vector2} 返回坐标
      */
     sample__ByLengthLong(t){
@@ -3488,8 +3488,8 @@ class BezierCurve{
         return this.sample(_t);
     }
     /** 使用弧长线性的t to bezier曲线采样算法的t的映射函数
-     * @param {Number} t t 参数
-     * @return {Number} 采样算法的t参数
+     * @param {number} t t 参数
+     * @return {number} 采样算法的t参数
      */
     get_t_T(t){
         return this.get_t_ByLengthLong(this.get_LengthLong()*t);
@@ -3512,7 +3512,7 @@ class BezierCurve{
         return this._derivatives;
     }
     /** 获取当前点的移动方向
-     * @param {Number} t 时间参数 t
+     * @param {number} t 时间参数 t
      * @return {Vector2[]} 返回曲线上的点和导数的绝对坐标
      */
     get_Tangent(t){
@@ -3521,7 +3521,7 @@ class BezierCurve{
         return [pt,d];
     }
     /** 当前点的法线 绝对坐标
-     * @param {Number} 时间参数 t
+     * @param {number} 时间参数 t
      * @param {Vector2} 返回曲线上的点和法向的绝对坐标
      */
     get_normal_Abs(t){
@@ -3530,7 +3530,7 @@ class BezierCurve{
         return [pt,d];
     }
     /** 当前点的法线
-     * @param {Number} 时间参数 t
+     * @param {number} 时间参数 t
      * @param {Vector2} 返回一个 pt 的相对坐标 这是一个标准化向量
      */
     get_Normal(t){
@@ -3541,7 +3541,7 @@ class BezierCurve{
         ).normalize()
     }
     /** 获取当前点的导数
-     * @param {Number} t 时间参数 t
+     * @param {number} t 时间参数 t
      * @return {Vector2} 返回一个相对坐标
      */
     derivative(t){
@@ -3549,9 +3549,9 @@ class BezierCurve{
     }
     /** 获取曲线的 根 的 t 参数
      * 目前只能得到四阶以下曲线的根
-     * @param {Number} ddepth 取到几阶导数的根 默认取全部
+     * @param {number} ddepth 取到几阶导数的根 默认取全部
      * @param {Boolean} range_flag 是否要取超过t的合法取值范围(0~1) 默认不超过
-     * @return {Number[]} 返回导函数的根的 t 参数集合
+     * @return {number[]} 返回导函数的根的 t 参数集合
      */
     get_root_t(ddepth,range_flag){
         var depth=ddepth===undefined?Infinity:ddepth;
@@ -3636,13 +3636,13 @@ class BezierCurve{
         return polygon;
     }
     /** t 是否在合法的取值范围
-     * @param {Number} t 
+     * @param {number} t 
      */
     static is_TRange(t){
         return t>=0&&t<=1;
     }
     /** 曲线的拐点 仅用于三阶曲线
-     * @return {Number[]} 曲线拐点的 t 参数的集合
+     * @return {number[]} 曲线拐点的 t 参数的集合
      */
     get_Inflections(){
         var points=this.align_proxy.points,
@@ -3665,7 +3665,7 @@ class BezierCurve{
             return [];
     }
     /** 使用坐标求t值
-     * @param {Number} x X坐标
+     * @param {number} x X坐标
      * @return 对应的t值
      */
     get_t_ByX(x){
@@ -3674,7 +3674,7 @@ class BezierCurve{
         return rootsOfCubic(temp).filter(BezierCurve.is_TRange);
     }
     /** 使用坐标求t值
-     * @param {Number} y Y坐标
+     * @param {number} y Y坐标
      * @return 对应的t值
      */
     get_t_ByY(y){
@@ -3683,8 +3683,8 @@ class BezierCurve{
         return rootsOfCubic(temp).filter(BezierCurve.is_TRange);
     }
     /** 求弧长
-     * @param {Number} step_size t 时间参数的采样步长, 设置越接近0精度越高; 默认为 0.1 或者保留原有的
-     * @return {Number} 使用多边形拟合曲线求得的长度
+     * @param {number} step_size t 时间参数的采样步长, 设置越接近0精度越高; 默认为 0.1 或者保留原有的
+     * @return {number} 使用多边形拟合曲线求得的长度
      */
     get_LengthLong(step_size){
         if(step_size) this.polygon_proxy_want_sp=Math.abs(step_size);
@@ -3692,9 +3692,9 @@ class BezierCurve{
         return tb[tb.length-1].l;
     }
     /** 使用弧长求t值
-     * @param {Number} length 当前弧长, 为负数时使用终点开始算; 当弧长超出取值范围时取0
-     * @param {Number} step_size t 时间参数的采样步长, 设置越接近0精度越高; 默认为 0.1 或者保留原有的
-     * @return {Number} 对应的时间参数t
+     * @param {number} length 当前弧长, 为负数时使用终点开始算; 当弧长超出取值范围时取0
+     * @param {number} step_size t 时间参数的采样步长, 设置越接近0精度越高; 默认为 0.1 或者保留原有的
+     * @return {number} 对应的时间参数t
      */
     get_t_ByLengthLong(length,step_size){
         if(step_size) this.polygon_proxy_want_sp=step_size;
@@ -3736,8 +3736,8 @@ class BezierCurve{
         return this._polygon_proxy;
     }
     /** 创建多边形拟合曲线
-     * @param {Number} step_size t 时间参数的步长, 设置越接近0精度越高; 默认为 0.1
-     * @return {polygon:Polygon,t_lut:{t:Number,l:null}[]} 返回 拟合曲线的多边形 和 t与弧长显示查找表的(只有t,未计算弧长)
+     * @param {number} step_size t 时间参数的步长, 设置越接近0精度越高; 默认为 0.1
+     * @return {polygon:Polygon,t_lut:{t:number,l:null}[]} 返回 拟合曲线的多边形 和 t与弧长显示查找表的(只有t,未计算弧长)
      */
     create_PolygonProxy(step_size){
         var sp=Math.abs(step_size)||0.1,
@@ -3752,8 +3752,8 @@ class BezierCurve{
         return {polygon:new Polygon(temp),t_lut:length_long_lut}
     }
     /** 某点的曲率
-     * @param {Number} t 时间参数 t
-     * @return {Number} 当前点曲率
+     * @param {number} t 时间参数 t
+     * @return {number} 当前点曲率
      */
     get_Kappa(t){
         var d = this.derivative(t),
@@ -3764,7 +3764,7 @@ class BezierCurve{
         return numerator / denominator
     }
     /** 当前点的曲率拟合圆
-     * @param {Number} t 时间参数 t
+     * @param {number} t 时间参数 t
      * @param {Data_Arc} tgtData 目标 data, 该参数传入后值将会被修改并返回，而不是返回新实例化的数据
      * @return {Data_Arc} 当前点曲率拟合圆
      */
@@ -3782,12 +3782,12 @@ class BezierCurve{
     }
     /** 点投影到曲线上 搜索基础点
      * @param {Vector2} v    点的坐标
-     * @param {String} type 使用什么搜索 "arcLiength"||"t" 默认用t
-     * @param {Number} step_size   搜索时的采样步长(0<sp<1) 值越小精度越高 默认为 this.polygon_proxy_want_sp
+     * @param {string} type 使用什么搜索 "arcLiength"||"t" 默认用t
+     * @param {number} step_size   搜索时的采样步长(0<sp<1) 值越小精度越高 默认为 this.polygon_proxy_want_sp
      * @return {{v1,v2,v3}} 接近点坐标的三个采样
-     * @return {{t:Number,v:Vector2,l:Number}} v1 最近的点的前一个
-     * @return {{t:Number,v:Vector2,l:Number}} v2 最近的点的当前点
-     * @return {{t:Number,v:Vector2,l:Number}} v3 最近的点的后一个点
+     * @return {{t:number,v:Vector2,l:number}} v1 最近的点的前一个
+     * @return {{t:number,v:Vector2,l:number}} v2 最近的点的当前点
+     * @return {{t:number,v:Vector2,l:number}} v3 最近的点的后一个点
      */
     created_ProjectionPointFirst(v,type,step_size){
         var type=type||'t',
@@ -3834,8 +3834,8 @@ class BezierCurve{
     /** 点投影到曲线上 二分法逼近
      * @param {Vector2} v    点的坐标
      * @param {{v1,v2,v3}} basics_points   基础点
-     * @param {Number} accuracy      逼近时的采样精度(0<sp<1) 值越小精度越高 默认0.0001
-     * @return {{t:Number,v:Vector2,l:Number}} 投影信息
+     * @param {number} accuracy      逼近时的采样精度(0<sp<1) 值越小精度越高 默认0.0001
+     * @return {{t:number,v:Vector2,l:number}} 投影信息
      */
     refine_projectionPoint_HalfApproximation(v,basics_points,accuracy){
         var accuracy=accuracy||0.0001;
@@ -3863,10 +3863,10 @@ class BezierCurve{
     }
     /** 点在曲线的投影
      * @param {Vector2} v 点
-     * @param {String} type 粗搜索时使用的采样类型 默认使用t值搜索 "arcLiength"||"t"
-     * @param {Number} step_size 粗搜索采样步长 0~1 越小精度越高 默认为 this.polygon_proxy_want_sp
-     * @param {Number} accuracy  逼近精度 0~1 越小精度越高
-     * @return {{t:Number,v:Vector2,l:Number}} 投影信息
+     * @param {string} type 粗搜索时使用的采样类型 默认使用t值搜索 "arcLiength"||"t"
+     * @param {number} step_size 粗搜索采样步长 0~1 越小精度越高 默认为 this.polygon_proxy_want_sp
+     * @param {number} accuracy  逼近精度 0~1 越小精度越高
+     * @return {{t:number,v:Vector2,l:number}} 投影信息
      */
     create_ProjectionPoint(v,type="t",step_size,accuracy=0.001){
         return this.refine_projectionPoint_HalfApproximation(v,this.created_ProjectionPointFirst(v,type,step_size),accuracy);
@@ -3874,9 +3874,9 @@ class BezierCurve{
     /** 圆形与曲线的交点
      * @param {Vector2} c 圆心
      * @param {Vector2} r 半径
-     * @param {String} type 粗搜索时使用的采样类型 默认使用t值搜索 "arcLiength"||"t"
-     * @param {Number} step_size 粗搜索采样步长 0~1 越小精度越高 默认为 this.polygon_proxy_want_sp
-     * @param {Number} accuracy  逼近精度 0~1 越小精度越高
+     * @param {string} type 粗搜索时使用的采样类型 默认使用t值搜索 "arcLiength"||"t"
+     * @param {number} step_size 粗搜索采样步长 0~1 越小精度越高 默认为 this.polygon_proxy_want_sp
+     * @param {number} accuracy  逼近精度 0~1 越小精度越高
      * @return {Vector2[]} 返回 交点的坐标集合
      */
     intersect_Circular(c,r,type="t",step_size,accuracy=0.001){
@@ -3885,9 +3885,9 @@ class BezierCurve{
     /** 圆形与曲线的交点 搜索基础点
      * @param {Vector2} c 圆心
      * @param {Vector2} r 半径
-     * @param {String} type 使用什么搜索 "arcLiength"||"t" 默认用t
-     * @param {Number} step_size   搜索时的采样步长(0<sp<1) 值越小精度越高 默认为 this.polygon_proxy_want_sp
-     * @return {{t:Number,v:Vector2}[][2]} 返回 交点坐标组合的集合
+     * @param {string} type 使用什么搜索 "arcLiength"||"t" 默认用t
+     * @param {number} step_size   搜索时的采样步长(0<sp<1) 值越小精度越高 默认为 this.polygon_proxy_want_sp
+     * @return {{t:number,v:Vector2}[][2]} 返回 交点坐标组合的集合
      */
     intersect_circular_first_by_ArcLiength(c,r,type,step_size){
         var type=type||'t',
@@ -3924,8 +3924,8 @@ class BezierCurve{
     /** 圆形与曲线的交点 二分逼近
      * @param {Vector2} c 圆心
      * @param {Vector2} r 半径
-     * @param {{t:Number,v:Vector2}[][]} basics_points   基础交点组合集合
-     * @param {Number} accuracy      逼近时的采样精度(0<sp<1) 值越小精度越高 默认0.0001
+     * @param {{t:number,v:Vector2}[][]} basics_points   基础交点组合集合
+     * @param {number} accuracy      逼近时的采样精度(0<sp<1) 值越小精度越高 默认0.0001
      * @return {Vector2[]} 返回 交点的坐标集合
      */
     intersect_circular_point_Refining(c,r,basics_points,accuracy){
@@ -3974,7 +3974,7 @@ class Unilateral_Bezier_Box{
         this.v1;
         /**@type {Vector2}  */
         this.v2;
-        /**@type {Number} 细分迭代次数 */
+        /**@type {number} 细分迭代次数 */
         this.iterations=0;
         /**@type {Unilateral_Bezier_Box[]} 配对的边界框 */
         this.sb=[];
@@ -4180,16 +4180,16 @@ class Line{
 
 class PathCommand{
     constructor(){
-        /** @type {String} 操作命令 */
+        /** @type {string} 操作命令 */
         this.command="";
-        /** @type {Number[]} 控制参数 */
+        /** @type {number[]} 控制参数 */
         this.ctrl=[];
         /**@type {Delegate} 修改数据后的委托 */
         this.change_delegate=Delegate.create();
 
     }
     /** 修改当前命令数据
-     * @param {String|pathCommand} data 
+     * @param {string|pathCommand} data 
      */
     set(data){
         var d;
@@ -4218,9 +4218,9 @@ class PathCommand{
     }
     static commandList="MmLlHhVvZzCcSsQqTtAa"
     /** 读取 svg 的 path 字符串的其中一个命令
-     * @param {String} svgStr  SVG 的 Path 格式的字符串
-     * @param {Number} op  开始读取的下标
-     * @return {{c:PathCommand,i:Number}} 返回读取的一份指令和下一个指令的起始下标
+     * @param {string} svgStr  SVG 的 Path 格式的字符串
+     * @param {number} op  开始读取的下标
+     * @return {{c:PathCommand,i:number}} 返回读取的一份指令和下一个指令的起始下标
      */
     static loadSvgCommand(svgStr,op){
         var rtn=new PathCommand();
@@ -4264,7 +4264,7 @@ class PathCommand{
         return {c:rtn,i:i};
     }
     /** 读取 svg 内的 path 的格式
-     * @param {String} svgStr svg 的 路径 格式 字符串
+     * @param {string} svgStr svg 的 路径 格式 字符串
      * @param {PathCommand[]} list 变更的数组的引用
      * @return {PathCommand[]} 返回命令组
      */
@@ -4320,7 +4320,7 @@ class Path{
         this._math_data=[];
         /** @type {Vector2[]} 缓存落点 */
         this._landing_points=[];
-        /** @type {Number[]} 弧长查找表 */
+        /** @type {number[]} 弧长查找表 */
         this._length_long_lut=[];
         this._min=null;
         this._max=null;
@@ -4354,7 +4354,7 @@ class Path{
         return this._command_set.length;
     }
     /** 获取落点
-     * @param {Number} index 要获取的落点的 下标
+     * @param {number} index 要获取的落点的 下标
      * @return 
      */
     get_LandingPoint(index){
@@ -4408,7 +4408,7 @@ class Path{
         return landing_points[index];
     }
     /** 取创建数学对象
-     * @param {Number} index  指令的下标
+     * @param {number} index  指令的下标
      * @return {Vector2|Line|Data_Arc__Ellipse|BezierCurve}
      */
     get_MathData(index){
@@ -4429,7 +4429,7 @@ class Path{
         static _bezier_c__c2="TtQq";
     // 
     /** 创建数学对象
-     * @param {Number} index 基于下标创建数学对象
+     * @param {number} index 基于下标创建数学对象
      * @return {Vector2|Line|Data_Arc__Ellipse|BezierCurve}
      */
     create_MathData(index){
@@ -4516,7 +4516,7 @@ class Path{
 
     }
     /** 插入一段指令
-     * @param {Number} index 插入的下标
+     * @param {number} index 插入的下标
      * @param {pathCommand} command 
      */
     insert_Command(index,command){
@@ -4525,7 +4525,7 @@ class Path{
         this._callback_CmdInsert__ToMathAndPoint(index,1);
     }
     /** 修改一条指令
-     * @param {Number} index 要修改的下标
+     * @param {number} index 要修改的下标
      * @param {pathCommand} command 指令
      */
     set_Command(index,command){
@@ -4540,20 +4540,20 @@ class Path{
         this.insert_Command(l,command);
     }
     /** 移除一条指令
-     * @param {Number} index  下标
+     * @param {number} index  下标
      */
     remove_Command(index){
         this._command_set.splice(index,1);
         this._callback_Cmdremove__ToMathAndPoint(index);
     }
     /** 读取一段指令
-     * @param {Number} index 下标
+     * @param {number} index 下标
      */
     get_Command(index){
         return  this._command_set[index];
     }
     /** 转换成path指令集
-     * @param {String|PathCommand|PathCommand[]|Path} svg_path_data 原数据来源
+     * @param {string|PathCommand|PathCommand[]|Path} svg_path_data 原数据来源
      * @return 
      */
     static bePathCommandSet(svg_path_data){
@@ -4570,7 +4570,7 @@ class Path{
         }
     }
     /** 使用index清除缓存的落点和数学对象 如果是后继是相对坐标, 将会继续清理
-     * @param {Number}} index 开始计算的下标
+     * @param {number}} index 开始计算的下标
      */
     clear_PointMath__ByIndex(index,m_flag){
         var cmds=this.command_set,
@@ -4610,13 +4610,13 @@ class Path{
         return i;
     }
     /** 指令修改后的回调 清理需要相对坐标的缓存内容 
-     * @param {Number} index  修改的下标
+     * @param {number} index  修改的下标
      */
     _callback_CmdUpdate__ToMathAndPoint(index){
         this.clear_PointMath__ByIndex(index);
     }
     /** 移除指令后的回调 清理需要相对坐标的缓存内容 
-     * @param {Number} index  修改的下标
+     * @param {number} index  修改的下标
      * @param {Boolean} 移除的指令是否是m指令
      */
     _callback_Cmdremove__ToMathAndPoint(index,m_flag){
@@ -4629,8 +4629,8 @@ class Path{
         this._math_data[i]=null;
     }
     /** 插入指令后的回调 清理需要相对坐标的缓存内容 
-     * @param {Number} index  修改的下标
-     * @param {Number} length 插入的长度
+     * @param {number} index  修改的下标
+     * @param {number} length 插入的长度
      */
     _callback_CmdInsert__ToMathAndPoint(index,length){
         var cmds=this.command_set,
@@ -4660,12 +4660,12 @@ class Path{
         this._max=null;
     }
     /** 获取路径总长度
-     * @return {Number} 路径总长度
+     * @return {number} 路径总长度
      */
     get_LengthLong(){
         return this.length_long_lut[this.command_length-1];
     }
-    /** @type {Number[]} 长度显式查找表*/
+    /** @type {number[]} 长度显式查找表*/
     get length_long_lut(){
         if(this._length_long_lut.length!==this.command_length){
             this._length_long_lut.length=0;
@@ -4686,7 +4686,7 @@ class Path{
     }
     
     /** 采样点
-     * @param {Number} t 时间参数t
+     * @param {number} t 时间参数t
      * @return {Vector2} 返回采样的坐标
      */
     sample(t){
@@ -4696,8 +4696,8 @@ class Path{
         return temp.sample(ti.t);
     }
     /** 使用长度求当前t值
-     * @param {Number} l Length Long
-     * @return {{t:Number,i:Number}}  t为当前数学对象的t参数, i是指令(数学对线)的下标
+     * @param {number} l Length Long
+     * @return {{t:number,i:number}}  t为当前数学对象的t参数, i是指令(数学对线)的下标
      */
     get_ti_ByLengthLong(l){
         var _t,
@@ -4715,7 +4715,7 @@ class Path{
         }
     }
     /** 当前点的法线
-     * @param {Number} 时间参数 t
+     * @param {number} 时间参数 t
      * @return {Vector2} 返回一个 pt 的相对坐标 请自行修改模长或进行标准化
      */
     get_Normal(t){
@@ -4725,7 +4725,7 @@ class Path{
         return temp.get_Normal(ti.t);
     }
     /** 当前点的方向
-     * @param {Number} 时间参数 t
+     * @param {number} 时间参数 t
      * @return {Vector2} 返回一个 pt 的相对坐标 请自行修改模长或进行标准化
      */
     get_Tangent(t){
@@ -4787,8 +4787,8 @@ class Path{
     }
 
     /** 判断某点是否在内部
-     * @param {Number} x x坐标
-     * @param {Number} y y坐标
+     * @param {number} x x坐标
+     * @param {number} y y坐标
      * @return {Boolean} 返回是否在内部
      */
     is_Inside(x,y){ 

@@ -465,7 +465,7 @@ Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
 #### class Hand__Transform_3D_Matrix_Ctrl  3d 变换矩阵控制器 单个变换操作    
    
 ##### 构造函数 new Hand__Transform_3D_Matrix_Ctrl(type,params)     
- * @param {Number|String} type    
+ * @param {Number|string} type    
  * @param {*} params    
    
 ###### 属性(成员变量)   
@@ -476,7 +476,7 @@ Matrix_3.ROTATE_Z_180DEG    = new Matrix_3([-1, 0, 0, -0, -1, 0, 0, 0, 1 ]);
  * @param {Hand__Transform_3D_Matrix_Ctrl} tgt 拷贝对象   
  * @return {Hand__Transform_3D_Matrix_Ctrl}   
    
-##### static MAPPING__HAND_NO_TO_TYPE_NAME  @type {String[]} 操作类型映射表    
+##### static MAPPING__HAND_NO_TO_TYPE_NAME  @type {string[]} 操作类型映射表    
 ```javascript   
 static MAPPING__HAND_NO_TO_TYPE_NAME=[   
     // todo   

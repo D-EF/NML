@@ -11,10 +11,10 @@
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-    /*h*//** @typedef {Number} int      整形数字 */
-    /*h*//** @typedef {Number} double   双浮点数字 */
-    /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number} int      整形数字 */
+    /*h*//** @typedef {number} double   双浮点数字 */
+    /*h*//** @typedef {number} float    单浮点数字 */
+    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
@@ -40,7 +40,7 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建旋转矩阵
-     * @param {Number} theta 顺时针 旋转角弧度
+     * @param {number} theta 顺时针 旋转角弧度
      * @param  {List_Value}  [_out] 接收数据的对象
      * @return {Matrix_2D} 返回一个3x3矩阵
      */
@@ -72,8 +72,8 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建缩放矩阵
-     * @param {Number} scale_x x 轴方向上的缩放系数
-     * @param {Number} scale_y y 轴方向上的缩放系数
+     * @param {number} scale_x x 轴方向上的缩放系数
+     * @param {number} scale_y y 轴方向上的缩放系数
      * @param  {List_Value}  [_out] 接收数据的对象
      * @return {Matrix_2D} 返回一个3x3矩阵
      */
@@ -100,8 +100,8 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建切变矩阵
-     * @param {Number} k_x x方向的切变系数
-     * @param {Number} k_y y方向的切变系数
+     * @param {number} k_x x方向的切变系数
+     * @param {number} k_y y方向的切变系数
      * @param  {List_Value}  [_out] 接收数据的对象
      * @return {Matrix_2D} 返回一个3x3矩阵
      */

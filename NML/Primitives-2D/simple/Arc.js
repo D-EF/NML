@@ -11,10 +11,10 @@
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-    /*h*//** @typedef {Number} int      整形数字 */
-    /*h*//** @typedef {Number} double   双浮点数字 */
-    /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number} int      整形数字 */
+    /*h*//** @typedef {number} double   双浮点数字 */
+    /*h*//** @typedef {number} float    单浮点数字 */
+    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import { CONFIG, copy_Array, SAFE_MATH_TOOLS } from "../../Config.js";
@@ -50,15 +50,15 @@ class Arc extends Primitive_Data_Base{
         /** @type {float} 弧长 */
         this.__cache_path_length=-1.0;
 
-        /** @type {Number} 圆心 x 坐标 */
+        /** @type {number} 圆心 x 坐标 */
         this[0]=data[0];
-        /** @type {Number} 圆心 x 坐标 */
+        /** @type {number} 圆心 x 坐标 */
         this[1]=data[1];
-        /** @type {Number} 圆半径 */
+        /** @type {number} 圆半径 */
         this[2]=data[2];
-        /** @type {Number} 弧线端点 a 弧度 渲染时作为绘制起点 */
+        /** @type {number} 弧线端点 a 弧度 渲染时作为绘制起点 */
         this[3]=data[3];
-        /** @type {Number} 弧线端点 b 弧度 渲染时作为绘制终点 */
+        /** @type {number} 弧线端点 b 弧度 渲染时作为绘制终点 */
         this[4]=data[4];
     }
     static DATA_LENGTH=5;

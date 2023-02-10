@@ -10,10 +10,10 @@
 
 /*h*/// open * 类型注释 * open
     /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-    /*h*//** @typedef {Number} int      整形数字 */
-    /*h*//** @typedef {Number} double   双浮点数字 */
-    /*h*//** @typedef {Number} float    单浮点数字 */
-    /*h*//** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number} int      整形数字 */
+    /*h*//** @typedef {number} double   双浮点数字 */
+    /*h*//** @typedef {number} float    单浮点数字 */
+    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
@@ -34,7 +34,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 创建打印用的二维数组
      * @param {List_Value} mat 矩阵
      * @param {int} width 矩阵有多少列(宽度)
-     * @return {Number[][]} 
+     * @return {number[][]} 
      */
     static create_Print(mat,width){
         var l=mat.length,i,
@@ -200,7 +200,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
 
     /** 矩阵乘标量
      * @param {List_Value}     mat   矩阵
-     * @param {Number}  k   标量
+     * @param {number}  k   标量
      * @return {Matrix} 返回一个新的矩阵
      */
     static np(mat,k){
@@ -209,7 +209,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
 
     /** 矩阵乘标量
      * @param {List_Value}     mat   矩阵
-     * @param {Number}  k   标量
+     * @param {number}  k   标量
      * @return {List_Value} 修改m并返回
      */
     static np_b(mat,k){
@@ -279,7 +279,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @param {List_Value|List_Value[]} mat     矩阵
      * @param {int} n           n阶矩阵
      * @param {int} v           矩阵的v坐标(行下标)
-     * @param {Number} k    乘法中的标量部分
+     * @param {number} k    乘法中的标量部分
      */
     static transform_multiplication(mat,n,v,k){
         var i,j,t;
@@ -428,7 +428,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 计算矩阵行列式
      * @param {List_Value} mat 矩阵
      * @param {int} [_n] 矩阵为n阶矩阵
-     * @return {Number} 返回矩阵的行列式
+     * @return {number} 返回矩阵的行列式
      */
     static calc_Det(mat,_n){
         switch(mat.length){
@@ -470,7 +470,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 计算矩阵行列式 --使用初等变换
      * @param {List_Value} mat 矩阵
      * @param {int} [_n] 矩阵为n阶矩阵
-     * @return {Number} 返回矩阵的行列式
+     * @return {number} 返回矩阵的行列式
      */
     static calc_Det__Transform(mat,_n){
         var n, uv, index_mat__uv, i, j, flag=1;

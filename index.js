@@ -9,10 +9,10 @@
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-/** @typedef {Number} int      整形数字 */
-/** @typedef {Number} double   双浮点数字 */
-/** @typedef {Number} float    单浮点数字 */
-/** @typedef {Number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+/** @typedef {number} int      整形数字 */
+/** @typedef {number} double   双浮点数字 */
+/** @typedef {number} float    单浮点数字 */
+/** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /** @typedef {List_Value} Vec  数据的各种存储形式 */
 /** @typedef {List_Value} Matrix  数据的各种存储形式 */
 
