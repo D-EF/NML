@@ -30,7 +30,7 @@ import {
     DEF_Caller,
     Delegate,
     Iterator__Tree,
-    OlFunction,
+    Overload_Function,
     select_Lut__Binary,
 } from "../basics/Basics.js";
 /** 放了一点2d静态函数
@@ -135,7 +135,7 @@ class Math2D{
      * @param {number} r1   圆1 半径
      * @param {Vector2} c2  圆2 圆心坐标
      * @param {number} r2   圆2 半径
-     * @return {Boolean} 返回相交情况
+     * @return {boolean} 返回相交情况
      */
     static get_intersectionOfCircleCircle_f(c1,r1,c2,r2){
         var l=Vector2.dif(c2,c1).get_Mag(),
@@ -179,7 +179,7 @@ class Math2D{
     /** 弧形是否相交
      * @param {Data_Arc} arc1 弧形1
      * @param {Data_Arc} arc2 弧形2
-     * @return {Boolean} 返回相交情况
+     * @return {boolean} 返回相交情况
      */
     static get_intersectionOfArcArc_f(arc1,arc2){
         var cis=Math2D.get_intersectionOfCircleCircle_V(arc1.c,arc1.r,arc2.c,arc2.r);
@@ -270,7 +270,7 @@ class Math2D{
      * @param {Data_Arc} arc    弧形数据
      * @param {Vector2} lop     线段端点
      * @param {Vector2} led     线段端点
-     * @return {Boolean} 相交情况
+     * @return {boolean} 相交情况
      */
     static get_intersectionOfArcLine_f(arc,lop,led){
         var cis=Math2D.get_intersectionOfCircleLine_V(lop,led,arc.c,arc.r);
@@ -289,7 +289,7 @@ class Math2D{
      * @param {Data_Sector} sector     弧形数据
      * @param {Vector2} lop     线段端点
      * @param {Vector2} led     线段端点
-     * @return {Boolean} 相交情况
+     * @return {boolean} 相交情况
      */
     static get_intersectionOfSectorLine_f(sector,lop,led){
         if(Math2D.get_intersectionOfArcLine_f(sector,lop,led)){
@@ -459,7 +459,7 @@ class Math2D{
      * @param {Vector2} va2 矩形a的向量2
      * @param {Vector2} vb1 矩形b的向量1
      * @param {Vector2} vb2 矩形b的向量2
-     * @return {Boolean} 返回是否相交
+     * @return {boolean} 返回是否相交
      */
     static get_intersectionOfBoxBox_f(va1,va2,vb1,vb2){
         return  (((va1.x>vb1.x)!==(va1.x>vb2.x))||((va2.x>vb1.x)!==(va2.x>vb2.x))||((vb1.x>va1.x)!==(vb1.x>va2.x))||((vb2.x>va1.x)!==(vb2.x>va2.x)))&&
@@ -894,7 +894,7 @@ class Data_Rect{
     /** 判断点是否在内部
      * @param {number} x 点的x坐标
      * @param {number} y 点的y坐标
-     * @return {Boolean} 返回 点是否在内部
+     * @return {boolean} 返回 点是否在内部
      */
     is_Inside(x,y){
         var max=this.get_Max(),
@@ -1354,7 +1354,7 @@ class Data_Rect{
      * @param {number} _x 点的坐标x
      * @param {number} _y 点的坐标y
      * @param {Boolean} f want_to_closePath 当没有成为完整的圆时, 是否需要将其当作一个割圆
-     * @return {Boolean} 返回 点是否在内部
+     * @return {boolean} 返回 点是否在内部
      */
     is_Inside(x,y,f){
         if(this.is_InBox(x,y)){
@@ -1950,7 +1950,7 @@ class Data_Sector extends Data_Arc{
         return rtn;
     }
     /**判断向量是不是零向量
-     * @return{Boolean}
+     * @return {boolean}
      */
     is_Zero(){return !(this.x||this.y);}
     /**取反
@@ -3228,7 +3228,7 @@ class Polygon{
     /** 获取两个多边形是否相交
      * @param   {Polygon}   _polygon1
      * @param   {Polygon}   _polygon2
-     * @return {Boolean}   是否相交
+     * @return {boolean}   是否相交
      */
     static getImpactFlag(_polygon1,_polygon2){
         if(_polygon1.minX>_polygon2.maxX||_polygon2.minX>_polygon1.maxX||_polygon1.minY>_polygon2.maxY||_polygon1.minY>_polygon1.maxY)return false;
@@ -4008,7 +4008,7 @@ class Unilateral_Bezier_Box{
 
         return [b1,b2];
     }
-    /**@return {Boolean} 是否足够精度 */
+    /**@return {boolean} 是否足够精度 */
     has_Accuracy(_accuracy){
         if(!(this.v2&&this.v1)){
             this.v1=this.b.sample(0);
@@ -4028,7 +4028,7 @@ class Unilateral_Bezier_Box{
     }
     /** box是否有重叠
      * @param {Unilateral_Bezier_Box} bb 另一个实例
-     * @return {Boolean}
+     * @return {boolean}
      */
     has_Overlap(bb){
         var v11=this.v1 ||this.b.sample(this.t1),
@@ -4058,7 +4058,7 @@ class Unilateral_Bezier_Box{
 }
 // 函数重载 -------------------------------------------------------------------------------------------
 do{
-    Vector2.linearMapping__Base=OlFunction.create();
+    Vector2.linearMapping__Base=Overload_Function.create();
     Vector2.linearMapping__Base.addOverload([Vector2,Matrix2x2],function(v,m){
         var rtn = new Vector2(
             v.x*m.a+v.y*m.c,
@@ -4089,7 +4089,7 @@ do{
         rtn.y+=a.y;
         return rtn;
     },"矩阵后乘列向量+锚点");
-    Polygon.EX_linearMapping=OlFunction.create();
+    Polygon.EX_linearMapping=Overload_Function.create();
     Polygon.EX_linearMapping.addOverload([Polygon,Matrix2x2,Boolean],function(p,m,f){
         var i=0,
             rtn=new Polygon();
@@ -4106,7 +4106,7 @@ do{
         }
         return rtn;
     });
-    Polygon.EX_linearMapping_nt=OlFunction.create();
+    Polygon.EX_linearMapping_nt=Overload_Function.create();
     Polygon.EX_linearMapping_nt.addOverload([Polygon,Matrix2x2,Boolean],function(p,m,f){
         for(var i=p.nodes.length-1;i>=0;--i){
             p.nodes[i].linearMapping(m,true,f);
@@ -4789,7 +4789,7 @@ class Path{
     /** 判断某点是否在内部
      * @param {number} x x坐标
      * @param {number} y y坐标
-     * @return {Boolean} 返回是否在内部
+     * @return {boolean} 返回是否在内部
      */
     is_Inside(x,y){ 
         var i=0,j,k,

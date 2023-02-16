@@ -357,7 +357,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 检查矩阵正交
      * @param {Matrix} mat    矩阵
      * @param {Matrix} [_n] n阶矩阵
-     * @return {Boolean}
+     * @return {boolean}
      */
     static check_Orthogonal(mat,_n){
         var n=Matrix.check_Square(mat,_n);

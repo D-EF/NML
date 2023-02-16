@@ -1,7 +1,7 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-20 03:28:34
+ * @LastEditTime: 2023-02-17 00:33:37
  * @FilePath: \site\js\import\NML\NML\Config.js
  * @Description: Nittle Math Library's Config
  * 
@@ -67,6 +67,7 @@
      * @param {number} num1 数字
      * @param {number} num2 数字
      * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
+     * @return {boolean} 返回数值是否相近
      */
     function approximately(num1,num2,_tolerance){
         return Math.abs(num1-num2)<(_tolerance===undefined?CONFIG.APPROXIMATELY_TOLERANCE:_tolerance);
@@ -76,7 +77,7 @@
      * @param {number[]} arr1 数组1
      * @param {number[]} arr2 数组2
      * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
-     * @return {Boolean}
+     * @return {boolean} 返回 !(左右两数组是否有不相近的数值对)
      */
     function approximately__Array(arr1,arr2,_tolerance){
         var i =arr1.length;

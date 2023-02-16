@@ -10,9 +10,9 @@
  */
 import NML from "../index.js";
 import { approximately, approximately__Array, CONFIG } from "../NML/Config.js";
-import { callback_calcErr__ErrLog } from "./base__test.js";
+import { callback_CalcErr__ErrLog } from "./base__test.js";
 
-var throw__F=callback_calcErr__ErrLog;
+var throw__F=callback_CalcErr__ErrLog;
 
 const {Vector}=NML;
 

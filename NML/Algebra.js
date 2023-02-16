@@ -1,7 +1,7 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-01-20 19:13:27
+ * @LastEditTime: 2023-02-17 00:30:47
  * @FilePath: \site\js\import\NML\NML\Algebra.js
  * @Description: 数字运算相关
  * 
@@ -49,7 +49,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
         }
     // end  * 帕斯卡三角 * end 
 
-    /** 多次函数的导数 d(f);
+    /** 一元多次函数的导数 d(f);
      * ```
      *         coefficients.length
      *  F(t) = ∑ t^i*c[i]
@@ -58,7 +58,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
      * @param {number[]} coefficients 各次幂的系数 [1, t^1, t^2, t^3, ...]
      * @return {number[]}  导数的各次幂的系数 [1, t^1, t^2, t^3, ...] 长度会比形参少 1
      */
-    function derivative(coefficients){
+    function clac_Derivative__OneUnitaryRealParameterFunction(coefficients){
         var i=coefficients.length-1,
             rtn=new Array(i);
         for(;i>0;--i){
@@ -73,7 +73,7 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
          * z3 + o3 \* x = z4 + o4 \* y;
          * @return {{x:number,y:number}} 
          */
-        function solve_BinaryLinearEquation(z1,o1,z2,o2,z3,o3,z4,o4){
+        function calc_rootsOfSquare(z1,o1,z2,o2,z3,o3,z4,o4){
             var x=(z2*o4+o2*z3-z4*o2-z1*o4)/(o1*o4-o2*o3),
                 y=(z3+o3*x-z4)/o4;
             return {x:x,y:y};
@@ -357,8 +357,8 @@ import {copy_Array,approximately,CONFIG} from "./Config.js";
 export{
     calc_PascalsTriangle,
     get_PascalsTriangle,
-    derivative,
-    solve_BinaryLinearEquation,
+    clac_Derivative__OneUnitaryRealParameterFunction,
+    calc_rootsOfSquare,
     calc_rootsOfCubic,
 
     get_BezierMatrix,

@@ -114,7 +114,7 @@ calc_rootsOfCubic.cuberoot=function(v)
 ### static is_Equal(v1,v2)  判断向量是否相等   
  * @param  {List_Value} v1 向量1   
  * @param  {List_Value} v2 向量2   
- * @return {Boolean}   
+ * @return {boolean}   
    
 ### static instead(v)  取反   
  * @param  {List_Value} v 向量   
