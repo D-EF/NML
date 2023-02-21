@@ -17,7 +17,7 @@
     /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import { CONFIG, copy_Array, SAFE_MATH_TOOLS } from "../../Config.js";
+import { CONFIG, copy_Array, SAFE_MATH_TOOLS } from "../../../Config__NML.js";
 import { Vector } from "../../Vector.js";
 import { Primitive_Data_Base } from "./base.js";
 

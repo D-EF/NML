@@ -542,7 +542,7 @@ static MAPPING__HAND_NO_TO_TYPE_NAME=[
 # 导出   
 ```javascript   
 export{   
-   CONFIG as NML_CONFIG,   
+   CONFIG as CONFIG__NML,   
    DEG,   
    DEG_90,   
    DEG_180,   

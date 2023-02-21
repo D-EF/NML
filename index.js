@@ -18,7 +18,7 @@
 
 
 import * as Algbra from "./NML/Algebra.js";
-import {CONFIG} from "./NML/Config.js";
+import {CONFIG} from "./Config__NML.js";
 import {Vector} from "./NML/Vector.js";
 import {Matrix} from "./NML/Matrix.js";
 import {Matrix_2D} from "./NML/Matrix_2D.js";
@@ -41,7 +41,7 @@ const NML ={
 export default NML;
 export {
     Algbra,
-    CONFIG as NML_CONFIG,
+    CONFIG as CONFIG__NML,
     Vector,
     Matrix,
     Matrix_2D,

@@ -16,7 +16,7 @@
     /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG} from "./Config.js";
+import {copy_Array,approximately,CONFIG} from "../Config__NML.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
 
 // open * 数与代数 * open 

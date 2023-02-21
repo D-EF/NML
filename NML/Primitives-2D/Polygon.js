@@ -14,7 +14,7 @@ import {
     copy_Array,
     SAFE_MATH_TOOLS,
     Vec,
-} from "../Config.js";
+} from "../../Config__NML.js";
 
 const {abs,cos,sin,tan,asin,acos,atan,atan2} = SAFE_MATH_TOOLS;
 /** 2D多边形

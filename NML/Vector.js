@@ -16,7 +16,7 @@
     /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
+import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "../Config__NML.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
 
 /** 向量 */
@@ -67,22 +67,24 @@ class Vector extends CONFIG.VALUE_TYPE{
         return Vector.normalize(new Vector(vec));
     }
 
-    /** 标准化向量
+    /** 标准化向量 (如果传入零向量，将返回[1,0,0,...])
      * @param  {List_Value} vec 向量
      * @return {List_Value} 修改并返回 vec
      */
     static normalize(vec) {
-        if(!Vector.is_Zero__Strict(vec))throw new Error("This is a zero Vector.");
-        var magSq = Vector.mag(vec),oneOverMag=0;
-        if (magSq>0) {
+        if(!Vector.is_Zero__Strict(vec)){
+            console.warn(`Function <Vector.normalize(vec)> has a zero vector param!`);
+            vec[0]=1;
+            for(var i=vec.length-1;i>0;--i){
+                vec[i]=0;
+            }
+        }else{
+            var magSq = Vector.mag(vec),
+            oneOverMag=0;
             oneOverMag = 1.0/magSq;
             for(var i =vec.length-1;i>=0;--i){
                 vec[i] *= oneOverMag;
             }
-        }else{
-            console.warn("This is a zero vector!");
-            copy_Array(vec,new Vector(vec.length));
-            vec[0]=1;
         }
         return vec;
     }
@@ -178,19 +180,35 @@ class Vector extends CONFIG.VALUE_TYPE{
         return rtn;
     }
 
-    /** 向量外积 仅支持 3D 和 2D 向量
-     * @param {List_Value} vec_left 向量1
-     * @param {List_Value} vec_right 向量2
-     * @return {number|List_Value} 返回 vec_left x vec_right
+    /** 向量外积(叉乘) vec.length ∈ [2,4]
+     * @template {[x,y]|[x,y,z]|[x,y,z,w]} Vec__Can_Cross 指定长度的 number 数组
+     * @param {Vec__Can_Cross} vec_left    向量1
+     * @param {Vec__Can_Cross} vec_right   向量2
+     * @param {Vec__Can_Cross} [_out]      输出对象
+     * @return {Vec__Can_Cross extends [x,y] ? number : Vec__Can_Cross} 返回 vec_left x vec_right
      */
-    static cross(vec_left,vec_right){
-        if(vec_left.length===2&&vec_right.length===2)return vec_left[0]*vec_right[1]-vec_left[1]*vec_right[0];
-        else if(vec_left.length===3&&vec_right.length===3) return  new Vector([
-            vec_left[1]*vec_right[2]-vec_left[2]*vec_right[1],    // x : y1z2-z1y2
-            vec_left[2]*vec_right[0]-vec_left[0]*vec_right[2],    // y : z1x2-x1z2
-            vec_left[0]*vec_right[1]-vec_left[1]*vec_right[0]     // z : x1y2-y1x2
-        ]);
-        else throw new Error("This function only run in 2D or 3D Vector! ");
+    static cross(vec_left,vec_right,_out){
+        var l=vec_left,
+            r=vec_right;
+        if(l.length===2&&r.length===2){
+            return l[0]*r[1]-l[1]*r[0];
+        }
+        
+        var out=_out||new Vector(vec_left);
+        if(l.length===3&&r.length===3){
+            out[0]= l[1]*r[2] - l[2]*r[1];    // x : y1z2-z1y2
+            out[1]= l[2]*r[0] - l[0]*r[2];    // y : z1x2-x1z2
+            out[2]= l[0]*r[1] - l[1]*r[0];    // z : x1y2-y1x2
+        }
+        else if(l.length===4&&r.length===4){
+            out[0]= l[3]*r[0] + l[0]*r[3] + l[2]*r[1] - l[1]*r[2];   // x
+            out[1]= l[3]*r[1] + l[1]*r[3] + l[0]*r[2] - l[2]*r[0];   // y
+            out[2]= l[3]*r[2] + l[2]*r[3] + l[1]*r[0] - l[0]*r[1];   // z
+            out[3]= l[3]*r[3] - l[0]*r[0] - l[1]*r[1] - l[2]*r[2];   // w
+        }
+        else throw new Error("This function only run in (vec.length ∈ [2,4])&&(vec_left == vec_right) ! ");
+
+        return out;
     }
 
     /** 计算向量夹角 ∠AOB 的 cos

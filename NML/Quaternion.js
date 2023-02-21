@@ -9,7 +9,7 @@
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-import { copy_Array, SAFE_MATH_TOOLS } from "./Config.js";
+import { copy_Array, SAFE_MATH_TOOLS } from "../Config__NML.js";
 import { Euler_Angles } from "./Euler_Angles.js";
 import { Vector } from "./Vector.js";
 
@@ -130,36 +130,27 @@ class Quaternion extends Vector{
             return out;
         }
 
-        /** 四元数叉乘 (乘法运算)
-         * @param {Quaternion} quat_left    左四元数
-         * @param {Quaternion} quat_right   右四元数
-         * @param {Quaternion} _out 输出对象
-         * @returns {Quaternion} 修改并返回out 或 返回新的四元数
-         */
-        static multiplication(quat_left,quat_right,_out){
-            var r=quat_right,
-                l=quat_left;
-            // [x,y,z,w]
-            return copy_Array(_out||new Quaternion(),[
-                l[3]*r[0] + l[0]*r[3] + l[2]*r[1] - l[1]*r[2], // x
-                l[3]*r[1] + l[1]*r[3] + l[0]*r[2] - l[2]*r[0], // y
-                l[3]*r[2] + l[2]*r[3] + l[1]*r[0] - l[0]*r[1], // z
-                l[3]*r[3] - l[0]*r[0] - l[1]*r[1] - l[2]*r[2]  // w
-            ]);
-        }
-
-        /** 计算生成 规范化四元数
-         * @param {Quaternion} quat 原四元数
-         * @param {Quaternion} _out 输出对象
+        /** 四元数求幂 q^n = exp(n log q)
+         * @param {Quaternion}   quat     四元数对象
+         * @param {float}        n        n次幂
+         * @param {Quaternion}   [_out]   输出对象
          * @return {Quaternion} 修改并返回out 或 返回新的四元数
          */
-        static create_Normalize(quat,_out){
-            // todo
-            var mag=Vector.mag(quat),
-                mag_i;
-            if(mag>0){
-                mag_i=1/mag;
+        static pow(quat,n,_out){
+            if(approximately(quat[3],1)){
+                console.warn("This Quaternion has not rotate!");
+                return _out||quat;
             }
+            var out=_out||new Quaternion();
+            var alpha=acos(quat[3]),
+                n_alpha=n*alpha,
+                mult=sin(n_alpha)/sin(alpha);
+
+            out[0]=quat[0]*mult;
+            out[1]=quat[1]*mult;
+            out[2]=quat[2]*mult;
+            out[3]=cos(n_alpha);
+            return out;
         }
 
     // end  * 四元数基本运算 * end 

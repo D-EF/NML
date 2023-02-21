@@ -16,7 +16,7 @@
     /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {CONFIG, SAFE_MATH_TOOLS} from "./Config.js";
+import {CONFIG, SAFE_MATH_TOOLS} from "../Config__NML.js";
 import { Matrix } from "./Matrix.js";
 
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;

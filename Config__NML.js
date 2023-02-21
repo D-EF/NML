@@ -1,8 +1,8 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-02-17 00:33:37
- * @FilePath: \site\js\import\NML\NML\Config.js
+ * @LastEditTime: 2023-02-21 02:14:44
+ * @FilePath: \site\js\import\NML\Config__NML.js
  * @Description: Nittle Math Library's Config
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
@@ -17,10 +17,6 @@
 
 // open * 配置/基础 * open
 
-    globalThis.NML_VALUE_TYPE=globalThis.NML_VALUE_TYPE||Float32Array;
-    globalThis.NML_COORDINATE_SYSTEM=globalThis.NML_COORDINATE_SYSTEM||0;
-    globalThis.APPROXIMATELY_TOLERANCE=globalThis.NML_VALUE_TYPE===Float32Array?1e-6:1e-15;
-    
     /**
      * @typedef Config__NML NML 的配置参数对象
      * @property {Float32ArrayConstructor|Float64ArrayConstructor} VALUE_TYPE 向量使用的数据类型; 可选值为 {Float32Array, Float64Array}, 默认为 Float32Array
@@ -30,10 +26,10 @@
     
     /** @type {Config__NML} 配置 */
     const CONFIG=Object.assign({
-        VALUE_TYPE:globalThis.NML_VALUE_TYPE,
-        APPROXIMATELY_TOLERANCE:globalThis.APPROXIMATELY_TOLERANCE,
-        COORDINATE_SYSTEM:globalThis.NML_COORDINATE_SYSTEM
-    },globalThis.NML_CONFIG);
+        VALUE_TYPE:                Float32Array,
+        APPROXIMATELY_TOLERANCE:   0,
+        COORDINATE_SYSTEM:         globalThis.CONFIG__NML.VALUE_TYPE===Float32Array?1e-6:1e-15
+    },globalThis.CONFIG__NML);
 
     function acos__Safe(value){
         if(value<=-1.0){
@@ -118,7 +114,7 @@
         CYCLES,
         copy_Array,
         approximately,
-        NML_CONFIG:CONFIG
+        CONFIG__NML:CONFIG
     });
     //```
 // end  * 注入到全局 * end 
