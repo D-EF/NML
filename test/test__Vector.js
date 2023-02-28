@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-01 00:48:35
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-02-21 02:22:10
+ * @LastEditTime: 2023-02-28 23:47:37
  * @FilePath: \site\js\import\NML\test\test__Vector.js
  * @Description: 
  * 
@@ -92,6 +92,7 @@ function test(){
     console.log("\nVector.cos_2Vec\n");
         console.log(`Vector.cos_2Vec(${test_vec_1}\t,\t${test_vec_2})\n0.6016271623980259`,  temp=Vector.cos_2Vec(test_vec_1,test_vec_2),   throw__F(approximately(temp,0.6016271623980259)) );
 
+    // @ts-ignore
     window.Vector=Vector;
     // debugger
 }

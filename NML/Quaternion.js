@@ -11,6 +11,7 @@
 
 import { copy_Array, SAFE_MATH_TOOLS } from "../Config__NML.js";
 import { Euler_Angles } from "./Euler_Angles.js";
+import { Matrix } from "./Matrix.js";
 import { Vector } from "./Vector.js";
 
 /*h*/// open * 类型注释 * open
@@ -29,7 +30,7 @@ import { Vector } from "./Vector.js";
 class Quaternion extends Vector{
     
     /** 
-     * @param {float[]} data 四元数数据
+     * @param {float[]} [data] 四元数数据
      */
     constructor(data){
         super(4);
@@ -41,13 +42,14 @@ class Quaternion extends Vector{
     // open * 构造器 create 四元数 * open
         
         /** 使用xyz坐标轴的旋转
-         * @param {float}   thrta   旋转弧度
+         * @param {float}   theta   旋转弧度
          * @param {int}     axis    旋转中心轴 [x,y,z]
          * @param {Quaternion} _out 输出对象
          * @return {Quaternion} 修改并返回out 或 返回新的四元数
          */
         static create_Quaternion__ByThetaXYZ(theta,axis,_out){
             // todo
+            return;
         }
 
         /** 使用旋转轴和旋转弧度生成四元数
@@ -75,6 +77,7 @@ class Quaternion extends Vector{
          */
         static create_Quaternion__ByMatrix(mat,_out){
             // todo
+            return
         }
 
         /** 使用欧拉角生成四元数
@@ -82,8 +85,9 @@ class Quaternion extends Vector{
          * @param  {int[]}      [_axis] 创建旋转矩阵时的乘法顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
          * @return {Quaternion} 修改并返回out 或 返回新的四元数
          */
-        static create_Quaternion__ByEulerAngles(euler_angles){
+        static create_Quaternion__ByEulerAngles(euler_angles,_axis){
             // todo
+            return
         }
         
     // end  * 构造器 create 四元数 * end 
@@ -127,6 +131,26 @@ class Quaternion extends Vector{
             out[1]=-quat[1];
             out[2]=-quat[2];
             out[3]=-quat[3];
+            return out;
+        }
+
+        /** 四元数叉乘
+         * @param {Quaternion} quat_left     左侧四元数
+         * @param {Quaternion} quat_right    右侧四元数
+         * @param {Quaternion} [_out]       输出对象
+         * @return {Quaternion} 
+         */
+        static cross(quat_left,quat_right,_out){
+            var out=_out||new Quaternion();
+            var l=quat_left,r=quat_right;
+            if(l.length===4&&r.length===4){
+                var x= l[3]*r[0] + l[0]*r[3] + l[2]*r[1] - l[1]*r[2],
+                    y= l[3]*r[1] + l[1]*r[3] + l[0]*r[2] - l[2]*r[0],
+                    z= l[3]*r[2] + l[2]*r[3] + l[1]*r[0] - l[0]*r[1],
+                    w= l[3]*r[3] - l[0]*r[0] - l[1]*r[1] - l[2]*r[2];
+
+                out[0]=x;   out[1]=y;   out[2]=z;   out[3]=w;
+            }
             return out;
         }
 

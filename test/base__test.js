@@ -18,7 +18,9 @@ function callback_CalcErr__Throw(...arg){
 }
 
 
-/** 参数遇到 false 时打印错误 */
+/** 参数遇到 false 时打印错误 
+ * @param {*} arg
+*/
 function callback_CalcErr__ErrLog(...arg){
     if(arg.includes(false)||arg.includes(undefined)||arg.includes(null)){
         console.error("Bad calc!");

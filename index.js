@@ -9,14 +9,6 @@
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
 
-/** @typedef {number} int      整形数字 */
-/** @typedef {number} double   双浮点数字 */
-/** @typedef {number} float    单浮点数字 */
-/** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
-/** @typedef {List_Value} Vec  数据的各种存储形式 */
-/** @typedef {List_Value} Matrix  数据的各种存储形式 */
-
-
 import * as Algbra from "./NML/Algebra.js";
 import {CONFIG} from "./Config__NML.js";
 import {Vector} from "./NML/Vector.js";
@@ -27,6 +19,8 @@ import {Euler_Angles} from "./NML/Euler_Angles.js";
 import {Quaternion} from "./NML/Quaternion.js";
 import {Transform_Matrix_Ctrl} from "./NML/Transform_Matrix_Ctrl.js";
 
+/** @typedef {import("./Config__NML.js").List_Value} List_Value 数据的各种存储形式 */
+/** @typedef {Vector|Quaternion|List_Value} Vec 视作向量的各种数据格式 */
 const NML ={
     Algbra,
     CONFIG,

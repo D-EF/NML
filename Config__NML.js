@@ -1,7 +1,7 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-02-21 02:14:44
+ * @LastEditTime: 2023-02-28 22:49:30
  * @FilePath: \site\js\import\NML\Config__NML.js
  * @Description: Nittle Math Library's Config
  * 
@@ -12,25 +12,29 @@
     /*h*//** @typedef {number} int      整形数字 */
     /*h*//** @typedef {number} double   双浮点数字 */
     /*h*//** @typedef {number} float    单浮点数字 */
-    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
+    /*h*//** @typedef {number[]|Int8Array|Int16Array|Int32Array|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
 // open * 配置/基础 * open
-
+    if(!globalThis.CONFIG__NML){
+        globalThis.CONFIG__NML={}
+    }
     /**
-     * @typedef Config__NML NML 的配置参数对象
-     * @property {Float32ArrayConstructor|Float64ArrayConstructor} VALUE_TYPE 向量使用的数据类型; 可选值为 {Float32Array, Float64Array}, 默认为 Float32Array
-     * @property {float} APPROXIMATELY_TOLERANCE 计算容差 默认为 1e-6
-     * @property {int} COORDINATE_SYSTEM 坐标系 [左手系,右手系] (默认为0 左手系)
+     * @typedef Config__NML NML 的默认配置参数对象
+     * @property {Float32ArrayConstructor}   VALUE_TYPE                向量使用的数据类型; 可选值为 {Float32Array, Float64Array}, 默认为 Float32Array
+     * @property {float}                     APPROXIMATELY_TOLERANCE   计算容差 默认为 1e-6
+     * @property {int}                       COORDINATE_SYSTEM         坐标系 [左手系,右手系] (默认为0 左手系)
      */
     
     /** @type {Config__NML} 配置 */
-    const CONFIG=Object.assign({
+    const CONFIG={
         VALUE_TYPE:                Float32Array,
-        APPROXIMATELY_TOLERANCE:   0,
-        COORDINATE_SYSTEM:         globalThis.CONFIG__NML.VALUE_TYPE===Float32Array?1e-6:1e-15
-    },globalThis.CONFIG__NML);
+        APPROXIMATELY_TOLERANCE:   globalThis.CONFIG__NML.VALUE_TYPE===Float64Array?1e-15:1e-6,
+        COORDINATE_SYSTEM:         0
+    };
+    Object.assign(CONFIG,globalThis.CONFIG__NML);
 
+    const NML_VALUE_TYPE=CONFIG.VALUE_TYPE;
     function acos__Safe(value){
         if(value<=-1.0){
             return Math.PI;
@@ -53,7 +57,7 @@
         atan:Math.atan,
         atan2:Math.atan2
         },
-        DEG     = globalThis.DEG    = Math.DEG = Math.PI/180,
+        DEG     = globalThis.DEG    = Math.PI/180,
         DEG_90  = Math.PI*0.5,
         DEG_180 = Math.PI,
         CYCLES  = globalThis.CYCLES = Math.PI*2;
@@ -62,7 +66,7 @@
     /** 近似相等, 用于浮点误差计算后判断结果是否相近; 
      * @param {number} num1 数字
      * @param {number} num2 数字
-     * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
+     * @param {number} [_tolerance] 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
      * @return {boolean} 返回数值是否相近
      */
     function approximately(num1,num2,_tolerance){
@@ -70,9 +74,9 @@
     }
 
     /** 数值数组近似相等
-     * @param {number[]} arr1 数组1
-     * @param {number[]} arr2 数组2
-     * @param {number} _tolerance 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
+     * @param {List_Value} arr1 数组1
+     * @param {List_Value} arr2 数组2
+     * @param {number} [_tolerance] 容差 默认为 CONFIG.APPROXIMATELY_TOLERANCE (1e-12)
      * @return {boolean} 返回 !(左右两数组是否有不相近的数值对)
      */
     function approximately__Array(arr1,arr2,_tolerance){
@@ -90,10 +94,12 @@
     
     
     /** 向数组写入数据
-     * @param {List_Value} out 输出对象
-     * @param {List_Value} org 数据来源
+     * @template {{length:number}} Out
+     * @template {{length:number}} Org
+     * @param {Out} out 输出对象
+     * @param {Org} org 数据来源
      * @param {int} [_l]   写入长度
-     * @return {List_Value} 修改并返回 out
+     * @return {Out} 修改并返回 out
      */
     function copy_Array(out,org,_l){
         var i=_l||(out.length>org.length?org.length:out.length);
@@ -129,5 +135,6 @@ export{
     copy_Array,
     approximately,
     approximately__Array,
-    SAFE_MATH_TOOLS
+    SAFE_MATH_TOOLS,
+    NML_VALUE_TYPE
 }

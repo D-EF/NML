@@ -1497,7 +1497,7 @@ class Data_Arc__Ellipse extends Data_Arc {
         this._transform_matrix.scale(1,this.ry_ratio_rx);
         if(rotate){
             this._transform_matrix.rotate(rotate);
-                    }
+        }
         if(flip_horizontal_flag){
             this._transform_matrix.multiplication(Matrix2x2.FLIP_HORIZONTAL);
         }

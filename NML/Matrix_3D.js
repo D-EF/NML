@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-01 00:48:35
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-11-22 19:01:54
+ * @LastEditTime: 2023-02-28 23:42:56
  * @FilePath: \site\js\import\NML\NML\Matrix_3D.js
  * @Description: 3D图形学矩阵
  * 
@@ -42,29 +42,13 @@ class Matrix_3D extends Matrix{
         return new Matrix_3D(_MATRIX_IDENTITY_4X4);
     }
 
-    /** 矩阵转置
-     * @param {Matrix_3D} out 要转置的矩阵
-     * @return {Matrix_3D} 修改并返回 out
-     */
-    static transpose(out){
-        var i=MAPPING_TRANSPOSE__3D.length-1,
-            j=0;
-        var temp_value;
-        do{
-            temp_value=out[i];
-            out[i]=out[j];
-            out[j]=temp_value;
-            ++j;--i;
-        }while(i!==j);
-        return out;
-    }
-
     /** 创建缩放矩阵
-     * @param {flot} scale_x x坐标中的缩放系数
-     * @param {flot} scale_y y坐标中的缩放系数
-     * @param {flot} scale_z z坐标中的缩放系数
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_3D} 返回一个4x4矩阵
+     * @template {List_Value|Matrix_3D|Matrix} Mat
+     * @param {float} scale_x x坐标中的缩放系数
+     * @param {float} scale_y y坐标中的缩放系数
+     * @param {float} scale_z z坐标中的缩放系数
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_3D} 返回一个4x4矩阵
      */
     static create_Scale(scale_x,scale_y,scale_z,_out){
         return copy_Array(_out||new Matrix_3D(),[
@@ -76,13 +60,13 @@ class Matrix_3D extends Matrix{
     }
 
     /** 创建旋转矩阵
+     * @template {List_Value|Matrix_3D|Matrix} Mat
      * @param {float} theta 旋转弧度
      * @param {int} axis 旋转中心轴  [z,x,y]
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_3D} 返回一个4x4矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_3D} 返回一个4x4矩阵
      */
     static create_Rotate(theta,axis,_out){
-        // todo
         var out=_out||new Matrix_3D();
         var s=sin(CONFIG.COORDINATE_SYSTEM?-theta:theta),
             c=cos(theta);
@@ -118,13 +102,15 @@ class Matrix_3D extends Matrix{
                 ],16);
             break;
         }
+        return out;
     }
 
     /** 创建旋转矩阵 使用任意旋转轴
+     * @template {List_Value|Matrix_3D|Matrix} Mat
      * @param {float} theta 旋转弧度
-     * @param {List_Value} axis 一个3D向量表示的旋转轴
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_3D} 返回一个4x4矩阵
+     * @param {List_Value|Vector} axis 一个3D向量表示的旋转轴
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_3D} 返回一个4x4矩阵
      */
     static create_Rotate__Axis(theta,axis,_out){
         var k     = Vector.is_Unit(axis)?axis:Vector.create_Normalization(axis),
@@ -134,19 +120,14 @@ class Matrix_3D extends Matrix{
             sky   = sin_t*k[1],
             skz   = sin_t*k[2];
 
-        var mat_3x3 = Matrix.create_TensorProduct(axis,axis,1,3,3,1);
+        var out = _out|| Matrix.create_TensorProduct(axis,axis,1,3,3,1);
 
-        Matrix.np_b(mat_3x3,1-cos_t);
+        Matrix.np_b(out,1-cos_t);
 
-        mat_3x3[0] += cos_t;      mat_3x3[1] -= skz;        mat_3x3[2] += sky;
-        mat_3x3[3] += skz;        mat_3x3[4] += cos_t;      mat_3x3[5] -= skx;
-        mat_3x3[6] -= sky;        mat_3x3[7] += skx;        mat_3x3[8] += cos_t;
-
-        var out=Matrix.create_NewSize(mat_3x3,3,4,3,4,0,0);
-
-        if(_out){
-            out=copy_Array(_out,out,16);
-        }
+        out[0]  += cos_t;   out[1] -= skz;     out[2]  += sky;     out[3]  = 0;
+        out[4]  += skz;     out[5] += cos_t;   out[6]  -= skx;     out[7]  = 0;
+        out[8]  -= sky;     out[9] += skx;     out[10] += cos_t;   out[11] = 0;
+        out[12]  = 0;       out[13]  = 0;      out[14]  = 0;       out[15] = 0;
 
         if(!CONFIG.COORDINATE_SYSTEM){
             Matrix_3D.transpose(out);
@@ -156,13 +137,15 @@ class Matrix_3D extends Matrix{
     }
 
     /** 创建旋转矩阵, 使用欧拉角
+     * @template {List_Value|Matrix_3D|Matrix} Mat
      * @param {List_Value} euler_angles 欧拉角参数 各旋转角角的弧度
      * @param {List_Value} [_axis] 矩阵乘法的旋转轴顺序 [z,x,y] 默认为 [0,1,2] (BPH)(zxy)
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_3D} 返回一个4x4矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_3D} 返回一个4x4矩阵
      */
     static create_Rotate__EulerAngles(euler_angles,_axis,_out){
         var axis=_axis||[0,1,2];
+        /** @type {Matrix_3D} */
         var rtn = Matrix_3D.create_Rotate(euler_angles[0],axis[0]);
         for(var i=1;i<3;++i){
             rtn=Matrix.multiplication(rtn,Matrix_3D.create_Rotate(euler_angles[i],axis[i]),4,4);
@@ -178,12 +161,15 @@ class Matrix_3D extends Matrix{
      */
     static create_Rotate__QUAT(quat,_out){
         // todo
+        var out;
+        return out;
     }
 
     /** 创建正交投影(平行投影)矩阵
-     * @param {List_Value} normal 使用3d向量表示 投影面的法向
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_3D} 返回一个4x4矩阵
+     * @template {Matrix_3D|List_Value} Mat
+     * @param {List_Value|Vector} normal 使用3d向量表示 投影面的法向
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_3D} 返回一个4x4矩阵
      */
     static create_Projection__Orthographic(normal,_out){
         var n= Vector.is_Unit(normal)?normal:Vector.create_Normalization(normal);
@@ -202,10 +188,11 @@ class Matrix_3D extends Matrix{
     }
     
     /** 创建切变矩阵
-     * @param {List_Value[]} k_point  切变系数, 使用二维向量表示
+     * @template {Matrix_3D|List_Value} Mat
+     * @param {List_Value|Vector} k_point  切变系数, 使用二维向量表示
      * @param {number} axis 在哪个面上进行切变 [xy,xz,yz]
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_3D} 返回一个4x4矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_3D} 返回一个4x4矩阵
      */
     static create_Shear(k_point,axis,_out){
         var rtn=Matrix_3D.create_Identity();
@@ -216,10 +203,12 @@ class Matrix_3D extends Matrix{
     }
     
     /** 创建镜像矩阵
+     * @template {Matrix_3D|List_Value} Mat
      * @param {List_Value} normal 镜面的法向 3D向量
-     * @return {Matrix_3D} 返回一个4x4矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_3D} 返回一个4x4矩阵
      */
-    static create_Horizontal(normal){
+    static create_Horizontal(normal,_out){
         var i2xy=-2*normal[0]*normal[1],
             i2xz=-2*normal[0]*normal[2],
             i2yz=-2*normal[1]*normal[2];

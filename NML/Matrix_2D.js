@@ -2,7 +2,7 @@
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @Date: 2022-11-14 01:09:18
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2022-12-18 23:41:57
+ * @LastEditTime: 2023-02-28 23:45:32
  * @FilePath: \site\js\import\NML\NML\Matrix_2D.js
  * @Description: 2D变换矩阵
  * 
@@ -40,9 +40,10 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建旋转矩阵
+     * @template {List_Value|Matrix_2D} Mat
      * @param {number} theta 顺时针 旋转角弧度
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_2D} 返回一个3x3矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_2D} 返回一个3x3矩阵
      */
     static create_Rotate(theta,_out){
         var s=sin(theta),
@@ -56,13 +57,14 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建旋转矩阵 从(1,0)旋转到目标向量
-     * @param {Vector} vec 目标向量(2d)
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_2D} 返回一个3x3矩阵
+     * @template {List_Value|Matrix_2D} Mat
+     * @param {Vector|List_Value} vec 目标向量(2d)
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_2D} 返回一个3x3矩阵
      */
     static create_Rotate__Vector(vec,_out){
         var unit_v=Vector.is_Unit(vec)?vec:Vector.create_Normalization(vec),
-            s=unit_v[1];
+            s=unit_v[1],c=unit_v[0];
         CONFIG.COORDINATE_SYSTEM?0:s*=-1;
         var out=_out||new Matrix_2D();
         out[0]=c;   out[1]=s;   out[2]=0;
@@ -72,10 +74,11 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建缩放矩阵
+     * @template {List_Value|Matrix_2D} Mat
      * @param {number} scale_x x 轴方向上的缩放系数
      * @param {number} scale_y y 轴方向上的缩放系数
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_2D} 返回一个3x3矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_2D} 返回一个3x3矩阵
      */
     static create_Scale(scale_x,scale_y,_out){
         var out=_out||new Matrix_2D();
@@ -86,9 +89,10 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建镜像矩阵(对称)
+     * @template {List_Value|Matrix_2D} Mat
      * @param {Vector} normal 对称轴的法向坐标
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_2D} 返回一个3x3矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_2D} 返回一个3x3矩阵
      */
     static create_Horizontal(normal,_out){
         var i2xy=-2*normal[0]*normal[1];
@@ -100,10 +104,11 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建切变矩阵
+     * @template {List_Value|Matrix_2D} Mat
      * @param {number} k_x x方向的切变系数
      * @param {number} k_y y方向的切变系数
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix_2D} 返回一个3x3矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_2D} 返回一个3x3矩阵
      */
     static create_Shear(k_x,k_y,_out){
         var out=_out||new Matrix_2D();
@@ -114,9 +119,10 @@ class Matrix_2D extends Matrix{
     }
 
     /** 创建等比缩放&旋转矩阵 根据向量生成矩阵
+     * @template {List_Value|Matrix_2D} Mat
      * @param {List_Value} vec_l2 2d向量
-     * @param  {List_Value}  [_out] 接收数据的对象
-     * @return {Matrix}_2  返回一个3x3矩阵
+     * @param  {Mat}  [_out] 接收数据的对象
+     * @return {Mat|Matrix_2D}  返回一个3x3矩阵
      */
     static create_ByVector(vec_l2,_out){
         var s=vec_l2[1];

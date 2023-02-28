@@ -16,7 +16,7 @@
     /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
 /*h*/// end  * 类型注释 * end
 
-import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS} from "../Config__NML.js";
+import {copy_Array,approximately,CONFIG, SAFE_MATH_TOOLS, NML_VALUE_TYPE} from "../Config__NML.js";
 import {Vector} from "./Vector.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=SAFE_MATH_TOOLS;
 
@@ -28,17 +28,17 @@ import {Vector} from "./Vector.js";
  * [7, 8, 9]
  * ```
  */
-class Matrix extends CONFIG.VALUE_TYPE{
+class Matrix extends NML_VALUE_TYPE{
     // 继承使用 CONFIG.VALUE_TYPE 的构造函数
 
     /** 创建打印用的二维数组
      * @param {List_Value} mat 矩阵
      * @param {int} width 矩阵有多少列(宽度)
-     * @return {number[][]} 
+     * @return {List_Value[]} 
      */
     static create_Print(mat,width){
         var l=mat.length,i,
-            n=parseInt(width||parseInt(sqrt(l)));
+            n=width||Math.floor(sqrt(l));
         var rtn=[];
         i=0;
         do{
@@ -54,7 +54,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
      * @throws {Error} 当 n 和 m 的长度 无法形成方阵时 将会抛出异常
      */
     static check_Square(mat,_n){
-        var n=parseInt(_n||sqrt(mat.length));
+        var n=_n||Math.floor(sqrt(mat.length))
         if(n*n!==mat.length) throw new Error("This is not a square matrix! It should be a (n*n)!");
         return n;
     }
@@ -208,9 +208,10 @@ class Matrix extends CONFIG.VALUE_TYPE{
     }
 
     /** 矩阵乘标量
-     * @param {List_Value}     mat   矩阵
+     * @template {List_Value|Matrix} Mat
+     * @param {Mat}     mat   矩阵
      * @param {number}  k   标量
-     * @return {List_Value} 修改m并返回
+     * @return {Mat} 修改m并返回
      */
     static np_b(mat,k){
         var i;
@@ -249,11 +250,12 @@ class Matrix extends CONFIG.VALUE_TYPE{
     }
     
     /** 初等变换 换行操作
-     * @param {List_Value|List_Value[]} mat 一个或多个矩阵
+     * @template {Matrix|Matrix[]|List_Value|List_Value[]} Mats
+     * @param {Mats} mat 一个或多个矩阵
      * @param {int} n       n阶矩阵 用来表示一行的长度
      * @param {int} v1      矩阵v坐标1 (要对调的行下标1)
      * @param {int} v2      矩阵v坐标2 (要对调的行下标2)
-     * @return {m} 修改并返回m
+     * @return {Mats} 修改并返回 mat
      */
     static transform_Exchange(mat,n,v1,v2){
         var i,j,k,t,temp;
@@ -276,46 +278,51 @@ class Matrix extends CONFIG.VALUE_TYPE{
     }
 
     /** 初等变换 某行乘标量
-     * @param {List_Value|List_Value[]} mat     矩阵
-     * @param {int} n           n阶矩阵
-     * @param {int} v           矩阵的v坐标(行下标)
-     * @param {number} k    乘法中的标量部分
+     * @template {Matrix|Matrix[]|List_Value|List_Value[]} Mats
+     * @param {Mats} mat   一个或多个矩阵
+     * @param {int} n      n阶矩阵
+     * @param {int} v      矩阵的v坐标(行下标)
+     * @param {number} k   乘法中的标量部分
+     * @return {Mats}
      */
     static transform_multiplication(mat,n,v,k){
-        var i,j,t;
-        var f=ArrayBuffer.isView(mat[0])||Array.isArray(mat[0]);
+        var i,t;
+        var is_mats=ArrayBuffer.isView(mat[0])||Array.isArray(mat[0]);
         // 换行
-        if(f){
+        if(is_mats){
+            for(t=mat.length-1;t>=0;--t)
             for(i=v*n,k=n; k>0; --k,++i){
-                for(t=mat.length-1;t>=0;--t) mat[t][j]*=k;  
+                 mat[t][i]*=k;  
             }
         }else{
-            for(i=v*n,k=n; k>0; --k,++i) mat[j]*=k;
+            // @ts-ignore  mat 是单个矩阵
+            for(i=v*n,k=n; k>0; --k,++i) mat[i]*=k;
         }
         return mat;
     }
     
     /** 将矩阵某个为0的项 通过初等变换的换行操作, 变成非0
-     * @param {List_Value|List_Value[]} m     一个或多个矩阵
+     * @template {Matrix|Matrix[]|List_Value|List_Value[]} Mats
+     * @param {Mats} mat     一个或多个矩阵
      * @param {int} index       当前下标
      * @param {int} v           当前v坐标(行下标)
      * @param {int} step_length 寻址步长,应为 ±n
      * @param {int} [_index_m]  传入多个矩阵时使用哪个矩阵的值 默认0
-     * @return {Matrix} 
+     * @return {Mats} 
      */
-    static exchange_zero(m,index,v,step_length,_index_m){
-        if(!step_length) return m;
+    static exchange_zero(mat,index,v,step_length,_index_m){
+        if(!step_length) return mat;
         var _v=v,i;
         var f=step_length>0?1:-1;
-        var tm=(ArrayBuffer.isView(m[0])||Array.isArray(m[0]))?m[_index_m||0]:m;
+        var tm=(ArrayBuffer.isView(mat[0])||Array.isArray(mat[0]))?mat[_index_m||0]:mat;
         for(i=index;tm[i]!==undefined;i+=step_length,_v+=f){
             if(tm[i]){
-                if(_v===v)  return m;
-                else        return Matrix.transform_Exchange(m,Math.abs(step_length),_v,v);
+                if(_v===v)  return mat;
+                else        return Matrix.transform_Exchange(mat,Math.abs(step_length),_v,v);
             }
         }
         // 找不到可以替换的
-        return m;
+        return mat;
     }
 
     /** 矩阵乘法    如果不传入矩阵宽高信息将视为方阵
@@ -356,7 +363,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     
     /** 检查矩阵正交
      * @param {Matrix} mat    矩阵
-     * @param {Matrix} [_n] n阶矩阵
+     * @param {int}    [_n]   n阶矩阵
      * @return {boolean}
      */
     static check_Orthogonal(mat,_n){
@@ -379,14 +386,15 @@ class Matrix extends CONFIG.VALUE_TYPE{
     }
 
     /** 矩阵转置
-     * @param {List_Value} out 矩阵
-     * @param {int} [_width] 矩阵宽度(列数)
-     * @param {int} [_height] 矩阵高度(行数)
-     * @return {m} 修改mat并返回
+     * @template       {List_Value|Matrix}   Mat
+     * @param {Mat}    out                   矩阵
+     * @param {int}    [_width]              矩阵宽度(列数)
+     * @param {int}    [_height]             矩阵高度(行数)
+     * @return {Mat}   修改mat并返回
      */
     static transpose(out,_width,_height){
         var u, v, point_u, point_v, temp;
-        var n=_width||Matrix.check_Square(out,_n);
+        var n=_width||Matrix.check_Square(out);
         if(n===(_height||n)){  //方阵
             for(v=n-1; v>0; --v){
                 for(u=v-1; u>=0; --u){
@@ -419,7 +427,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
     /** 创建矩阵的转置
      * @param {List_Value} mat 矩阵
      * @param {int} [_n] 矩阵为n阶矩阵
-     * @return {m} 返回一个新的矩阵
+     * @return {Matrix} 返回一个新的矩阵
      */
     static create_Transposed(mat,_n){
         return Matrix.transpose(new Matrix(mat),_n);
@@ -500,7 +508,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
                 k=mat__transform[index_mat__uv];
                 if(k===0)continue;
                 for(i=uv,j=index_mat__uv; i>=0; --i,--j){
-                    mat__transform[j]-=k*[temp_row[i]];
+                    mat__transform[j]-=k*temp_row[i];
                 }
             }
         }
@@ -511,7 +519,8 @@ class Matrix extends CONFIG.VALUE_TYPE{
     }
 
     /** 变换得到矩阵逆 高斯乔丹消元法(初等变换法)
-     * @param {List_Value} mat 传入矩阵, 计算完后将会变成单位矩阵
+     * @template {List_Value|Matrix} Mat
+     * @param {Mat} mat 传入矩阵, 计算完后将会变成单位矩阵
      * @param {int} [_n]     矩阵为n阶矩阵
      * @return {Matrix}      返回一个新的矩阵
      */
@@ -531,7 +540,7 @@ class Matrix extends CONFIG.VALUE_TYPE{
                 Matrix.exchange_zero(_m,index_mat__uv,uv,-n);
                 if(!_m[0][index_mat__uv]){
                     console.warn("This is a singular matrix!");
-                    return mat;
+                    return new Matrix(mat);
                 }
             }
             k=index_mat__uv-uv;

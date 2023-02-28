@@ -1,20 +1,12 @@
 /*!
  * @Author: Darth_Eternalfaith darth_ef@hotmail.com
  * @LastEditors: Darth_Eternalfaith darth_ef@hotmail.com
- * @LastEditTime: 2023-02-17 00:30:47
+ * @LastEditTime: 2023-02-23 23:21:30
  * @FilePath: \site\js\import\NML\NML\Algebra.js
  * @Description: 数字运算相关
  * 
  * Copyright (c) 2022 by Darth_Eternalfaith darth_ef@hotmail.com, All Rights Reserved. 
  */
-
-/*h*/// open * 类型注释 * open
-    /*h*//** @typedef {Float32Array} CONFIG.VALUE_TYPE 矩阵计算时缓存下标的类型; 决定了计算时矩阵的n的大小 可选值为 Uint_N_Array, Int_N_Array */
-    /*h*//** @typedef {number} int      整形数字 */
-    /*h*//** @typedef {number} double   双浮点数字 */
-    /*h*//** @typedef {number} float    单浮点数字 */
-    /*h*//** @typedef {number[]|Float32Array|Float64Array} List_Value 数据的各种存储形式 */
-/*h*/// end  * 类型注释 * end
 
 import {copy_Array,approximately,CONFIG} from "../Config__NML.js";
 /*h*/const {sin,cos,asin,acos,abs,sqrt,tan}=Math;
@@ -194,7 +186,7 @@ import {copy_Array,approximately,CONFIG} from "../Config__NML.js";
      * @return {number[][]} 贝塞尔曲线的计算矩阵
      */
     function get_BezierMatrix(n){
-        if(_BEZIER_MATRIXS[n])return _BEZIER_MATRIXS[n];
+        if(_BEZIER_MATRIXS[n])return [_BEZIER_MATRIXS[n]];
 
         if(_G_PASCALS_TRIANGLE.length<=n)calc_PascalsTriangle(n);
         var i,j,f;
@@ -237,7 +229,7 @@ import {copy_Array,approximately,CONFIG} from "../Config__NML.js";
     function get_BezierDerivativesPoints(points){
         var n=points.length-2;
         var rtn=new Array(n+1);
-        if(n<0)return {x:0,y:0}
+        if(n<0)return [0];
         for(var i=n;i>=0;--i){
             rtn[i]=n*(points[i+1]-points[i])
         }
